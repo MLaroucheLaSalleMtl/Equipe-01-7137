@@ -24,6 +24,7 @@ public class node : MonoBehaviour
     Vector2 position;
     public float Value = 0;
     public float AverageHeight = 1;
+    public float terrainhardness;
     public int RessourceAmount;
     public Resource resource;
     public Terrain terrain;
@@ -41,8 +42,7 @@ public class node : MonoBehaviour
     }
     private BoxCollider _collider;
 
-
-
+ 
     /// <summary>
     /// Get Value from position on the map
     /// </summary>

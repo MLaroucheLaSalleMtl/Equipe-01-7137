@@ -35,8 +35,38 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         CameraFunction(_main.transform, CameraPosition);
+        MouseInteraction();
     }
+    RaycastHit lastresult;
+    public LayerMask Interatable;
+    void MouseInteraction()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+           var r = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(r, out lastresult,Mathf.Infinity,Interatable))
+            {
+                print(lastresult.collider.gameObject);
+                if (!selection)
+                {
+                    if (lastresult.collider.gameObject.GetComponent<entity>())
+                        selection = lastresult.collider.gameObject.GetComponent<entity>();
+                }
+                else
+                {
+                    if(selection is unit)
+                    {
+                        (selection as unit).MoveTo(lastresult.point);
+                    }
+                }
+           
+            }
+        }
+    }
+    [SerializeField]
+    entity selection;
 
+    //Relate to camera
     Vector3 EdgeScrolling
     {
         get
@@ -91,6 +121,13 @@ public class GameManager : MonoBehaviour
     {
         Nodes = CreateNodes(terrain[0]);
     }
+
+
+
+
+
+    //Nodes related
+
     node[] CreateNodes(Terrain a, int precision = 5)
     {
         var e = new List<node>();
@@ -144,7 +181,6 @@ public class GameManager : MonoBehaviour
 
         return e.ToArray();
     }
-
     void SpawnRessource(node n,int x, int y)
     {
         //tree for now
