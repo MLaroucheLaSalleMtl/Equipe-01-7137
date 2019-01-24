@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public Terrain[] terrain;
     public node[] Nodes;
-    public Owner[] owners= new Owner[1] { new Owner() { Name = "Nana"} };
+    public Owner[] owners= new Owner[2] { new Owner() { Name = "Nana"}, new Owner() { Name = "David" } };
 
     [Header("Assets")]
     public GameObject node;
@@ -196,7 +196,9 @@ public class GameManager : MonoBehaviour
                 
                 n.terrain = a;
                 n.Value = n.GetValue(x, y);
-              
+
+                if (x > t.size.x / 2) n.SetOwner(owners[1]);
+                else n.SetOwner(owners[0]);
                 if (n.transform.position.y < 10) n.GetComponent<MeshRenderer>().material.color = Color.green;
                 else if (n.transform.position.y < 20) n.GetComponent<MeshRenderer>().material.color = Color.yellow;
                 else if (n.transform.position.y < 30)

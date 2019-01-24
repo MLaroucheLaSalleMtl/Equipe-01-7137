@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class node : MonoBehaviour
 {
-    
-
+    [SerializeField]
+    protected Owner owner;
+    public Owner GetOwner
+    {
+        get { return owner; }
+    } 
+    public void SetOwner(Owner n)
+    {
+        owner = n;
+    }
     public enum NodeType
     {
         plain = 0 , 

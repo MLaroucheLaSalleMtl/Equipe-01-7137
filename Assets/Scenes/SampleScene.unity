@@ -163,6 +163,7 @@ MonoBehaviour:
     type: 3}
   Resources:
   - {fileID: 3262861946267017286, guid: 3719dc670ff834142ba9d6c25aa3b263, type: 3}
+  - {fileID: 3262861946267017286, guid: 3719dc670ff834142ba9d6c25aa3b263, type: 3}
   Buildings:
   - {fileID: 1852152406670046312, guid: 3dfded4edc82f31488cf2fb1e385d7a1, type: 3}
   Highlight: {fileID: 2092928179}
@@ -929,7 +930,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1847098755}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 80284508}
+        m_MethodName: Build
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1847098755
@@ -978,7 +990,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2092928180}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Highlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
