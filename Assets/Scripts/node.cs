@@ -34,7 +34,7 @@ public class node : MonoBehaviour
     public float AverageHeight = 1;
     public float terrainhardness;
    
-    public Resource resource;
+    public Goods resource;
     public Terrain terrain;
     
     public void SetSize(float x)

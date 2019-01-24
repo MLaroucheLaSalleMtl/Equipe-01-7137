@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Resource : MonoBehaviour
+[System.Serializable]
+public class Goods  
 {
 
     // Mostly useless, but create it for now - for future functionality
@@ -15,48 +16,49 @@ public class Resource : MonoBehaviour
     public Image icon;
     public GameObject model, bit;
 
+    [SerializeField]
     float amount = 1;
     public float getAmount
     {
         get { return amount; }
     }
-    public Resource()
+    public Goods()
     {
 
     }
-    public Resource(Resource r,float am)
+    public Goods(Goods r,float am)
     {
-        name = r.name;
+        Name = r.Name;
         Value = r.Value;
         icon = r.icon;
         model = r.model;
         amount = am;
     }
  
-    public void setRessource(Resource r, float am)
+    public void setRessource(Goods r, float am)
     {
-        name = r.name;
+        Name = r.Name;
         Value = r.Value;
         icon = r.icon;
         model = r.model;
         amount = am;
     }
-    public virtual void Merge(Resource r)
+    public virtual void Merge(Goods r)
     {
         if(r.Name == this.Name)
         {
             amount += r.amount;
-            Destroy(r);
+            //Destroy(r);
 
         }
     }
-    public virtual Resource Exploit(Owner o = null)
+    public virtual Goods Exploit(Owner o = null)
     {
         amount--;
        
         if (amount <= 0) { Delete(); return null; }
         else {
-            var y = new Resource(this, 1);
+            var y = new Goods(this, 1);
             return y;
         } 
     }
@@ -64,7 +66,7 @@ public class Resource : MonoBehaviour
     {
          if(amount > 1)
         {
-            Instantiate(bit, pos, Quaternion.identity);
+            //Instantiate(bit, pos, Quaternion.identity);
             amount--;
         }
     }

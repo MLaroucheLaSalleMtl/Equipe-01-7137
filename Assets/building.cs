@@ -1,11 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class building : entity
 {
     public List<node> affectednodes = new List<node>();
-    public Resource[] Costs;
+    public Goods[] Costs;
+    [Header("UI")]
+    public GameObject ContextMenu;
+    public Text ContextMenuText;
+    public GameObject[] buttons;
+    [TextArea]
+    public string description= " a normal building";
     //Priority of attack = Higher mean more interest for the enemy
     public float getValue
     {
@@ -15,9 +22,13 @@ public class building : entity
             return x * (Hp/maximumHp);
         }
     }
+    private void Start()
+    {
+        ContextMenu.SetActive(false);
+    }
     public float ConstructionEffort = 20;
      bool BeingBuild = false;
-    public bool HasEnoughRessource(Resource[] x)
+    public bool HasEnoughRessource(Goods[] x)
     {
 
         if (x.Length == 0) return true;
@@ -25,7 +36,7 @@ public class building : entity
         {
             bool ok = false;
             foreach (var z in x)
-                if (item.name == z.name) { ok = true; ok = item.getAmount >= z.getAmount; }
+                if (item.Name== z.Name) { ok = true; ok = item.getAmount >= z.getAmount; }
 
             if (!ok) return false;
 
@@ -51,10 +62,26 @@ public class building : entity
         graphics[0].SetActive(true);
     }
 
+    bool ctxmenu = false;
+    public virtual void OpenContextMenu()
+    {
+
+        if (!ctxmenu) ContextMenu.SetActive(true);
+        ContextMenuText.text = description;
+
+    }
+    public void CloseContextMenu()
+    {
+        ctxmenu = false;
+        ContextMenu.SetActive(false);
+    }
 
     private void OnMouseDown()
     {
-        
+        if (!BeingBuild)
+            interact(GameManager.selection);
+
+        OpenContextMenu();
     }
     public virtual void interact(entity e, float efficiency = 0)
     {

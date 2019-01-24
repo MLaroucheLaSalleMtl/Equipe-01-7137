@@ -6,13 +6,13 @@ public class GameManager : MonoBehaviour
 {
     public Terrain[] terrain;
     public node[] Nodes;
-    public Owner[] owners= new Owner[2] { new Owner() { Name = "Nana"}, new Owner() { Name = "David" } };
+    public static Owner[] owners= new Owner[2] { new Owner() { Name = "Nana"}, new Owner() { Name = "David" } };
 
     [Header("Assets")]
     public GameObject node;
     public GameObject node_bound;
     [Header("Resource")]
-    public Resource[] Resources;
+    public Goods[] Resources;
     public GameObject[] Buildings;
 
     Camera _main;
@@ -49,22 +49,28 @@ public class GameManager : MonoBehaviour
     void OnMouseClick(Vector3 pos )
     {
         print(lastresult.collider.gameObject);
-
-        if(buildmode >= 0)
+        var tempsel = lastresult.collider.gameObject.GetComponent<entity>();
+        if (buildmode >= 0)
         {
             PlaceBuilding(Buildings[buildmode], owners[0]);
         }
-        if (!selection)
+        if (!selection )
         {
-            if (lastresult.collider.gameObject.GetComponent<entity>())
-                selection = lastresult.collider.gameObject.GetComponent<entity>();
+            if (tempsel && !(tempsel is building))
+                selection = tempsel;
         }
         else
         {
+            if (tempsel && selection == tempsel)
+            {
+                selection = null;
+            }
+            else 
             if (selection is unit)
             {
                 (selection as unit).MoveTo(pos);
             }
+          
         }
     }
     void MouseInteraction()
@@ -90,7 +96,7 @@ public class GameManager : MonoBehaviour
 
     }
     [SerializeField]
-    entity selection;
+    public static entity selection;
 
     //Relate to camera
     Vector3 EdgeScrolling
@@ -245,9 +251,9 @@ public class GameManager : MonoBehaviour
         if (n.AverageHeight > 26 && n.AverageHeight < 30 && n.type == global::node.NodeType.plain)
         {
             //tree
-            var q= Instantiate(Resources[0], n.transform.position,Quaternion.identity);
+            var q = new Goods() ;
             q.setRessource(Resources[0], 100 * Random.Range(1, 10));
-            q.transform.parent = n.transform;
+          //  q.transform.parent = n.transform;
             n.resource = q;
            
             n.Value += n.resource.getAmount* n.Value;

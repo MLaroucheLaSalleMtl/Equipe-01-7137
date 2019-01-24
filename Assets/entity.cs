@@ -22,14 +22,14 @@ public class entity : MonoBehaviour
     }
     public Owner GetOwner { get { return owner; } }
     public float Hp = 1;
-    public List<Resource> Inventory = new List<Resource>();
+    public List<Goods> Inventory = new List<Goods>();
 
     
     public entity()
     {
         maximumHp = Hp;
     }
-    public void Take(Resource r)
+    public void Take(Goods r)
     {
 
       

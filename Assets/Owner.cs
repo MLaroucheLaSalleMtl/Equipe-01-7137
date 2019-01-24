@@ -9,7 +9,7 @@ public class Owner
     public delegate void EntitiesHandler(entity e);
     public EntitiesHandler onNewEntites, onLostEntites;
 
-    public List<Resource> Inventory = new List<Resource>();
+    public List<Goods> Inventory = new List<Goods>();
     public List<unit> Units = new List<unit>();
     public List<building> Building = new List<building>();
     public List<entity> GetEntities
