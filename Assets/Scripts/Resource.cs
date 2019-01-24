@@ -7,6 +7,7 @@ public class Resource : MonoBehaviour
 {
 
     // Mostly useless, but create it for now - for future functionality
+    
     public string Name = "Wood";
     public float Value = 5;
     public int StorageSize =1;
@@ -19,6 +20,10 @@ public class Resource : MonoBehaviour
     {
         get { return amount; }
     }
+    public Resource()
+    {
+
+    }
     public Resource(Resource r,float am)
     {
         name = r.name;
@@ -28,6 +33,14 @@ public class Resource : MonoBehaviour
         amount = am;
     }
  
+    public void setRessource(Resource r, float am)
+    {
+        name = r.name;
+        Value = r.Value;
+        icon = r.icon;
+        model = r.model;
+        amount = am;
+    }
     public virtual void Merge(Resource r)
     {
         if(r.Name == this.Name)

@@ -8,7 +8,14 @@ public class entity : MonoBehaviour
     [SerializeField]
      Owner owner;
 
-    node currentNode;
+    public virtual void TransferOwner(Owner n)
+    {
+        if (owner!= null) owner.onLostEntites(this);
+        owner =  n;
+        n.onNewEntites(this);
+    }
+    protected node currentNode;
+    protected float maximumHp = 1;
     public node GetCurrentNode
     {
         get { return currentNode; }
@@ -17,6 +24,11 @@ public class entity : MonoBehaviour
     public float Hp = 1;
     public List<Resource> Inventory = new List<Resource>();
 
+    
+    public entity()
+    {
+        maximumHp = Hp;
+    }
     public void Take(Resource r)
     {
 

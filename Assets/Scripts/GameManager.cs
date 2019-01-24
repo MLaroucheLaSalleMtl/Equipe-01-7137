@@ -6,14 +6,19 @@ public class GameManager : MonoBehaviour
 {
     public Terrain[] terrain;
     public node[] Nodes;
-    
+    public Owner[] owners= new Owner[1] { new Owner() { Name = "Nana"} };
+
     [Header("Assets")]
     public GameObject node;
     public GameObject node_bound;
     [Header("Resource")]
     public Resource[] Resources;
+    public GameObject[] Buildings;
 
     Camera _main;
+    [Header("Flair")]
+    public GameObject Highlight;
+
     [Header("Camera")]
     public Vector3 CameraOffset;
     public Vector3 CameraPosition;
@@ -29,8 +34,9 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-    
         
+        foreach (var item in owners)
+            item.Routine();
     }
     private void Update()
     {
@@ -39,29 +45,49 @@ public class GameManager : MonoBehaviour
     }
     RaycastHit lastresult;
     public LayerMask Interatable;
-    void MouseInteraction()
+    Vector3 MousePosition;
+    void OnMouseClick(Vector3 pos )
     {
-        if (Input.GetMouseButtonDown(0))
+        print(lastresult.collider.gameObject);
+
+        if(buildmode >= 0)
         {
-           var r = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(r, out lastresult,Mathf.Infinity,Interatable))
+            PlaceBuilding(Buildings[buildmode], owners[0]);
+        }
+        if (!selection)
+        {
+            if (lastresult.collider.gameObject.GetComponent<entity>())
+                selection = lastresult.collider.gameObject.GetComponent<entity>();
+        }
+        else
+        {
+            if (selection is unit)
             {
-                print(lastresult.collider.gameObject);
-                if (!selection)
-                {
-                    if (lastresult.collider.gameObject.GetComponent<entity>())
-                        selection = lastresult.collider.gameObject.GetComponent<entity>();
-                }
-                else
-                {
-                    if(selection is unit)
-                    {
-                        (selection as unit).MoveTo(lastresult.point);
-                    }
-                }
-           
+                (selection as unit).MoveTo(pos);
             }
         }
+    }
+    void MouseInteraction()
+    {
+
+        Highlight.transform.position = MousePosition;
+
+
+        var r = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(r, out lastresult,Mathf.Infinity,Interatable))
+            {
+
+            MousePosition = lastresult.point;
+            if (Input.GetMouseButtonDown(0))
+            {
+                OnMouseClick(lastresult.point);
+             
+            }
+
+
+            }
+         
+
     }
     [SerializeField]
     entity selection;
@@ -87,6 +113,34 @@ public class GameManager : MonoBehaviour
     }
     Vector2 cam;
     private float camzoom;
+    [SerializeField]
+    int buildmode = -1;
+    public void Build(int x)
+    {
+        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory.ToArray())) return;
+        var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], Highlight.transform);
+        var t = g.GetComponentsInChildren<Collider>();
+        for (int i = 0; i < t.Length; i++)
+        {
+            Destroy(t[i]);
+        }
+        buildmode = x;
+    }
+   void PlaceBuilding(GameObject building, Owner n)
+    {
+        var x = Instantiate(building, MousePosition, Quaternion.identity).GetComponent<building>();
+        x.TransferOwner(n);
+        x.build(MousePosition, n);
+        buildmode = -1;
+        ClearHighLight();
+    }
+    void ClearHighLight()
+    {
+        for (int i = 0; i < Highlight.transform.childCount; i++)
+        {
+            Destroy(Highlight.transform.GetChild(i).gameObject);
+        }
+    }
     public void CameraFunction(Transform camera, Vector3 position)
     {
 
@@ -126,7 +180,7 @@ public class GameManager : MonoBehaviour
 
 
 
-    //Nodes related
+    //Nodes related - need to yeet to somewhere else 
 
     node[] CreateNodes(Terrain a, int precision = 5)
     {
@@ -189,11 +243,14 @@ public class GameManager : MonoBehaviour
         if (n.AverageHeight > 26 && n.AverageHeight < 30 && n.type == global::node.NodeType.plain)
         {
             //tree
-            n.resource = Resources[0];
-            n.RessourceAmount = 100 * Random.Range(1, 10);
-            n.Value += n.RessourceAmount * n.Value;
+            var q= Instantiate(Resources[0], n.transform.position,Quaternion.identity);
+            q.setRessource(Resources[0], 100 * Random.Range(1, 10));
+            q.transform.parent = n.transform;
+            n.resource = q;
            
-            for (int i = 0; i <n.RessourceAmount/50; i++)
+            n.Value += n.resource.getAmount* n.Value;
+           
+            for (int i = 0; i <n.resource.getAmount/50; i++)
             {
                 if (Random.Range(0, 1f) > .3f) continue;
                 var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize/1.4f) - 2, .5f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)-2);
