@@ -10,15 +10,16 @@ public class MainUI : MonoBehaviour
     
 
    public Text Builder, Merchant, Research,Civilian;
-
+    public Text UnitInfo;
     Owner lastOwner;
 
 
+    
     private void Awake()
     {
       
     }
-    public void ShowUI(Owner n)
+    public void ShowUI(Owner n,entity e)
     {
         lastOwner = n;
         Population.text = "POP: " + n.totalPopulation.ToString() + "/ HOUSE:" + n.getHousingSpace;
@@ -36,6 +37,12 @@ public class MainUI : MonoBehaviour
         Research.text = "Researcher:" + 0.ToString();
 
        Jobs.SetActive( Builder.gameObject.activeSelf || Merchant.gameObject.activeSelf || Research.gameObject.activeSelf);
+
+
+        if (e)
+        {
+            UnitInfo.text = e.ToString();
+        }
     }
 
     public void AddBuilder(int x) { lastOwner.AllocateBuilder(x); }
