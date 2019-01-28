@@ -163,7 +163,7 @@ public class GameManager : MonoBehaviour
         cursorinput += new Vector2(Input.GetAxis("Mouse X"),
                   Input.GetAxis("Mouse Y"));
 
-        cursorinput.y = Mathf.Clamp(cursorinput.y, -90, -50);
+        cursorinput.y = Mathf.Clamp(cursorinput.y, -90, -40);
         camzoom = Mathf.Clamp(camzoom + Input.GetAxis("Mouse ScrollWheel") * -350 * Time.smoothDeltaTime, 1f, 350);
         camera.transform.position = Vector3.Lerp(camera.transform.position, position + Vector3.forward * camzoom, 125 * Time.fixedDeltaTime);
         camera.transform.LookAt(position + CameraOffset + -Vector3.up * cameraSmoothness / 2 * Time.fixedDeltaTime);
