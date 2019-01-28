@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     Camera _main;
     [Header("Flair")]
     public GameObject Highlight;
+    public GameObject[] Cursor3D;
 
     [Header("Camera")]
     public Vector3 CameraOffset;
@@ -29,6 +30,7 @@ public class GameManager : MonoBehaviour
     Vector2 cursorinput;
     private void Awake()
     {
+        CancelSelection();
         _main = UnityEngine.Camera.main;   
     }
 
@@ -39,7 +41,8 @@ public class GameManager : MonoBehaviour
         foreach (var item in owners)
             item.Routine();
 
-        MUI.ShowUI(owners[0]);
+        MUI.ShowUI(owners[0],selection);
+         
     }
     private void Update()
     {
@@ -63,21 +66,82 @@ public class GameManager : MonoBehaviour
         if (!selection )
         {
             if (tempsel && !(tempsel is building))
+            {
                 selection = tempsel;
-        }
-        else
-        {
-            if (tempsel && selection == tempsel)
-            {
-                selection = null;
-            }
-            else 
-            if (selection is unit)
-            {
-                (selection as unit).MoveTo(pos);
+                UiSelection[0].SetActive(true);
+                UiSelection[1].SetActive(true);
             }
           
         }
+        else
+        {
+            switch (currentmode)
+            {
+
+                case 1:
+                    (selection as unit).MoveTo(pos);
+                    break;
+                case 2: if(tempsel && tempsel != selection)
+                    (selection as unit).Attack(tempsel);
+                    break;
+                case 3:
+                    (selection as unit).Chill();
+                    break;
+                default:
+                    break;
+            }
+
+ 
+
+        }
+    }
+    public GameObject[] UiSelection;
+    int currentmode = 0;
+    entity target;
+ 
+    public void SetUIMode(int x )
+    {
+        if (x == 0) return;
+        foreach (var item in UiSelection)
+        {
+            item.SetActive(false);
+        }
+
+        foreach (var item in Cursor3D)
+        {
+            item.SetActive(false);
+        }
+
+       if(x > 0) Cursor3D[ Mathf.Clamp(x-1, 0, Cursor3D.Length-1)].SetActive(true);
+        UiSelection[0].SetActive(true); // image nad name 
+      UiSelection[2].SetActive(true);
+
+        currentmode = x;
+    }
+    public void Chillout()
+    {
+        if (selection)
+            (selection as unit).Chill();
+    }
+    public void CancelSelection()
+    {
+        foreach (var item in UiSelection)
+        {
+            item.SetActive(false);
+        }
+        foreach (var item in Cursor3D)
+        {
+            item.SetActive(false);
+        }
+        if(currentmode > 0)
+        {
+            currentmode = 0;
+            UiSelection[0].SetActive(true); // image nad name 
+            UiSelection[1].SetActive(true); // main icons
+        }
+        else
+        selection = null;
+    
     }
     void MouseInteraction()
     {
@@ -112,11 +176,15 @@ public class GameManager : MonoBehaviour
         {
             Vector3 t =Vector3.zero;
             var pos = Input.mousePosition;
-      
+      /*
             if (pos.x > Screen.width - Boundary) t += Vector3.right;
             if (pos.x < 0 + Boundary) t += -Vector3.right;
             if (pos.y > Screen.height - Boundary) t += Vector3.up;
             if (pos.y < 0 + Boundary) t += -Vector3.up;
+
+    */
+
+
             return t;
 
 
@@ -132,6 +200,7 @@ public class GameManager : MonoBehaviour
     {
         if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory) && Buildings[x].GetComponent<building>().GoldCost > owners[0].Gold) { print("Not enough ressource or Gold"); return; } 
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], Highlight.transform);
+        building_highlight = g;
         var t = g.GetComponentsInChildren<Collider>();
         for (int i = 0; i < t.Length; i++)
         {
@@ -147,12 +216,15 @@ public class GameManager : MonoBehaviour
         buildmode = -1;
         ClearHighLight();
     }
+
+    GameObject building_highlight;
     void ClearHighLight()
     {
-        for (int i = 0; i < Highlight.transform.childCount; i++)
+        Destroy(building_highlight.gameObject);
+      /*  for (int i = 0; i < Highlight.transform.childCount; i++)
         {
             Destroy(Highlight.transform.GetChild(i).gameObject);
-        }
+        }*/
     }
     public void CameraFunction(Transform camera, Vector3 position)
     {
@@ -163,7 +235,7 @@ public class GameManager : MonoBehaviour
         cursorinput += new Vector2(Input.GetAxis("Mouse X"),
                   Input.GetAxis("Mouse Y"));
 
-        cursorinput.y = Mathf.Clamp(cursorinput.y, -90, -40);
+        cursorinput.y = Mathf.Clamp(cursorinput.y, -70, -20);
         camzoom = Mathf.Clamp(camzoom + Input.GetAxis("Mouse ScrollWheel") * -350 * Time.smoothDeltaTime, 1f, 350);
         camera.transform.position = Vector3.Lerp(camera.transform.position, position + Vector3.forward * camzoom, 125 * Time.fixedDeltaTime);
         camera.transform.LookAt(position + CameraOffset + -Vector3.up * cameraSmoothness / 2 * Time.fixedDeltaTime);
@@ -250,6 +322,9 @@ public class GameManager : MonoBehaviour
 
         return e.ToArray();
     }
+
+
+    
     void SpawnRessource(node n,int x, int y)
     {
         //tree for now
