@@ -14,6 +14,7 @@ public class entity : MonoBehaviour
         owner =  n;
         n.onNewEntites(this);
     }
+    public float GoldCost = 5;
     protected node currentNode;
     protected float maximumHp = 1;
     public node GetCurrentNode
@@ -29,21 +30,7 @@ public class entity : MonoBehaviour
     {
         maximumHp = Hp;
     }
-    public void Take(Goods r)
-    {
-
-      
-        foreach (var item in Inventory)
-        {
-            if(item.Name == r.Name)
-            {
-                item.Merge(r);
-                return;
-            }
-        }
-        var s = r.Exploit(owner);
-        Inventory.Add(s);
-    }
+  
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<node>())

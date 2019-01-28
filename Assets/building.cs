@@ -2,11 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class building : entity
 {
+     
     public List<node> affectednodes = new List<node>();
+    
     public Goods[] Costs;
+    public enum BuildingType
+    {
+        Simple = 0,
+        Habitation = 1,
+        Defense = 2,
+        Utilities =3
+    }
+    public BuildingType type;
     [Header("UI")]
     public GameObject ContextMenu;
     public Text ContextMenuText;
@@ -27,16 +38,21 @@ public class building : entity
         ContextMenu.SetActive(false);
     }
     public float ConstructionEffort = 20;
-     bool BeingBuild = false;
-    public bool HasEnoughRessource(Goods[] x)
+    protected bool BeingBuild = false;
+
+ 
+
+
+    public bool HasEnoughRessource(Dictionary<string ,Goods> x)
     {
 
-        if (x.Length == 0) return true;
+     
         foreach (var item in Costs)
         {
             bool ok = false;
-            foreach (var z in x)
-                if (item.Name== z.Name) { ok = true; ok = item.getAmount >= z.getAmount; }
+            if (x.ContainsKey(item.Name)){
+                ok = x[item.Name].getAmount >= item.getAmount;
+            }
 
             if (!ok) return false;
 
@@ -53,19 +69,20 @@ public class building : entity
     public void build(Vector3 position, Owner n)
     {
         BeingBuild = true;
-         
-        n.Building.Add(this);
+        n.Gold -= GoldCost;
+       // n.Building.Add(this);
         transform.position = position;
         foreach (var item in graphics)
             item.SetActive(false);
 
+        
         graphics[0].SetActive(true);
     }
 
     bool ctxmenu = false;
     public virtual void OpenContextMenu()
     {
-
+        if (BeingBuild) return;
         if (!ctxmenu) ContextMenu.SetActive(true);
         ContextMenuText.text = description;
 
@@ -78,6 +95,8 @@ public class building : entity
 
     private void OnMouseDown()
     {
+        //So we do not click when there is an UI;
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         if (!BeingBuild)
             interact(GameManager.selection);
 
@@ -94,6 +113,16 @@ public class building : entity
         {
             graphics[0].SetActive(false);
             graphics[1].SetActive(true);
+
+            var e = Physics.OverlapBox(transform.position, Vector3.one / 2f);
+            foreach (var item in e)
+            {
+
+                if (item.gameObject.GetComponent<node>())
+                {
+                    affectednodes.Add(item.gameObject.GetComponent<node>());
+                }
+            }
             BeingBuild = false;
         }
     }

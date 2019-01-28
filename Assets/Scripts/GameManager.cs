@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
@@ -37,6 +38,8 @@ public class GameManager : MonoBehaviour
         
         foreach (var item in owners)
             item.Routine();
+
+        MUI.ShowUI(owners[0]);
     }
     private void Update()
     {
@@ -46,6 +49,9 @@ public class GameManager : MonoBehaviour
     RaycastHit lastresult;
     public LayerMask Interatable;
     Vector3 MousePosition;
+    [SerializeField]
+    MainUI MUI;
+ 
     void OnMouseClick(Vector3 pos )
     {
         print(lastresult.collider.gameObject);
@@ -80,19 +86,20 @@ public class GameManager : MonoBehaviour
 
 
         var r = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(r, out lastresult,Mathf.Infinity,Interatable))
-            {
+        if (Physics.Raycast(r, out lastresult, Mathf.Infinity, Interatable))
+        {
 
+            if (EventSystem.current.IsPointerOverGameObject()) return;
             MousePosition = lastresult.point;
             if (Input.GetMouseButtonDown(0))
             {
                 OnMouseClick(lastresult.point);
-             
+
             }
 
 
-            }
-         
+        }
+
 
     }
     [SerializeField]
@@ -123,7 +130,7 @@ public class GameManager : MonoBehaviour
     int buildmode = -1;
     public void Build(int x)
     {
-        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory.ToArray())) return;
+        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory) && Buildings[x].GetComponent<building>().GoldCost > owners[0].Gold) { print("Not enough ressource or Gold"); return; } 
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], Highlight.transform);
         var t = g.GetComponentsInChildren<Collider>();
         for (int i = 0; i < t.Length; i++)

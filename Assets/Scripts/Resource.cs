@@ -9,13 +9,14 @@ public class Goods
 
     // Mostly useless, but create it for now - for future functionality
     
-    public string Name = "Wood";
+    public string Name = "NILL";
     public float Value = 5;
     public int StorageSize =1;
     [Header("Visual")]
     public Image icon;
     public GameObject model, bit;
 
+ 
     [SerializeField]
     float amount = 1;
     public float getAmount
@@ -52,13 +53,13 @@ public class Goods
 
         }
     }
-    public virtual Goods Exploit(Owner o = null)
+    public virtual Goods Exploit(int am = 1)
     {
-        amount--;
-       
-        if (amount <= 0) { Delete(); return null; }
+        amount-=am;
+   
+        if (amount <= 0) {  Delete(); return null; }
         else {
-            var y = new Goods(this, 1);
+            var y = new Goods(this, am);
             return y;
         } 
     }
