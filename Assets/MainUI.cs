@@ -24,7 +24,7 @@ public class MainUI : MonoBehaviour
         Population.text = "POP: " + n.totalPopulation.ToString() + "/ HOUSE:" + n.getHousingSpace;
         Gold.text = "Gold: " + n.Gold.ToString("0.00");
         float s = Mathf.Clamp(((n.getSecurity + 10) / (1 + n.totalPopulation)), 0, 1.5f) * 100;
-        Security.text = s.ToString("0") + "%";
+        Security.text = "Security: "+ s.ToString("0") + "%";
         Growth.text = n.getPopulationGrowth.ToString("0");
         Builder.gameObject.SetActive(n.BuilderCenter);
         Merchant.gameObject.SetActive(n.MerchantCenter);
