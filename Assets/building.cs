@@ -10,12 +10,15 @@ public class building : entity
     public List<node> affectednodes = new List<node>();
     
     public Goods[] Costs;
+    public float SpaceNeed = 1;
+    public float RequiredCloseness = 5;
     public enum BuildingType
     {
         Simple = 0,
         Habitation = 1,
         Defense = 2,
         Utilities =3
+     
     }
     public BuildingType type;
     [Header("UI")]
@@ -66,6 +69,26 @@ public class building : entity
     public GameObject[] graphics;
 
 
+    public virtual bool ApprovedBuilding(Vector3 pos, Owner g)
+    {
+        bool z = false;
+        var x = Physics.OverlapSphere(pos, RequiredCloseness, GameManager.instance.Interatable,QueryTriggerInteraction.Collide);
+        if (x.Length == 0) return false;
+      
+        for (int i = 0; i < x.Length; i++)
+        {
+          
+            if (x[i].gameObject.GetComponent<building>())
+            {
+                
+                var t = x[i].gameObject.GetComponent<building>();
+                if (t.GetOwner == g)
+                    return true;
+            }
+        }
+
+        return z;
+    }
     public void build(Vector3 position, Owner n)
     {
         BeingBuild = true;

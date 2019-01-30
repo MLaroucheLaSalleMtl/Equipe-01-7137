@@ -11,6 +11,7 @@ public class MainUI : MonoBehaviour
 
    public Text Builder, Merchant, Research,Civilian;
     public Text UnitInfo;
+    
     Owner lastOwner;
 
 

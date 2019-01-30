@@ -6,6 +6,87 @@ public class node : MonoBehaviour
 {
     [SerializeField]
     protected Owner owner;
+
+    MeshRenderer rendi;
+    MeshFilter filty;
+     List<Vector3> getBounds
+    {
+        get
+        {
+            var z = new List<Vector3>();
+           z.Add(transform.position += new Vector3(-size / 2, 0, -size / 2));
+            z.Add(transform.position += new Vector3(size / 2, 0, -size / 2));
+            z.Add(transform.position += new Vector3(size / 2, 0, size / 2));
+            z.Add(transform.position += new Vector3(-size / 2, 0, size / 2));
+            return z;
+        }
+
+
+    }
+
+
+ 
+
+
+ void generateMesh()
+    {
+      /*  collider.enabled = false;
+        //Gonna try something later, for now just boring plane
+        RaycastHit r;
+        var v = Physics.Raycast(transform.position + Vector3.up * .25f, Vector3.down, out r);
+        collider.enabled = true;
+
+        var s = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        s.transform.parent = transform;
+        s.transform.position = transform.position + Vector3.up * .25f;
+        s.transform.localScale = Vector3.one * size;
+         s.transform.forward = -Vector3.up;*/
+       /* if (v)
+        {
+            s.transform.forward = -r.normal;
+        }*/
+     
+        /*
+       OR WE CAN SIMPLY USE QUAD
+  
+        var m = new Mesh();
+        m.name = position.ToString() + " " + size;
+        m.vertices = getBounds.ToArray();
+
+        var tri = new int[6];
+
+        tri[0] = 0;
+        tri[1] = 2;
+        tri[2] = 1;
+
+        tri[3] = 2;
+        tri[4] = 3;
+        tri[5] = 1;
+        m.triangles = tri;
+        var e = new Vector3[4];
+        for (int i = 0; i < e.Length; i++)
+            e[i] = Vector3.up;
+
+        m.normals = e;
+        var uv = new Vector2[4];
+
+        uv[0] = new Vector2(0, 0);
+        uv[1] = new Vector2(1, 0);
+        uv[2] = new Vector2(0, 1);
+        uv[3] = new Vector2(1, 1);
+
+
+        m.uv = uv;
+
+
+        m.RecalculateBounds();
+        m.RecalculateNormals();
+        filty.sharedMesh = m;*/
+    }
+    //We don't want to reset it, do we ?
+  
+     
+ 
     public Owner GetOwner
     {
         get { return owner; }
@@ -13,6 +94,7 @@ public class node : MonoBehaviour
     public void SetOwner(Owner n)
     {
         owner = n;
+        generateMesh();
     }
     public enum NodeType
     {

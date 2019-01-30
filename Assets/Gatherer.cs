@@ -26,7 +26,27 @@ public class Gatherer : building
     protected virtual void GatherRessource()
     {
         //Ressource are currently finite, we should find a way to replenish 'em
-        if(Primary.getAmount > 0) GetOwner.Gain(Primary,Yield);
+        if(Primary.getAmount > 0) GetOwner.Gain(Primary,Yield,transform.position);
+    }
+    public override bool ApprovedBuilding(Vector3 pos, Owner g)
+    {
+
+        var x = Physics.OverlapSphere(pos, .5f);
+        if (x.Length == 0) return false;
+
+        for (int i = 0; i < x.Length; i++)
+        {
+
+            if (x[i].gameObject.GetComponent <node > ())
+            {
+          
+                var t = x[i].gameObject.GetComponent<node>();
+
+                if (t.resource.getAmount > 1)
+                    return true && base.ApprovedBuilding(pos, g);
+            }
+        }
+        return false;
     }
     protected override void Construction(float x)
     {
