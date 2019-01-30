@@ -102,7 +102,8 @@ public class building : entity
         graphics[0].SetActive(true);
     }
 
-    bool ctxmenu = false;
+
+bool ctxmenu = false;
     public virtual void OpenContextMenu()
     {
         if (BeingBuild) return;
@@ -125,9 +126,22 @@ public class building : entity
 
         OpenContextMenu();
     }
+    float tim = 0;
+    public virtual void PerTick()
+    {
+
+    }
     public virtual void interact(entity e, float efficiency = 0)
     {
         if (e == this && BeingBuild) { Construction(efficiency); return; }
+
+
+        tim += Time.fixedDeltaTime;
+        if (tim > 5)
+        {
+            PerTick();
+            tim = 0;
+        }
     }
     protected virtual void  Construction(float x )
     {

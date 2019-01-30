@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public Terrain[] terrain;
     public node[] Nodes;
     public static Owner[] owners= new Owner[2] { new Owner() { Name = "Nana"}, new Owner() { Name = "David" } };
-
+    public static float SecondPerGenerations = 60;
     
     [Header("Assets")]
     public GameObject node;
@@ -350,7 +350,7 @@ public class GameManager : MonoBehaviour
                 var pos = new Vector3(x, t.GetHeight(x + 5, y + 5), y);
                 var n = Instantiate(node, a.transform.position + new Vector3(x + precision / 2, t.GetHeight(x + 5, y + 5), y + precision / 2), Quaternion.identity).GetComponent<node>();
                 n.SetSize(precision);
-                
+                n.Initialize(x,y); 
                 n.terrain = a;
                 n.Value = n.GetValue(x, y);
 

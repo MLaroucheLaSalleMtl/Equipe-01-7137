@@ -134,6 +134,14 @@ public class node : MonoBehaviour
     private BoxCollider _collider;
 
  
+    public void Initialize(int x, int y)
+    {
+        position = new Vector2(x, y);
+    }
+    public Vector2 GetPosition
+    {
+        get { return position; }
+    }
     /// <summary>
     /// Get Value from position on the map
     /// </summary>
