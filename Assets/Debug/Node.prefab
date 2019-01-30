@@ -27,13 +27,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8024406108895851400}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.70710707, y: -0, z: -0, w: 0.7071066}
   m_LocalPosition: {x: 256, y: 31.72, z: 256}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: 0}
 --- !u!33 &8024406108895851397
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -95,8 +95,14 @@ MonoBehaviour:
   Value: 0
   AverageHeight: 1
   terrainhardness: 0
-  RessourceAmount: 0
-  resource: {fileID: 0}
+  resource:
+    Name: NILL
+    Value: 5
+    StorageSize: 1
+    icon: {fileID: 0}
+    model: {fileID: 0}
+    bit: {fileID: 0}
+    amount: 1
   terrain: {fileID: 0}
 --- !u!65 &3306892562616556867
 BoxCollider:

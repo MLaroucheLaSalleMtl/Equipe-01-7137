@@ -5,12 +5,13 @@ using UnityEngine;
 public class Owner  
 {
     public string Name = "";
-
+    public delegate void OnGainHandler(Goods g, Vector3 p);
+    public OnGainHandler OnGain;
     public delegate void EntitiesHandler(entity e);
     public EntitiesHandler onNewEntites, onLostEntites; 
     int population = 10;
     public bool BuilderCenter = false, ResearchCenter = false, MerchantCenter = false;
-    public int totalPopulation { get { return population + builder; } }
+    public int totalPopulation { get { return population + builder + fighter; } }
     public float Gold = 100;
     int builder = 0, fighter = 0;
 
@@ -45,8 +46,13 @@ public class Owner
             Inventory[s.Name].Merge(s);
             return;
         }
-        Debug.Log(Name + " gains " + h.ToString() + " " + r.Name);
+       // Debug.Log(Name + " gains " + h.ToString() + " " + r.Name);
         Inventory.Add(s.Name,s);
+    }
+    public void Gain(Goods r, int h, Vector3 pos)
+    {
+        Gain(r, h);
+        OnGain(r, pos);
     }
     //Two similar function, we could add a function for those type of stuff
     public int AddFighter(int m)
@@ -127,7 +133,8 @@ public class Owner
     public Dictionary<string, Goods> Inventory = new Dictionary<string, Goods>();
     public List<unit> Units = new List<unit>();
     public List<building> Building = new List<building>();
-    
+    public List<CityCore> Cores = new List<CityCore>();
+    public bool Settled = false;
     public List<entity> GetEntities
     {
         get
@@ -136,6 +143,7 @@ public class Owner
             //foreach are costly, let's change 'em later when we need to optimize
             foreach (var item in Units) e.Add(item);
             foreach (var item in Building) e.Add(item);
+            foreach (var item in Cores) e.Add(item);
 
             return e;
         }
@@ -144,16 +152,18 @@ public class Owner
 
     void OnEntitesReceived(entity e)
     {
-        if (e is building)
-        {
-            Building.Add(e as building);
- 
-        }
+
+        if (e is CityCore) {Settled =true;
+            
+            Cores.Add(e as CityCore); }
+        else if (e is building)
+        Building.Add(e as building);
         else if (e is unit) Units.Add(e as unit);
     }
     void OnEntitiesLost(entity e)
     {
-        if (e is building) Building.Remove(e as building);
+        if (e is CityCore) Cores.Remove(e as CityCore);
+        else if (e is building) Building.Remove(e as building);
         else if (e is unit) Units.Remove(e as unit);
     }
     public Owner()
@@ -219,6 +229,9 @@ public class Owner
         {
             var x = constructEffortBase + builder * 5;
             bool useB = false;
+            foreach (var item in Cores)
+                item.interact(item, 1);
+ 
             foreach (var item in Building)
             {
                 if (item.IsBeingBuild) {

@@ -5,20 +5,23 @@ using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
     public Terrain[] terrain;
     public node[] Nodes;
     public static Owner[] owners= new Owner[2] { new Owner() { Name = "Nana"}, new Owner() { Name = "David" } };
 
+    
     [Header("Assets")]
     public GameObject node;
     public GameObject node_bound;
     [Header("Resource")]
     public Goods[] Resources;
     public GameObject[] Buildings;
-
+    public GameObject _army;
+    public static GameObject ArmyPrefab;
     Camera _main;
     [Header("Flair")]
-    public GameObject Highlight;
+
     public GameObject[] Cursor3D;
 
     [Header("Camera")]
@@ -30,10 +33,42 @@ public class GameManager : MonoBehaviour
     Vector2 cursorinput;
     private void Awake()
     {
+        instance = this;
+        buildmode = -1;
+        ArmyPrefab = _army;
         CancelSelection();
-        _main = UnityEngine.Camera.main;   
+        _main = UnityEngine.Camera.main;
+
+        owners[0].OnGain += OnOwnerGain;
     }
 
+    public void OnOwnerGain(Goods g, Vector3 pos)
+    {
+        if (g.bit)
+        {
+            var e = Instantiate(g.bit, pos, Quaternion.identity);
+            if (e)
+                StartCoroutine(popup(e));
+        }
+        else
+        {
+            print(g.Name + " has no bits!");
+        }
+   
+    }
+    IEnumerator popup(GameObject c)
+    {
+        var t = 1.5f;
+        while (t >0)
+        {
+            t -= Time.smoothDeltaTime;
+            c.transform.position += Vector3.up * t * Time.smoothDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        yield return new WaitForSeconds(.5f);
+        Destroy(c.gameObject);
+        yield break;
+    }
 
     private void FixedUpdate()
     {
@@ -42,7 +77,7 @@ public class GameManager : MonoBehaviour
             item.Routine();
 
         MUI.ShowUI(owners[0],selection);
-         
+        BUI.CancelUI.SetActive(buildmode >= 0);
     }
     private void Update()
     {
@@ -50,10 +85,12 @@ public class GameManager : MonoBehaviour
         MouseInteraction();
     }
     RaycastHit lastresult;
-    public LayerMask Interatable;
+    public LayerMask Interatable, BuildingMask;
     Vector3 MousePosition;
     [SerializeField]
     MainUI MUI;
+    [SerializeField]
+    BuildingUI BUI;
  
     void OnMouseClick(Vector3 pos )
     {
@@ -61,7 +98,8 @@ public class GameManager : MonoBehaviour
         var tempsel = lastresult.collider.gameObject.GetComponent<entity>();
         if (buildmode >= 0)
         {
-            PlaceBuilding(Buildings[buildmode], owners[0]);
+            
+            if(BUI.CanBePlaceThere(pos,owners[0])) PlaceBuilding(Buildings[buildmode], owners[0]);
         }
         if (!selection )
         {
@@ -82,9 +120,17 @@ public class GameManager : MonoBehaviour
                     (selection as unit).MoveTo(pos);
                     break;
                 case 2: if(tempsel && tempsel != selection)
-                    (selection as unit).Attack(tempsel);
+                    (selection as unit).Attack(tempsel  );
                     break;
                 case 3:
+                    if (tempsel && tempsel != selection && (selection is unit) && (selection.GetOwner == tempsel.GetOwner))
+                    {
+                        var x =  (selection as unit).Merge(tempsel as unit);
+                        CancelSelection();
+                        selection = x;
+                    }                     
+                    break;
+                case 4:
                     (selection as unit).Chill();
                     break;
                 default:
@@ -140,21 +186,35 @@ public class GameManager : MonoBehaviour
             UiSelection[1].SetActive(true); // main icons
         }
         else
-        selection = null;
-    
+        {
+            selection = null;
+            buildmode = -1;
+            ClearHighLight();
+        }
     }
     void MouseInteraction()
     {
 
-        Highlight.transform.position = MousePosition;
+        BUI.Highlight.transform.position = MousePosition;
 
 
         var r = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(r, out lastresult, Mathf.Infinity, Interatable))
+        var y = Physics.Raycast(r, out lastresult, Mathf.Infinity, Interatable);
+        if (buildmode >= 0)
+        {
+
+            BUI.CanBePlaceThere(lastresult.point,owners[0]);
+            if (owners[0].Settled)
+                BUI.Highlight.transform.right = (owners[0].Cores[0].transform.position - BUI.Highlight.transform.position);
+            y = Physics.Raycast(r, out lastresult, Mathf.Infinity, BuildingMask);
+        }
+        
+        if (y)
         {
 
             if (EventSystem.current.IsPointerOverGameObject()) return;
             MousePosition = lastresult.point;
+        
             if (Input.GetMouseButtonDown(0))
             {
                 OnMouseClick(lastresult.point);
@@ -199,8 +259,9 @@ public class GameManager : MonoBehaviour
     public void Build(int x)
     {
         if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory) && Buildings[x].GetComponent<building>().GoldCost > owners[0].Gold) { print("Not enough ressource or Gold"); return; } 
-        var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], Highlight.transform);
+        var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
+        BUI.Planing(g, Buildings[x].GetComponent<building>());
         var t = g.GetComponentsInChildren<Collider>();
         for (int i = 0; i < t.Length; i++)
         {
@@ -211,20 +272,31 @@ public class GameManager : MonoBehaviour
    void PlaceBuilding(GameObject building, Owner n)
     {
         var x = Instantiate(building, MousePosition, Quaternion.identity).GetComponent<building>();
+        x.transform.rotation = building_highlight.transform.rotation;
         x.TransferOwner(n);
         x.build(MousePosition, n);
         buildmode = -1;
         ClearHighLight();
+        if (owners[0].Settled)
+        {
+ 
+            foreach (var item in BUI.Uis)
+                item.SetActive(false);
+            BUI.Uis[1].gameObject.SetActive(true);
+        }
+        else
+        {
+            foreach (var item in BUI.Uis)
+                item.SetActive(false);
+            BUI.Uis[0].gameObject.SetActive(true);
+        }
+        buildmode = -1;
     }
 
     GameObject building_highlight;
     void ClearHighLight()
     {
-        Destroy(building_highlight.gameObject);
-      /*  for (int i = 0; i < Highlight.transform.childCount; i++)
-        {
-            Destroy(Highlight.transform.GetChild(i).gameObject);
-        }*/
+        if(building_highlight)Destroy(building_highlight.gameObject);
     }
     public void CameraFunction(Transform camera, Vector3 position)
     {
@@ -236,7 +308,7 @@ public class GameManager : MonoBehaviour
                   Input.GetAxis("Mouse Y"));
 
         cursorinput.y = Mathf.Clamp(cursorinput.y, -70, -20);
-        camzoom = Mathf.Clamp(camzoom + Input.GetAxis("Mouse ScrollWheel") * -350 * Time.smoothDeltaTime, 1f, 350);
+        camzoom = Mathf.Clamp(camzoom + Input.GetAxis("Mouse ScrollWheel") * -350 * Time.smoothDeltaTime, 1, 350);
         camera.transform.position = Vector3.Lerp(camera.transform.position, position + Vector3.forward * camzoom, 125 * Time.fixedDeltaTime);
         camera.transform.LookAt(position + CameraOffset + -Vector3.up * cameraSmoothness / 2 * Time.fixedDeltaTime);
         camera.transform.RotateAround(position, Vector3.up, cursorinput.x * cameraSmoothness *8* Time.fixedDeltaTime);
@@ -282,8 +354,12 @@ public class GameManager : MonoBehaviour
                 n.terrain = a;
                 n.Value = n.GetValue(x, y);
 
+
+               
                 if (x > t.size.x / 2) n.SetOwner(owners[1]);
                 else n.SetOwner(owners[0]);
+
+
                 if (n.transform.position.y < 10) n.GetComponent<MeshRenderer>().material.color = Color.green;
                 else if (n.transform.position.y < 20) n.GetComponent<MeshRenderer>().material.color = Color.yellow;
                 else if (n.transform.position.y < 30)
@@ -334,6 +410,7 @@ public class GameManager : MonoBehaviour
         {
             //tree
             var q = new Goods() ;
+           
             q.setRessource(Resources[0], 100 * Random.Range(1, 10));
           //  q.transform.parent = n.transform;
             n.resource = q;

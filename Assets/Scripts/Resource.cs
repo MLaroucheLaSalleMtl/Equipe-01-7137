@@ -18,7 +18,7 @@ public class Goods
 
  
     [SerializeField]
-    float amount = 1;
+    float amount = 0;
     public float getAmount
     {
         get { return amount; }
@@ -33,6 +33,7 @@ public class Goods
         Value = r.Value;
         icon = r.icon;
         model = r.model;
+        bit = r.bit;
         amount = am;
     }
  
@@ -42,6 +43,7 @@ public class Goods
         Value = r.Value;
         icon = r.icon;
         model = r.model;
+        bit = r.bit;
         amount = am;
     }
     public virtual void Merge(Goods r)
