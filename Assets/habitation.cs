@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class habitation : building
 {
-    public float size = 10;
+    public float[] size;
     public float Taxe = 1;
+
 
     public override void PerTick()
     {

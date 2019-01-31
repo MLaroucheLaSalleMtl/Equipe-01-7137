@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
         if (buildmode >= 0)
         {
             
-            if(BUI.CanBePlaceThere(pos,owners[0])) PlaceBuilding(Buildings[buildmode], owners[0]);
+            if(BUI.CanBePlaceThere(pos,owners[0])) PlaceBuilding(buildmode, owners[0]);
         }
         if (!selection )
         {
@@ -190,6 +190,7 @@ public class GameManager : MonoBehaviour
             selection = null;
             buildmode = -1;
             ClearHighLight();
+            _lastbuilding = null;
         }
     }
     void MouseInteraction()
@@ -256,12 +257,16 @@ public class GameManager : MonoBehaviour
     private float camzoom;
     [SerializeField]
     int buildmode = -1;
+
+    building _lastbuilding;
     public void Build(int x)
     {
-        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory) && Buildings[x].GetComponent<building>().GoldCost > owners[0].Gold) { print("Not enough ressource or Gold"); return; } 
+        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold)  ) { print("Not enough ressource or Gold"); _lastbuilding = null; return; } 
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
         BUI.Planing(g, Buildings[x].GetComponent<building>());
+      
+       
         var t = g.GetComponentsInChildren<Collider>();
         for (int i = 0; i < t.Length; i++)
         {
@@ -269,12 +274,15 @@ public class GameManager : MonoBehaviour
         }
         buildmode = x;
     }
-   void PlaceBuilding(GameObject building, Owner n)
+ 
+   void PlaceBuilding(int j, Owner n)
     {
-        var x = Instantiate(building, MousePosition, Quaternion.identity).GetComponent<building>();
+        var x = Instantiate(Buildings[j], MousePosition, Quaternion.identity).GetComponent<building>();
         x.transform.rotation = building_highlight.transform.rotation;
         x.TransferOwner(n);
         x.build(MousePosition, n);
+        x.Tier = 0;
+        owners[0].Pay(x.costs[0].materials);
         buildmode = -1;
         ClearHighLight();
         if (owners[0].Settled)
@@ -291,6 +299,16 @@ public class GameManager : MonoBehaviour
             BUI.Uis[0].gameObject.SetActive(true);
         }
         buildmode = -1;
+        if(_lastbuilding  && _lastbuilding is Wall && x is Wall)
+        {
+            (_lastbuilding as Wall).boundTo = x as Wall;
+            
+        }
+  
+
+        _lastbuilding = x;
+        if (_lastbuilding is Wall) Build(j);
+
     }
 
     GameObject building_highlight;

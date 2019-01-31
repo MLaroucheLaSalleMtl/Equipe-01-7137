@@ -60,6 +60,21 @@ public class Owner
         Gain(r, h);
         OnGain(r, pos);
     }
+    public void Pay( Goods[] x)
+    {
+        foreach (var item in x)
+        {
+            if (Inventory.ContainsKey(item.Name))
+            {
+                if(item.getAmount >= Inventory[item.Name].getAmount)
+                {
+                    Inventory[item.Name].Exploit(item.getAmount);
+                }
+                else
+                Inventory.Remove(item.Name);
+            }
+        }
+    }
     //Two similar function, we could add a function for those type of stuff
     public int AddFighter(int m)
     {
@@ -113,7 +128,7 @@ public class Owner
                 if(Building[i].type == building.BuildingType.Habitation)
                 {
                     if (!Building[i].IsBeingBuild)
-                        x +=Mathf.Ceil((Building[i] as habitation).size);
+                        x +=Mathf.Ceil((Building[i] as habitation).size[(Building[i] as habitation).Tier]);
                 }
             }
             return (int)x;
@@ -202,7 +217,7 @@ public class Owner
     {
         var x = 
         ProductionEfficiency;
-        
+        buildingRoutine();
         timer += Time.fixedDeltaTime;
         tim2 += Time.fixedDeltaTime;
         if(timer > 5)
@@ -217,7 +232,15 @@ public class Owner
         }
        
     }
-
+    void buildingRoutine()
+    {
+        for (int i = 0; i < Building.Count; i++)
+            Building[i].interact(Building[i]);
+ 
+        foreach (var item in Cores)
+            item.interact(item);
+ 
+    }
     private int populationChange;
     public int getPopulationGrowth
     {
@@ -294,16 +317,16 @@ public class Owner
                 if (item.IsBeingBuild) {
 
                     useB = builder > 0;
-                    e += item.ConstructionEffort;
+                    e += item.costs[item.Tier].ConstructionEffort;
 
-                    if (x - item.ConstructionEffort <= 0)
+                    if (x - item.costs[item.Tier].ConstructionEffort <= 0)
                     {
                         item.interact(item, x);
                     }
                     else
                     {
-                        x -= item.ConstructionEffort;
-                        var s = Mathf.Clamp(x, 0, item.ConstructionEffort);
+                        x -= item.costs[item.Tier].ConstructionEffort;
+                        var s = Mathf.Clamp(x, 0, item.costs[item.Tier].ConstructionEffort);
                         item.interact(item, s);
                     }
                 }

@@ -2141,14 +2141,26 @@ MonoBehaviour:
   info: {fileID: 0}
   infotext: {fileID: 0}
   affectednodes: []
-  Costs: []
+  Tier: 0
+  costs:
+  - materials:
+    - Name: Woods
+      Value: 5
+      StorageSize: 0
+      icon: {fileID: 0}
+      model: {fileID: 0}
+      bit: {fileID: 0}
+      amount: 20
+    Gold: 20
+    ConstructionEffort: 10
+  SpaceNeed: 1
+  RequiredCloseness: 5
   type: 3
   ContextMenu: {fileID: 6686628296730790224}
   ContextMenuText: {fileID: 6815129792287026552}
   buttons: []
   description: "A Builder Center. \nGive the ability to turn Citizen into builder.\nBuilder
     are paid 1 gold each second when there is a project going on."
-  ConstructionEffort: 50
   gauge: {fileID: 0}
   graphics:
   - {fileID: 3526464390674985304}

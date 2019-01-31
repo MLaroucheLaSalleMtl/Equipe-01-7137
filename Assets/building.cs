@@ -8,8 +8,16 @@ public class building : entity
 {
      
     public List<node> affectednodes = new List<node>();
-    
-    public Goods[] Costs;
+    public int Tier =0;
+ //   public Goods[] _cost;
+    [System.Serializable]
+    public struct Cost
+    {
+        public Goods[] materials;
+        public float Gold;
+        public float ConstructionEffort;
+    }
+    public Cost[] costs;
     public float SpaceNeed = 1;
     public float RequiredCloseness = 5;
     public enum BuildingType
@@ -25,42 +33,80 @@ public class building : entity
     public GameObject ContextMenu;
     public Text ContextMenuText;
     public GameObject[] buttons;
+    public GameObject Bar;
     [TextArea]
     public string description= " a normal building";
     //Priority of attack = Higher mean more interest for the enemy
     public float getValue
     {
         get { var x = 0f;
-            foreach (var item in Costs)
+            foreach (var item in costs[Tier].materials)
                 x += item.getAmount * item.Value;
             return x * (Hp/maximumHp);
         }
     }
     private void Start()
     {
-        ContextMenu.SetActive(false);
+     if(ContextMenu)   ContextMenu.SetActive(false);
     }
-    public float ConstructionEffort = 20;
+  
     protected bool BeingBuild = false;
 
  
 
 
-    public bool HasEnoughRessource(Dictionary<string ,Goods> x)
+    public virtual bool HasEnoughRessource(Dictionary<string ,Goods> x, float g)
     {
-
+        if(g < costs[Tier].Gold)
+        {
+            print("Not enough gold!");
+            return false;
+        }
+        
      
-        foreach (var item in Costs)
+        foreach (var item in costs[Tier].materials)
         {
             bool ok = false;
             if (x.ContainsKey(item.Name)){
                 ok = x[item.Name].getAmount >= item.getAmount;
+
+                print(ok);
             }
 
             if (!ok) return false;
 
         }
         return true;
+    }
+    public void Upgrade()
+    {
+        var e = Tier;
+        Tier++;
+        if(Tier >= costs.Length)
+        {
+            Tier = e;
+            print("Maximum upgrades reach");
+            return;
+        }
+        if (!HasEnoughRessource(GetOwner.Inventory,GetOwner.Gold))
+        {
+            Tier = e;
+            return;
+        }
+
+        
+        build(transform.position, GetOwner );
+        CloseContextMenu();
+    }
+    public void GetRidOf()
+    {
+        if (Tier == 0)
+            GetOwner.Gold += costs[0].Gold;
+        else
+            GetOwner.Gold += costs[Tier].Gold/2;
+
+        GetOwner.onLostEntites(this);
+        Destroy(this.gameObject);
     }
     public bool IsBeingBuild { get { return BeingBuild; } }
     float currEffort = 0;
@@ -80,9 +126,13 @@ public class building : entity
           
             if (x[i].gameObject.GetComponent<building>())
             {
-                
+         
                 var t = x[i].gameObject.GetComponent<building>();
-                if (t.GetOwner == g)
+
+                //Walls doesn't count
+                if (!(this is Wall) && ((t is Wall) || t is fortification)) continue;
+
+                    if (t.GetOwner == g)
                     return true;
             }
         }
@@ -92,13 +142,13 @@ public class building : entity
     public void build(Vector3 position, Owner n)
     {
         BeingBuild = true;
-        n.Gold -= GoldCost;
+        n.Gold -= (GoldCost + costs[Tier].Gold);
        // n.Building.Add(this);
         transform.position = position;
         foreach (var item in graphics)
             item.SetActive(false);
 
-        
+        if (Bar) Bar.transform.parent.gameObject.SetActive(true);
         graphics[0].SetActive(true);
     }
 
@@ -146,10 +196,12 @@ bool ctxmenu = false;
     protected virtual void  Construction(float x )
     {
         currEffort += Time.fixedDeltaTime * x;
-        if(currEffort > ConstructionEffort)
+
+        if (Bar && costs[Tier].ConstructionEffort > 0) { Bar.transform.localScale = new Vector3((currEffort/costs[Tier].ConstructionEffort)*8f,1,1);} 
+        if(currEffort >=costs[Tier].ConstructionEffort)
         {
             graphics[0].SetActive(false);
-            graphics[1].SetActive(true);
+            graphics[Tier+1].SetActive(true);
 
             var e = Physics.OverlapBox(transform.position, Vector3.one / 2f);
             foreach (var item in e)
@@ -161,6 +213,7 @@ bool ctxmenu = false;
                 }
             }
             BeingBuild = false;
+            if (Bar) Bar.transform.parent.gameObject.SetActive(false);
         }
     }
 }
