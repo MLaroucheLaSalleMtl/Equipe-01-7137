@@ -55,7 +55,7 @@ public class Goods
 
         }
     }
-    public virtual Goods Exploit(int am = 1)
+    public virtual Goods Exploit(float am = 1)
     {
         amount-=am;
    

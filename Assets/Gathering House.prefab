@@ -680,21 +680,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthToSet: 1
-  GoldCost: 5
+  GoldCost: 0
   Inventory: []
   info: {fileID: 0}
   infotext: {fileID: 0}
   affectednodes: []
-  Costs: []
+  Tier: 0
+  costs:
+  - materials: []
+    Gold: 20
+    ConstructionEffort: 10
   SpaceNeed: 1
-  RequiredCloseness: 8
+  RequiredCloseness: 12
   type: 3
   ContextMenu: {fileID: 8575704521477194603}
   ContextMenuText: {fileID: 8456806418444052291}
   buttons: []
   description: "Gather Nearby ressource each tick. \nThis one has a low yield, But
     it does the job"
-  ConstructionEffort: 15
   gauge: {fileID: 0}
   graphics:
   - {fileID: 1961366550180395875}

@@ -3386,7 +3386,20 @@ MonoBehaviour:
   info: {fileID: 0}
   infotext: {fileID: 0}
   affectednodes: []
-  Costs: []
+  Tier: 0
+  costs:
+  - materials:
+    - Name: Wood
+      Value: 1
+      StorageSize: 0
+      icon: {fileID: 0}
+      model: {fileID: 0}
+      bit: {fileID: 0}
+      amount: 5
+    Gold: 10
+    ConstructionEffort: 35
+  SpaceNeed: 1
+  RequiredCloseness: 5
   type: 0
   ContextMenu: {fileID: 9121388655588984782}
   ContextMenuText: {fileID: 8811486949644047198}
@@ -3402,7 +3415,6 @@ MonoBehaviour:
   - {fileID: 7829788829288348454}
   - {fileID: 7494158685186581687}
   description: ' a normal building'
-  ConstructionEffort: 30
   gauge: {fileID: 0}
   graphics:
   - {fileID: 1852152405421505079}

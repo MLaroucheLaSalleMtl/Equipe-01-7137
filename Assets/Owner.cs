@@ -15,6 +15,12 @@ public class Owner
     public float Gold = 100;
     int builder = 0, fighter = 0;
 
+    //Some population initiated coitus more often than other
+    float baseFertilityRate = 1.00f;
+    float fertilityMod = 1f, EconomyMod = 1f;
+    public float FertilityRate { get { return baseFertilityRate * fertilityMod; } }
+    
+ 
     public void Gain(Goods r)
     {
         var s = r.Exploit();
@@ -53,6 +59,21 @@ public class Owner
     {
         Gain(r, h);
         OnGain(r, pos);
+    }
+    public void Pay( Goods[] x)
+    {
+        foreach (var item in x)
+        {
+            if (Inventory.ContainsKey(item.Name))
+            {
+                if(item.getAmount >= Inventory[item.Name].getAmount)
+                {
+                    Inventory[item.Name].Exploit(item.getAmount);
+                }
+                else
+                Inventory.Remove(item.Name);
+            }
+        }
     }
     //Two similar function, we could add a function for those type of stuff
     public int AddFighter(int m)
@@ -107,7 +128,7 @@ public class Owner
                 if(Building[i].type == building.BuildingType.Habitation)
                 {
                     if (!Building[i].IsBeingBuild)
-                        x +=Mathf.Ceil((Building[i] as habitation).size);
+                        x +=Mathf.Ceil((Building[i] as habitation).size[(Building[i] as habitation).Tier]);
                 }
             }
             return (int)x;
@@ -118,16 +139,19 @@ public class Owner
 
         get
         {
-
+            // 1 fighter = 5 def so 5 person protect
             float x = fighter * 5;
             for (int i = 0; i < Building.Count; i++)
             {
                 if (Building[i].type == building.BuildingType.Defense)
                 {
-                    x += Building[i].getValue / 10;
+                    x += Building[i].getValue / 100;
                 }
             }
-            return  x;
+            //lol should be game over at this point ahah but let's be safe
+            if (totalPopulation == 0) return x / 1;
+            else
+            return  x/ totalPopulation;
         }
     }
     public Dictionary<string, Goods> Inventory = new Dictionary<string, Goods>();
@@ -166,35 +190,84 @@ public class Owner
         else if (e is building) Building.Remove(e as building);
         else if (e is unit) Units.Remove(e as unit);
     }
+    System.Random randy = new System.Random();
     public Owner()
     {
+
+        //Random.Range(.6f, 1.5f);
+        baseFertilityRate = randy.Next(50,150)/100;
+            
         onLostEntites += OnEntitiesLost;
         onNewEntites += OnEntitesReceived;
     }
-    float timer = 0;
+    float timer = 0,tim2;
+
+    int generations = 0;
+    public void Generation()
+    {
+        //Mitosis doesn't exist in human
+        if(totalPopulation >= 2)
+        populationChange = (int)((totalPopulation * KidPerPerson)/2);
+        population =(int)(population * KidPerPerson);
+        generations++;
+    }
+
+    
     public void Routine()
     {
         var x = 
         ProductionEfficiency;
-        
+        buildingRoutine();
         timer += Time.fixedDeltaTime;
+        tim2 += Time.fixedDeltaTime;
         if(timer > 5)
         {
-            populationChange = popchange;
+            populationChange = immigration;
             timer = 0;
+        }
+        if(tim2 > GameManager.SecondPerGenerations)
+        {
+            Generation();
+            tim2 = 0;
         }
        
     }
-
+    void buildingRoutine()
+    {
+        for (int i = 0; i < Building.Count; i++)
+            Building[i].interact(Building[i]);
+ 
+        foreach (var item in Cores)
+            item.interact(item);
+ 
+    }
     private int populationChange;
     public int getPopulationGrowth
     {
         get { return populationChange; }
     }
     
+
+    public void GainGold(float g)
+    {
+        Gold += g * EconomyMod;
+
+    }
+
+    float KidPerPerson
+    {
+        get
+        {
+            // This will force the player to expand more and more
+
+            // Fertility Rate > Security > Wealth > Space >Infrastructure efficiency
+            // 10% of Production Efficiency + 20% of Ratio of Gold/Person + 30% security + base Fertility rate* 30% + HousingSpace/People Ratio 20%
+            return FertilityRate * .3f + (getHousingSpace/totalPopulation) * .2f + getSecurity * .3f + (Gold / totalPopulation) * 0.2f + ProductionEfficiency * .1f; 
+        }
+    }
        
         
-     int popchange
+     int immigration
     {
         get
         {
@@ -203,6 +276,12 @@ public class Owner
             var def = getSecurity;
             var mult = 1;
             if (population > 1000) mult = 100;
+           
+            
+            
+            
+            
+            //Foreigner
             if (getHousingSpace > population * .75f)
             {
                 //Moderate growth , randomize too for the small scope of a small town
@@ -210,9 +289,9 @@ public class Owner
                 {
 
                     //Some amount of randomness is  always fun tbh if you have enough defense, growth is prolific
-                    if (def > population * 1.5f) population += Random.Range(2, 5 * mult);
+                    if (def >1.5f) population += Random.Range(2, 5 * mult);
                     else
-                    if (def > population * .5f) population += 1 * mult;
+                    if (def > .5f) population += 1 * mult;
                     else
                     //When you have that much amount of people , securite become more and more a concern
                     if (def < population * .33f && population > 1000)
@@ -228,6 +307,7 @@ public class Owner
         get
         {
             var x = constructEffortBase + builder * 5;
+            var e = 0f;
             bool useB = false;
             foreach (var item in Cores)
                 item.interact(item, 1);
@@ -237,16 +317,16 @@ public class Owner
                 if (item.IsBeingBuild) {
 
                     useB = builder > 0;
+                    e += item.costs[item.Tier].ConstructionEffort;
 
-
-                    if (x - item.ConstructionEffort <= 0)
+                    if (x - item.costs[item.Tier].ConstructionEffort <= 0)
                     {
                         item.interact(item, x);
                     }
                     else
                     {
-                        x -= item.ConstructionEffort;
-                        var s = Mathf.Clamp(x, 0, item.ConstructionEffort);
+                        x -= item.costs[item.Tier].ConstructionEffort;
+                        var s = Mathf.Clamp(x, 0, item.costs[item.Tier].ConstructionEffort);
                         item.interact(item, s);
                     }
                 }
@@ -254,7 +334,8 @@ public class Owner
             }
             //1 gold per second per builder
             if (useB) Gold -= builder * Time.fixedDeltaTime;
-            return x;
+            if (e <= 0) e = 1;
+            return constructEffortBase + builder * 5/e;
         }
     }
 }
