@@ -230,6 +230,9 @@ public class Owner
             Generation();
             tim2 = 0;
         }
+        for (int i = 0; i < Units.Count; i++)        
+            Units[i].AI();
+        
        
     }
     void buildingRoutine()
@@ -250,7 +253,7 @@ public class Owner
 
     public void GainGold(float g)
     {
-        Gold += g * EconomyMod;
+        Gold += g * EconomyMod; 
 
     }
 
@@ -262,7 +265,7 @@ public class Owner
 
             // Fertility Rate > Security > Wealth > Space >Infrastructure efficiency
             // 10% of Production Efficiency + 20% of Ratio of Gold/Person + 30% security + base Fertility rate* 30% + HousingSpace/People Ratio 20%
-            return FertilityRate * .3f + (getHousingSpace/totalPopulation) * .2f + getSecurity * .3f + (Gold / totalPopulation) * 0.2f + ProductionEfficiency * .1f; 
+            return (FertilityRate * .3f + +getSecurity * .3f + (Gold / totalPopulation) * 0.2f + ProductionEfficiency * .4f) * Mathf.Clamp((getHousingSpace / totalPopulation), .25f, 2); ; 
         }
     }
        

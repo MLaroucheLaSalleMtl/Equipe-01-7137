@@ -6262,7 +6262,15 @@ MonoBehaviour:
   affectednodes: []
   Tier: 0
   costs:
-  - materials: []
+  - materials:
+    - Name: Wood
+      Value: 0
+      StorageSize: 0
+      icon: {fileID: 0}
+      model: {fileID: 0}
+      bit: {fileID: 0}
+      amount: 5
+      hardness: 0
     Gold: 10
     ConstructionEffort: 20
   - materials:
@@ -6273,6 +6281,7 @@ MonoBehaviour:
       model: {fileID: 0}
       bit: {fileID: 0}
       amount: 10
+      hardness: 2
     Gold: 5
     ConstructionEffort: 50
   SpaceNeed: 0.17
@@ -6292,7 +6301,10 @@ MonoBehaviour:
   size:
   - 10
   - 35
-  Taxe: 1
+  Taxe:
+  - 5
+  - 10
+  - 35
 --- !u!135 &7585474839740838889
 SphereCollider:
   m_ObjectHideFlags: 0

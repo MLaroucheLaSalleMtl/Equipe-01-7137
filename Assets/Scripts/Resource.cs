@@ -16,9 +16,11 @@ public class Goods
     public Image icon;
     public GameObject model, bit;
 
+
  
     [SerializeField]
     float amount = 0;
+    public float hardness = 2;
     public float getAmount
     {
         get { return amount; }

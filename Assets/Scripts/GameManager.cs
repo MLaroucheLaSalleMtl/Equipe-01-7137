@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
         }
         if (!selection )
         {
-            if (tempsel && !(tempsel is building))
+            if (tempsel && !(tempsel is building) && tempsel.GetOwner == owners[0])
             {
                 selection = tempsel;
                 UiSelection[0].SetActive(true);
@@ -113,6 +113,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            
             switch (currentmode)
             {
 
@@ -357,7 +358,7 @@ public class GameManager : MonoBehaviour
 
     //Nodes related - need to yeet to somewhere else 
 
-    node[] CreateNodes(Terrain a, int precision = 5)
+    node[] CreateNodes(Terrain a, int precision = 4)
     {
         var e = new List<node>();
         var t = a.terrainData;
@@ -365,7 +366,7 @@ public class GameManager : MonoBehaviour
         {
             for (int y = 0; y < t.size.z; y += precision)
             {
-                var pos = new Vector3(x, t.GetHeight(x + 5, y + 5), y);
+                var pos = new Vector3(x, t.GetHeight(x/* + precision*/ , y /*+ precision*/), y);
                 var n = Instantiate(node, a.transform.position + new Vector3(x + precision / 2, t.GetHeight(x + 5, y + 5), y + precision / 2), Quaternion.identity).GetComponent<node>();
                 n.SetSize(precision);
                 n.Initialize(x,y); 
@@ -423,9 +424,10 @@ public class GameManager : MonoBehaviour
     {
         //tree for now
         var seed = Random.Range(0, 1f);
-        if (seed < .6f) return; //Sparse Ressources, so it is not easy
-        if (n.AverageHeight > 26 && n.AverageHeight < 30 && n.type == global::node.NodeType.plain)
+   //Sparse Ressources, so it is not easy
+        if (n.AverageHeight > 28.5f && n.AverageHeight < 32 && n.type == global::node.NodeType.plain)
         {
+            if (seed < .6f) return;
             //tree
             var q = new Goods() ;
            
@@ -438,10 +440,34 @@ public class GameManager : MonoBehaviour
             for (int i = 0; i <n.resource.getAmount/50; i++)
             {
                 if (Random.Range(0, 1f) > .3f) continue;
-                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize/1.4f) - 2, .5f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)-2);
+                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize/1.4f) - 2, .45f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)-2);
                
                 var e = Instantiate(n.resource.model, n.transform.position,Quaternion.identity);
 
+                e.transform.position = n.transform.position + t;
+                e.transform.parent = n.transform;
+            }
+        }
+
+        if (  n.AverageHeight > 28 && n.AverageHeight < 35)
+        {
+
+            if (seed < .93f) return;
+            var q = new Goods();
+
+            q.setRessource(Resources[1], 75 * Random.Range(3, 20));
+            //  q.transform.parent = n.transform;
+            n.resource = q;
+
+            n.Value += n.resource.getAmount * n.Value;
+
+            for (int i = 0; i < n.resource.getAmount / 80; i++)
+            {   
+                if (Random.Range(0, 1f) > .3f) continue;
+                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)  ,-.1f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)  );
+
+                var e = Instantiate(n.resource.model, n.transform.position, Quaternion.identity);
+                e.transform.rotation = Quaternion.Euler(Random.insideUnitSphere * 360);
                 e.transform.position = n.transform.position + t;
                 e.transform.parent = n.transform;
             }
