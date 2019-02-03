@@ -9,9 +9,10 @@ public class entity : MonoBehaviour
 {
     [Header("Unity Side")]
     [Tooltip("The only reason this exists is because the Hp is virtual, so set that to reflect the change in code")]
+
     [SerializeField]
     float HealthToSet = 1;
-
+     
 
 
     [SerializeField]
@@ -59,6 +60,11 @@ public class entity : MonoBehaviour
         maximumHp = Hp;
     }
   
+    public void Heal()
+    {
+        Hp = maximumHp;
+        Hp = Mathf.Clamp (Hp, 0, maximumHp);
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<node>())
@@ -72,9 +78,15 @@ public class entity : MonoBehaviour
         Hp -= t;
         if (Hp < 0) Death();
     }
+    public virtual void TakeDamage(float t,entity e)
+    {
+        Hp -= t;
+        if (Hp < 0) Death();
+    }
     public virtual void Death()
     {
 
+        if(GetOwner != null)
         GetOwner.onLostEntites(this);
         foreach (var item in Inventory)
             item.Drop(transform.position);
