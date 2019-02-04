@@ -349,6 +349,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Nodes = CreateNodes(terrain[0]);
+        BorderCalculation borderCalculation = new BorderCalculation();
     }
 
 
