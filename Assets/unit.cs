@@ -5,8 +5,22 @@ using UnityEngine.AI;
 
 public class unit : entity
 {
+
+    [Header("DEBUG")]
+    public int DEBUG_OWNER = -1;
     [SerializeField]
      NavMeshAgent agi;
+
+    public override void Death()
+    {
+        StopAllCoroutines();
+        base.Death();
+    }
+    public NavMeshAgent getAgi
+    {
+        get { return agi; }
+    }
+
     //So it's 10m per turn or 1 nodes
     public string Name = "Security";
     public float Speed = 10;
@@ -30,6 +44,7 @@ public class unit : entity
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, DetectionRange);
     }
+ 
     public void ChangeColor(Color z)
     {
         if(rendies.Length > 0)
@@ -52,7 +67,7 @@ public class unit : entity
     }
     Vector3 previousTarget;
 
-
+    
 
     protected Collider[] _col = new Collider[20];
    protected float aitimer = 0;
@@ -127,6 +142,7 @@ public class unit : entity
         _army.RegainRank(this);
         yield break;
     }
+    float minimumdistance = 0;
     IEnumerator GoThere(Vector3 pos)
     {
         agi.isStopped = true;
@@ -134,10 +150,33 @@ public class unit : entity
 
         agi.SetDestination(pos);
         agi.isStopped = false;
+        minimumdistance = .25f + agi.radius + agi.stoppingDistance;
         yield return new WaitForFixedUpdate();
-        while (agi.remainingDistance > (.2f + agi.radius + agi.stoppingDistance + .1f))
+        while (agi.remainingDistance > (minimumdistance))
         {
-            yield return new WaitForSeconds(.15f);
+            yield return new WaitForSeconds(.05f);
+            agi.SetDestination(pos);
+            //print(name + " distance to target : " + minimumdistance + "m. ");
+            yield return null;
+        }
+
+        yield break;
+    }
+
+    IEnumerator GoThere(entity e)
+    {
+
+        if (!agi) yield break;
+        agi.SetDestination(e.transform.position);
+        agi.isStopped = false;
+        minimumdistance = .15f + agi.radius + agi.stoppingDistance;
+        yield return new WaitForFixedUpdate();
+        while ( agi.isOnNavMesh&& agi.remainingDistance > (minimumdistance) && e && e.gameObject )
+        {
+            yield return new WaitForSeconds(.05f);
+            if(e && e.gameObject)agi.SetDestination(e.transform.position);
+            else { break; }
+            print(name + " distance to target : " + minimumdistance + "m. ");
             yield return null;
         }
 
@@ -177,24 +216,23 @@ public class unit : entity
         }
     }
     IEnumerator currentAttackRoutine;
-    IEnumerator AttackSequence(entity x) {
+    IEnumerator AttackSequence(entity x)  {
 
         yield return StartCoroutine(GoThere(x.transform.position));
 
         while (x && x.Hp > 0  )
-        {
-          
-            if(agi.remainingDistance > (.2f + agi.radius + agi.stoppingDistance + .1f))
-            {
-                /*  agi.SetDestination(x.transform.position);
-                  agi.isStopped = false;*/
-                yield return StartCoroutine(GoThere(x.transform.position));
+        {    
+            if(Vector3.Distance(transform.position,x.transform.position)> (minimumdistance))
+            { 
+                yield return StartCoroutine(GoThere(x ));
             }
             else
             {
+               
+                
                 agi.isStopped = true;
                 yield return new WaitForSeconds(1);
-               _attack(x);
+                _attack(x);
             }
           
         }
@@ -202,7 +240,7 @@ public class unit : entity
         yield  break;
     }
 
-    entity last_agressor;
+    entity last_agressor;   
     public override void TakeDamage(float t,entity e)
     {
         base.TakeDamage(t);
@@ -231,7 +269,10 @@ public class unit : entity
             infotext.gameObject.SetActive(false);
         }
         if (GetComponent<Animator>()) anim = GetComponent<Animator>();
-
+        if(DEBUG_OWNER > -1)
+        {
+            TransferOwner(GameManager.owners[DEBUG_OWNER]);  
+        }
 
     }
 

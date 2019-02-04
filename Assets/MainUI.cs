@@ -7,7 +7,7 @@ public class MainUI : MonoBehaviour
 {
     public Text Population, Gold, Security, Growth;
     public GameObject Jobs;
-    
+    public RectTransform BSelection;
 
    public Text Builder, Merchant, Research,Civilian;
     public Text UnitInfo;
@@ -15,10 +15,24 @@ public class MainUI : MonoBehaviour
     Owner lastOwner;
 
 
-    
+    Camera _main;
     private void Awake()
     {
+        _main = Camera.main;
+    }
+
+    Rect lastbox;
+    public void BoxSelection(Vector3 MouseClickPos, Vector3 MouseReleasePos)
+    {
+        var e = new List<entity>();
+        //   
       
+         BSelection.gameObject.SetActive(true);
+        var a = _main.WorldToScreenPoint(MouseClickPos);
+        var b = _main.WorldToScreenPoint(MouseReleasePos);
+        BSelection.position = (a + b) / 2f;
+        var size = new Vector2(Mathf.Abs(b.x - a.x),Mathf.Abs( b.y - a.y));
+        BSelection.sizeDelta = size;
     }
     public void ShowUI(Owner n,entity e)
     {

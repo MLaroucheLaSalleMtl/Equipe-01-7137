@@ -57,6 +57,7 @@ public class building : entity
 
     public virtual bool HasEnoughRessource(Dictionary<string ,Goods> x, float g)
     {
+        if (GameManager.DEBUG_GODMODE) return true;
         if(g < costs[Tier].Gold + GoldCost  )
         {
             print("Not enough gold!");
