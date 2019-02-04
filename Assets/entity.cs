@@ -12,7 +12,8 @@ public class entity : MonoBehaviour
 
     [SerializeField]
     float HealthToSet = 1;
-     
+
+
 
 
     [SerializeField]

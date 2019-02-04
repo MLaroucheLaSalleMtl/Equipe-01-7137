@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public node[] Nodes;
     public static Owner[] owners= new Owner[2] { new Owner() { Name = "Nana"}, new Owner() { Name = "David" } };
     public static float SecondPerGenerations = 60;
-    
+    public static bool DEBUG_GODMODE = true;
     [Header("Assets")]
     public GameObject node;
     public GameObject node_bound;
@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public Goods[] Resources;
     public GameObject[] Buildings;
     public GameObject _army;
+    public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
     Camera _main;
     [Header("Flair")]
@@ -79,22 +80,25 @@ public class GameManager : MonoBehaviour
         MUI.ShowUI(owners[0],selection);
         BUI.CancelUI.SetActive(buildmode >= 0);
     }
+
+ 
     private void Update()
     {
         CameraFunction(_main.transform, CameraPosition);
         MouseInteraction();
     }
     RaycastHit lastresult;
-    public LayerMask Interatable, BuildingMask;
+    public LayerMask Interatable, BuildingMask, Unit;
     Vector3 MousePosition;
     [SerializeField]
     MainUI MUI;
     [SerializeField]
     BuildingUI BUI;
- 
+
+    Vector3 MouseClickPos, MouseReleasePos;
     void OnMouseClick(Vector3 pos )
     {
-        print(lastresult.collider.gameObject);
+        MouseClickPos = pos;
         var tempsel = lastresult.collider.gameObject.GetComponent<entity>();
         if (buildmode >= 0)
         {
@@ -119,9 +123,11 @@ public class GameManager : MonoBehaviour
 
                 case 1:
                     (selection as unit).MoveTo(pos);
+                    CancelSelection();
                     break;
                 case 2: if(tempsel && tempsel != selection)
                     (selection as unit).Attack(tempsel  );
+                    CancelSelection();
                     break;
                 case 3:
                     if (tempsel && tempsel != selection && (selection is unit) && (selection.GetOwner == tempsel.GetOwner))
@@ -141,6 +147,32 @@ public class GameManager : MonoBehaviour
  
 
         }
+    }
+    
+    void OnMouseHold(Vector3 pos)
+    {
+        if (TimeWithMouse > .1f)
+        {
+            MouseReleasePos = pos;
+            MUI.BoxSelection(MouseClickPos,MouseReleasePos);
+            dragged = true;
+        }
+      
+        TimeWithMouse += Time.fixedDeltaTime;
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawCube((MouseClickPos + MouseReleasePos) / 2f, new Vector3(MouseReleasePos.x - MouseClickPos.x, 100f, MouseReleasePos.z - MouseClickPos.z));
+    }
+    bool dragged = false;
+    void OnMouseRelease(Vector3 pos)
+    {
+       
+            var e = Physics.OverlapBox((MouseClickPos + MouseReleasePos) / 2f, new Vector3(MouseReleasePos.x - MouseClickPos.x, 100f, MouseReleasePos.z - MouseClickPos.z), _main.transform.rotation, Interatable);
+            MUI.BSelection.gameObject.SetActive(false);
+
+        dragged = false;
+        TimeWithMouse = 0;
     }
     public GameObject[] UiSelection;
     int currentmode = 0;
@@ -194,10 +226,11 @@ public class GameManager : MonoBehaviour
             _lastbuilding = null;
         }
     }
+    float TimeWithMouse = 0;
     void MouseInteraction()
     {
 
-        BUI.Highlight.transform.position = MousePosition;
+     
 
 
         var r = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -216,14 +249,33 @@ public class GameManager : MonoBehaviour
 
             if (EventSystem.current.IsPointerOverGameObject()) return;
             MousePosition = lastresult.point;
-        
+
+            if (Input.GetMouseButton(0))
+            {
+                OnMouseHold(lastresult.point);
+            }
             if (Input.GetMouseButtonDown(0))
             {
                 OnMouseClick(lastresult.point);
 
             }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                OnMouseRelease(lastresult.point);
+            }
 
 
+        }
+        if(selection != null) {
+
+            Cursor3D[0].SetActive(true);
+            BUI.Highlight.SetActive(true);
+            BUI.Highlight.transform.position = selection.transform.position + Vector3.up;
+        }
+        else
+        {
+           
+            BUI.Highlight.transform.position = MousePosition;
         }
 
 
@@ -305,7 +357,8 @@ public class GameManager : MonoBehaviour
             (_lastbuilding as Wall).boundTo = x as Wall;
             
         }
-  
+
+        CancelSelection();
 
         _lastbuilding = x;
         if (_lastbuilding is Wall) Build(j);
