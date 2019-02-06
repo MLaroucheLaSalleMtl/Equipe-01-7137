@@ -73,9 +73,13 @@ public class Garison : building
     }
     public void ProduceUnit(unitCreation c,Owner b)
     {
-        if (!HasEnoughRessource(c, b.Inventory))
-        { print("Not enough ressources!"); return; }
-        
+        if (!GameManager.DEBUG_GODMODE)
+        {
+            if (!HasEnoughRessource(c, b.Inventory))
+            { print("Not enough ressources!"); return; }
+
+        }
+
         var e = Instantiate(c.unit, transform.position + transform.forward, Quaternion.identity).GetComponent<unit>();
         e.TransferOwner(b);
         b.Gold -= e.GoldCost;

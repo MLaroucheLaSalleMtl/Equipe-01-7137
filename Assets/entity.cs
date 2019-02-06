@@ -51,6 +51,14 @@ public class entity : MonoBehaviour
         if(info)info.gameObject.SetActive(true);
     }
 
+    public virtual void OnSelected()
+    {
+
+    }
+    public virtual void OnDeselected()
+    {
+
+    }
     private void OnMouseExit()
     {
         if (EventSystem.current.IsPointerOverGameObject()) return;
