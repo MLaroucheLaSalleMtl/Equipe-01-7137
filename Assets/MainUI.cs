@@ -16,9 +16,14 @@ public class MainUI : MonoBehaviour
 
 
     Camera _main;
+    GameObject draggor;
     private void Awake()
     {
         _main = Camera.main;
+        draggor = Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cube), transform.position, Quaternion.identity);
+        if (draggor.GetComponent<Collider>()) Destroy(draggor.GetComponent<Collider>());
+
+
     }
 
     Rect lastbox;
@@ -26,13 +31,13 @@ public class MainUI : MonoBehaviour
     {
         var e = new List<entity>();
         //   
-      
-         BSelection.gameObject.SetActive(true);
-        var a = _main.WorldToScreenPoint(MouseClickPos);
+ 
+        BSelection.gameObject.SetActive(true);
+         var a = _main.WorldToScreenPoint(MouseClickPos);
         var b = _main.WorldToScreenPoint(MouseReleasePos);
         BSelection.position = (a + b) / 2f;
         var size = new Vector2(Mathf.Abs(b.x - a.x),Mathf.Abs( b.y - a.y));
-        BSelection.sizeDelta = size;
+        BSelection.sizeDelta = size; 
     }
     public void ShowUI(Owner n,entity e)
     {

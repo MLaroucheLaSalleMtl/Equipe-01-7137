@@ -10,6 +10,8 @@ public class unit : entity
     public int DEBUG_OWNER = -1;
     [SerializeField]
      NavMeshAgent agi;
+    [SerializeField]
+    GameObject indicator;
 
     public override void Death()
     {
@@ -69,7 +71,9 @@ public class unit : entity
 
     
 
-    protected Collider[] _col = new Collider[20];
+
+    //Maximum of 500 entity, after that, it cannot detect more than that. HardCap for performance;
+    protected Collider[] _col = new Collider[500];
    protected float aitimer = 0;
     public virtual void AI()
     {
@@ -271,9 +275,10 @@ public class unit : entity
         if (GetComponent<Animator>()) anim = GetComponent<Animator>();
         if(DEBUG_OWNER > -1)
         {
-            TransferOwner(GameManager.owners[DEBUG_OWNER]);  
+            TransferOwner(GameManager.owners[DEBUG_OWNER]);
+           
         }
-
+        OnDeselected();
     }
 
     float timer = 0;
@@ -306,5 +311,14 @@ public class unit : entity
     public override string ToString()
     {
         return Name + " lv." + (Speed + attack + defense).ToString();
+    }
+
+    public override void OnSelected()
+    {
+        if (indicator) indicator.SetActive(true);
+    }
+    public override void OnDeselected()
+    {
+        if (indicator) indicator.SetActive(false);
     }
 }

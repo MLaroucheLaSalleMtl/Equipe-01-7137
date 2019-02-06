@@ -173,7 +173,7 @@ bool ctxmenu = false;
         //So we do not click when there is an UI;
         if (EventSystem.current.IsPointerOverGameObject()) return;
         if (!BeingBuild)
-            interact(GameManager.selection);
+            interact(GameManager.selection[0]);
 
         OpenContextMenu();
     }

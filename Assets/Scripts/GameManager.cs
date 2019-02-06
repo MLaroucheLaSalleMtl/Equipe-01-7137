@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public Terrain[] terrain;
     public node[] Nodes;
-    public static Owner[] owners= new Owner[2] { new Owner() { Name = "Nana"}, new Owner() { Name = "David" } };
+    public static Owner[] owners = new Owner[2] { new Owner() { Name = "Nana" }, new Owner() { Name = "David" } };
     public static float SecondPerGenerations = 60;
     public static bool DEBUG_GODMODE = true;
     [Header("Assets")]
@@ -55,12 +55,12 @@ public class GameManager : MonoBehaviour
         {
             print(g.Name + " has no bits!");
         }
-   
+
     }
     IEnumerator popup(GameObject c)
     {
         var t = 1.5f;
-        while (t >0)
+        while (t > 0)
         {
             t -= Time.smoothDeltaTime;
             c.transform.position += Vector3.up * t * Time.smoothDeltaTime;
@@ -73,15 +73,15 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+
         foreach (var item in owners)
             item.Routine();
 
-        MUI.ShowUI(owners[0],selection);
+        MUI.ShowUI(owners[0], selection[0]);
         BUI.CancelUI.SetActive(buildmode >= 0);
     }
 
- 
+
     private void Update()
     {
         CameraFunction(_main.transform, CameraPosition);
@@ -96,57 +96,94 @@ public class GameManager : MonoBehaviour
     BuildingUI BUI;
 
     Vector3 MouseClickPos, MouseReleasePos;
-    void OnMouseClick(Vector3 pos )
+    void OnMouseClick(Vector3 pos)
     {
+
         MouseClickPos = pos;
         var tempsel = lastresult.collider.gameObject.GetComponent<entity>();
         if (buildmode >= 0)
         {
-            
-            if(BUI.CanBePlaceThere(pos,owners[0])) PlaceBuilding(buildmode, owners[0]);
+
+            if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, owners[0]);
         }
-        if (!selection )
+        if (!selection[0])
         {
             if (tempsel && !(tempsel is building) && tempsel.GetOwner == owners[0])
             {
-                selection = tempsel;
+                selection[0] = tempsel;
+                selection[0].OnSelected();
                 UiSelection[0].SetActive(true);
                 UiSelection[1].SetActive(true);
             }
-          
+
+        }
+        else if (currentmode <= 0)
+        {
+            CancelSelection();
         }
         else
         {
-            
+
             switch (currentmode)
             {
 
-                case 1:
-                    (selection as unit).MoveTo(pos);
-                    CancelSelection();
+                case 1: 
+                    if(selection.Length <= 1)
+                    {
+                        foreach (var item in selection)
+                            if (item) (item as unit).MoveTo(pos);
+                    }
+                    else
+                    {
+                        Formation(pos, _main.transform.forward, selection, .2f);
+                    }
+                 
+               
                     break;
-                case 2: if(tempsel && tempsel != selection)
-                    (selection as unit).Attack(tempsel  );
+                case 2: if (tempsel && tempsel.GetOwner != owners[0])
+                        foreach (var item in selection)
+                            if (item) (item as unit).Attack(tempsel);
+                    //Need to be clean ahah
+                    CancelSelection();
                     CancelSelection();
                     break;
                 case 3:
-                    if (tempsel && tempsel != selection && (selection is unit) && (selection.GetOwner == tempsel.GetOwner))
+                    if (tempsel && tempsel != selection[0] && (selection[0] is unit) && (selection[0].GetOwner == tempsel.GetOwner))
                     {
-                        var x =  (selection as unit).Merge(tempsel as unit);
+                        var x = (selection[0] as unit).Merge(tempsel as unit);
                         CancelSelection();
-                        selection = x;
-                    }                     
+                        CancelSelection();
+                        selection[0] = x;
+                        selection[0].OnSelected();
+                    }
                     break;
                 case 4:
-                    (selection as unit).Chill();
+                    (selection[0] as unit).Chill();
+                    CancelSelection();
+                    CancelSelection();
                     break;
                 default:
                     break;
             }
 
- 
+
 
         }
+    }
+
+    public Vector3[] Formation(Vector3 pos, Vector3 dir, entity[] e,float dist =2)
+    {
+        var t = new Vector3[e.Length];
+        var q = (int)Mathf.Sqrt(t.Length) + 1;
+        for (int x = 0; x <q; x++)
+            for (int y = 0; y < q; y++)
+            {
+                if (y + x * q >= e.Length) break;
+                t[y + x * q] = new Vector3(pos.x - q * dist + q * x * dist, pos.y, pos.z - q * dist + q * y * dist);
+                (e[y + x * q] as unit).MoveTo(t[y + x * q]);
+            }
+              
+        return t;
     }
     
     void OnMouseHold(Vector3 pos)
@@ -160,19 +197,128 @@ public class GameManager : MonoBehaviour
       
         TimeWithMouse += Time.fixedDeltaTime;
     }
+
+
     private void OnDrawGizmos()
     {
-        Gizmos.DrawCube((MouseClickPos + MouseReleasePos) / 2f, new Vector3(MouseReleasePos.x - MouseClickPos.x, 100f, MouseReleasePos.z - MouseClickPos.z));
+        Gizmos.DrawCube(TL, Vector3.one / 3f);        Gizmos.DrawCube(TR, Vector3.one / 3f);
+        Gizmos.DrawCube(BL, Vector3.one / 3f);        Gizmos.DrawCube(BR, Vector3.one / 3f);
     }
     bool dragged = false;
+
+
+    //From https://www.habrador.com/tutorials/select-units-within-rectangle/
+    //Thing is ,a square on the UI is a parallelograme in 3D space ,because camre have frustrum
+
+    bool IsWithinPolygon(Vector3 unitPos)
+    {
+
+        if (IsWithinTriangle(unitPos, TL, BL, TR))
+            return true;
+        if (IsWithinTriangle(unitPos, TR, BL, BR))
+            return true;
+        return false;
+    }
+    Vector3 TL, TR, BL, BR;
+    bool FrustrumSelection()
+    {
+        var mstart  = _main.WorldToScreenPoint(MouseClickPos);
+        var mend = _main.WorldToScreenPoint(MouseReleasePos);
+        mstart.z = 0;
+       var m = (mstart + mend )/ 2f ;
+
+        var x = Mathf.Abs(mend.x - mstart.x);
+        var y = Mathf.Abs(mend.y - mstart.y);
+        RaycastHit hit;
+        int i = 0;
+        TL = new Vector3(m.x - x / 2f, m.y + y / 2f, 0f);
+        TR = new Vector3(m.x + x/ 2f, m.y +y / 2f, 0f);
+        BL = new Vector3(m.x - x / 2f, m.y - y / 2f, 0f);
+        BR = new Vector3(m.x + x / 2f,m.y - y / 2f, 0f);
+        if (Physics.Raycast(_main.ScreenPointToRay(TL), out hit, 200f,BuildingMask))
+        {
+            TL = hit.point;
+            i++;
+        }
+        if (Physics.Raycast(_main.ScreenPointToRay(TR), out hit, 200f, BuildingMask))
+        {
+            TR = hit.point;
+            i++;
+        }
+        if (Physics.Raycast(_main.ScreenPointToRay(BL), out hit, 200f, BuildingMask))
+        {
+            BL = hit.point;
+            i++;
+        }
+        if (Physics.Raycast(_main.ScreenPointToRay(BR), out hit, 200f, BuildingMask))
+        {
+            BR = hit.point;
+            i++;
+        }
+        return i == 4;
+    }
+    bool IsWithinTriangle(Vector3 p, Vector3 p1, Vector3 p2, Vector3 p3)
+    {
+        bool isWithinTriangle = false;
+
+        //Need to set z -> y because of other coordinate system
+        float denominator = ((p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z));
+
+        float a = ((p2.z - p3.z) * (p.x - p3.x) + (p3.x - p2.x) * (p.z - p3.z)) / denominator;
+        float b = ((p3.z - p1.z) * (p.x - p3.x) + (p1.x - p3.x) * (p.z - p3.z)) / denominator;
+        float c = 1 - a - b;
+
+        //The point is within the triangle if 0 <= a <= 1 and 0 <= b <= 1 and 0 <= c <= 1
+        if (a >= 0f && a <= 1f && b >= 0f && b <= 1f && c >= 0f && c <= 1f)
+        {
+            isWithinTriangle = true;
+        }
+
+        return isWithinTriangle;
+    }
     void OnMouseRelease(Vector3 pos)
     {
-       
-            var e = Physics.OverlapBox((MouseClickPos + MouseReleasePos) / 2f, new Vector3(MouseReleasePos.x - MouseClickPos.x, 100f, MouseReleasePos.z - MouseClickPos.z), _main.transform.rotation, Interatable);
-            MUI.BSelection.gameObject.SetActive(false);
+
+        if (dragged)
+        {
+
+            var s = new List<unit>();
+            if (FrustrumSelection())
+            {
+                //Costly but played once by frame so...
+
+                foreach (var item in FindObjectsOfType<entity>())
+                {
+                    if(item.GetOwner == owners[0])
+                    if(item is unit)
+                    {
+                        if (IsWithinPolygon(item.transform.position))
+                        {
+
+                            item.OnSelected();
+                            s.Add(item as unit);
+                        }
+                    }
+               
+                }
+            }
+            if (s.Count > 0) OnDragSelection(s.ToArray());
+
+
+        }
+     
+
+        MUI.BSelection.gameObject.SetActive(false);
 
         dragged = false;
         TimeWithMouse = 0;
+    }
+
+    public void OnDragSelection(unit[] e)
+    {
+        selection = e;
+        UiSelection[0].SetActive(true);
+        UiSelection[1].SetActive(true);
     }
     public GameObject[] UiSelection;
     int currentmode = 0;
@@ -199,8 +345,8 @@ public class GameManager : MonoBehaviour
     }
     public void Chillout()
     {
-        if (selection)
-            (selection as unit).Chill();
+        if (selection[0])
+            (selection[0] as unit).Chill();
     }
     public void CancelSelection()
     {
@@ -220,7 +366,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            selection = null;
+            if (selection.Length > 0)
+                foreach (var item in selection)
+                    if(item!=null)item.OnDeselected();
+
+
+            selection = new entity[1];
             buildmode = -1;
             ClearHighLight();
             _lastbuilding = null;
@@ -257,7 +408,7 @@ public class GameManager : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 OnMouseClick(lastresult.point);
-
+               
             }
             else if (Input.GetMouseButtonUp(0))
             {
@@ -266,22 +417,15 @@ public class GameManager : MonoBehaviour
 
 
         }
-        if(selection != null) {
-
-            Cursor3D[0].SetActive(true);
-            BUI.Highlight.SetActive(true);
-            BUI.Highlight.transform.position = selection.transform.position + Vector3.up;
-        }
-        else
-        {
+   
            
             BUI.Highlight.transform.position = MousePosition;
-        }
+     
 
 
     }
     [SerializeField]
-    public static entity selection;
+    public static entity[] selection = new entity[1];
 
     //Relate to camera
     Vector3 EdgeScrolling
