@@ -26,7 +26,8 @@ public class unit : entity
     //So it's 10m per turn or 1 nodes
     public string Name = "Security";
     public float Speed = 10;
-    Animator anim;
+ 
+   protected Animator anim;
     [SerializeField]
     MeshRenderer[] rendies;
     protected virtual float GetMovingSpeed
@@ -47,6 +48,7 @@ public class unit : entity
         Gizmos.DrawWireSphere(transform.position, DetectionRange);
     }
  
+    
     public void ChangeColor(Color z)
     {
         if(rendies.Length > 0)
@@ -59,13 +61,14 @@ public class unit : entity
     protected override void OnMouseEnter()
     {
         base.OnMouseEnter();
-        if(infotext)infotext.text = Name + " HP: " + Hp +"  " + " ATK: " +getAttack + " \nSPD:" + GetMovingSpeed+ "\nDEF" + defense;
+        if (infotext) infotext.text = Name + " Type " + Type.ToString() + "\n" + "HP:" + Hp + " /" + maximumHp + " lvl:" + (getAttack + defense + Speed).ToString("0.0"); 
     }
 
-    protected void OnMouseExit()
+    protected override void OnMouseExit()
     {
-        base.OnMouseEnter();
-        if (infotext) infotext.gameObject.SetActive(false);
+        base.OnMouseExit();
+     
+       // if (infotext) infotext.gameObject.SetActive(false);
     }
     Vector3 previousTarget;
 
@@ -120,9 +123,10 @@ public class unit : entity
     Army _army;
     public void Attack(entity e)
     {
-        if(e == null)
+        if(!e)
         {
             print("Nothing to attack, error!");
+            return;
         }
         //Need to go there first and ofremost
         if (currentAttackRoutine == null)
@@ -154,12 +158,13 @@ public class unit : entity
 
         agi.SetDestination(pos);
         agi.isStopped = false;
-        minimumdistance = .25f + agi.radius + agi.stoppingDistance;
+        minimumdistance = .35f + agi.radius + agi.stoppingDistance;
         yield return new WaitForFixedUpdate();
         while (agi.remainingDistance > (minimumdistance))
         {
             yield return new WaitForSeconds(.05f);
             agi.SetDestination(pos);
+            if (Vector3.Distance(transform.position, pos) < minimumdistance) break;
             //print(name + " distance to target : " + minimumdistance + "m. ");
             yield return null;
         }
@@ -173,11 +178,11 @@ public class unit : entity
         if (!agi) yield break;
         agi.SetDestination(e.transform.position);
         agi.isStopped = false;
-        minimumdistance = .15f + agi.radius + agi.stoppingDistance;
-        yield return new WaitForFixedUpdate();
+        minimumdistance =  agi.radius + agi.stoppingDistance;
+       
         while ( agi.isOnNavMesh&& agi.remainingDistance > (minimumdistance) && e && e.gameObject )
         {
-            yield return new WaitForSeconds(.05f);
+            yield return new WaitForSeconds(.01f);
             if(e && e.gameObject)agi.SetDestination(e.transform.position);
             else { break; }
             print(name + " distance to target : " + minimumdistance + "m. ");
@@ -226,9 +231,10 @@ public class unit : entity
 
         while (x && x.Hp > 0  )
         {    
-            if(Vector3.Distance(transform.position,x.transform.position)> (minimumdistance))
+            if(agi.remainingDistance> (minimumdistance))
             { 
                 yield return StartCoroutine(GoThere(x ));
+                yield return null;
             }
             else
             {
@@ -240,20 +246,28 @@ public class unit : entity
             }
           
         }
+        agi.isStopped = true;
         currentAttackRoutine = null;
+
+        MoveTo(previousTarget);
         yield  break;
     }
 
-    entity last_agressor;   
-    public override void TakeDamage(float t,entity e)
+    protected override void OnKill(entity z)
     {
-        base.TakeDamage(t);
+        base.OnKill(z);
+        Chill();
+    }
+    public override void TakeDamage(float t, DamageType p = DamageType.Null)
+    {
+        base.TakeDamage(t, p);
+        anim.SetTrigger("damaged");
     }
     void _attack(entity e)
     {
         if (e)
         {
-            if (anim) anim.SetTrigger("ATK");
+            if (anim) anim.SetTrigger(Type.ToString());
             print(this.ToString() + " attacks " + e.name + " for " + getAttack + " damages");
             transform.LookAt(e.gameObject.transform.position, Vector3.up);
             e.TakeDamage(getAttack,this);
@@ -269,8 +283,8 @@ public class unit : entity
     {
         if (infotext) {
 
-            infotext.text = Name + " HP: " + Hp + "  " + " ATK: " + getAttack + " \nSPD:" + GetMovingSpeed + "\nDEF" + defense;
-            infotext.gameObject.SetActive(false);
+
+            info.gameObject.SetActive(false);
         }
         if (GetComponent<Animator>()) anim = GetComponent<Animator>();
         if(DEBUG_OWNER > -1)
@@ -279,6 +293,7 @@ public class unit : entity
            
         }
         OnDeselected();
+        previousTarget = transform.position;
     }
 
     float timer = 0;
@@ -298,6 +313,7 @@ public class unit : entity
     public void Chill ()
     {
         agi.isStopped = true;
+        agi.SetDestination(transform.position);
         if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);
     }
 

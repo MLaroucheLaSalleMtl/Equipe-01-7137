@@ -1957,7 +1957,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthToSet: 1
+  Type: 2
   GoldCost: 0
+  uianim: {fileID: 0}
   Inventory: []
   info: {fileID: 0}
   infotext: {fileID: 0}
@@ -1967,7 +1969,7 @@ MonoBehaviour:
   - materials: []
     Gold: 20
     ConstructionEffort: 10
-  SpaceNeed: 1
+  SpaceNeed: 0.27
   RequiredCloseness: 12
   type: 3
   ContextMenu: {fileID: 8575704521477194603}

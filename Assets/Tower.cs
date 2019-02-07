@@ -30,7 +30,7 @@ public class Tower : fortification
 
     public  void ProduceMissile(int x, Vector3 A, Vector3 B)
     {
-        print("missile");
+ 
          StartCoroutine(_missile(GameManager.instance.Missiles[x], A, B));
     }
     
@@ -53,7 +53,7 @@ public class Tower : fortification
         Destroy(e.gameObject);
         yield break;
     }
-    Collider[] _col = new Collider[100];
+    Collider[] _col = new Collider[500];
     float aitimer = 0;
 
  
@@ -97,7 +97,7 @@ public class Tower : fortification
         if (aitimer >RateOfFire)
         {
             var s = Physics.OverlapSphereNonAlloc(transform.position, Range, _col, GameManager.instance.Interatable, QueryTriggerInteraction.Collide);
-            print(s);
+        
             for (int i = s - 1; i >= 0; i--)
             {
 

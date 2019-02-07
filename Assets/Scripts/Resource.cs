@@ -29,6 +29,11 @@ public class Goods
     {
 
     }
+    public Goods(string x, float y)
+    {
+        Name = x;
+        amount = y;
+    }
     public Goods(Goods r,float am)
     {
         Name = r.Name;

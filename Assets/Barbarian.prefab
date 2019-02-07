@@ -2015,7 +2015,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthToSet: 2
+  Type: 0
   GoldCost: 0
+  uianim: {fileID: 0}
   Inventory: []
   info: {fileID: 68227847213044389}
   infotext: {fileID: 0}

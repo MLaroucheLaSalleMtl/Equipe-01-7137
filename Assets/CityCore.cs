@@ -8,7 +8,7 @@ public class CityCore : building
     {
         return true;
     }
-    public override void TakeDamage(float t)
+    public override void TakeDamage(float t,DamageType p = DamageType.Null)
     {
         if (GameManager.DEBUG_GODMODE) return;
         base.TakeDamage(t);
