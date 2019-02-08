@@ -302,11 +302,13 @@ public class Owner
     {
         get
         {
+            if (totalPopulation == 0) return 1;
             // This will force the player to expand more and more
 
             // Fertility Rate > Security > Wealth > Space >Infrastructure efficiency
+          
             // 10% of Production Efficiency + 20% of Ratio of Gold/Person + 30% security + base Fertility rate* 30% + HousingSpace/People Ratio 20%
-            return (FertilityRate * .6f +  (Gold / totalPopulation) * 0.2f + ProductionEfficiency * .4f) * Mathf.Clamp((getHousingSpace / totalPopulation), .25f, 2) *Mathf.Clamp(getSecurity,.25f,1.5f);
+            return (FertilityRate * .6f +  (Gold / totalPopulation) * 0.2f + ProductionEfficiency * .4f) * Mathf.Clamp((getHousingSpace / totalPopulation), .25f, 2) *Mathf.Clamp(getSecurity,.5f,1.5f);
         }
     }
        

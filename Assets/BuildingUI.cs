@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BuildingUI : MonoBehaviour
 {
@@ -8,12 +9,29 @@ public class BuildingUI : MonoBehaviour
     public building bref;
     public LayerMask BuildingLayer;
     public GameObject CancelUI;
+    
+    public Animator BuildingSticker; 
+
     MeshRenderer[] colz;
 
 
     public GameObject[] Uis;
 
-
+    public void BuildingMenu(int x)
+    {
+        if(x > 0)
+        {
+           
+            BuildingSticker.SetTrigger("open");
+        }
+        else
+        {
+            GameManager.instance.CancelBuilding();
+           
+        
+        }
+     
+    }
     public void Planing(GameObject z, building b)
     {
         colz = z.GetComponentsInChildren<MeshRenderer>();

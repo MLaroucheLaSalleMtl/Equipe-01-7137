@@ -11,7 +11,12 @@ public class Storage : building
     public GameObject StoraVisual;
     public Vector3 FullnessOffset = Vector3.one;
 
-   
+    protected override void Start()
+    {
+        base.Start();
+        StoraVisual.transform.position = transform.position + FullnessOffset * (currentstorage / MaxSpace);
+
+    }
 
     public bool HasEnoughSpace(Goods x)
     {
@@ -26,7 +31,7 @@ public class Storage : building
     {
         base.interact(e, efficiency);
 
-        StoraVisual.transform.position = transform.position + FullnessOffset * (currentstorage/ MaxSpace);
+       
     }
     float currentstorage = 0;
     public float GetTotalSpace
@@ -40,6 +45,7 @@ public class Storage : building
     public void addStorage(float x)
     {
         currentstorage += x;
+        StoraVisual.transform.position = transform.position + FullnessOffset * (currentstorage / MaxSpace);
     }
     
     public override void Death()

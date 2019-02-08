@@ -45,7 +45,7 @@ public class building : entity
             return x * (Hp/maximumHp);
         }
     }
-    private void Start()
+    protected virtual void Start()
     {
      if(ContextMenu)   ContextMenu.SetActive(false);
     }

@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
             item.Routine();
 
         MUI.ShowUI(owners[0], selection[0]);
-        BUI.CancelUI.SetActive(buildmode >= 0);
+      //  BUI.CancelUI.SetActive(buildmode >= 0);
     }
 
 
@@ -106,6 +106,8 @@ public class GameManager : MonoBehaviour
 
             if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, owners[0]);
         }
+
+        if (buildmode > 0) return;
         if (!selection[0])
         {
             if (tempsel && !(tempsel is building) && tempsel.GetOwner == owners[0])
@@ -348,6 +350,7 @@ public class GameManager : MonoBehaviour
         if (selection[0])
             (selection[0] as unit).Chill();
     }
+    
     public void CancelSelection()
     {
         foreach (var item in UiSelection)
@@ -372,11 +375,25 @@ public class GameManager : MonoBehaviour
 
 
             selection = new entity[1];
-            buildmode = -1;
-            ClearHighLight();
-            _lastbuilding = null;
+
         }
     }
+    public void CancelBuilding()
+    {
+        if(!BUI.BuildingSticker.GetBool("SWCB")) BUI.BuildingSticker.SetTrigger("close");
+        if (buildmode == -1)
+            BUI.BuildingSticker.SetBool("SWCB", false);
+
+
+        buildmode = -1;
+       
+        ClearHighLight();
+        _lastbuilding = null;
+
+    }
+
+
+    
     float TimeWithMouse = 0;
     void MouseInteraction()
     {
@@ -470,6 +487,7 @@ public class GameManager : MonoBehaviour
             Destroy(t[i]);
         }
         buildmode = x;
+        BUI.BuildingSticker.SetBool("SWCB", true);
     }
  
    void PlaceBuilding(int j, Owner n)
@@ -495,6 +513,8 @@ public class GameManager : MonoBehaviour
                 item.SetActive(false);
             BUI.Uis[0].gameObject.SetActive(true);
         }
+
+
         buildmode = -1;
         if(_lastbuilding  && _lastbuilding is Wall && x is Wall)
         {
@@ -505,7 +525,8 @@ public class GameManager : MonoBehaviour
         CancelSelection();
 
         _lastbuilding = x;
-        if (_lastbuilding is Wall) Build(j);
+        if (_lastbuilding is Wall)Build(j);
+        else BUI.BuildingSticker.SetBool("SWCB", false);
 
     }
 
@@ -513,6 +534,7 @@ public class GameManager : MonoBehaviour
     void ClearHighLight()
     {
         if(building_highlight)Destroy(building_highlight.gameObject);
+ 
     }
     public void CameraFunction(Transform camera, Vector3 position)
     {
@@ -524,7 +546,10 @@ public class GameManager : MonoBehaviour
                   Input.GetAxis("Mouse Y"));
 
         cursorinput.y = Mathf.Clamp(cursorinput.y, -70, -20);
-        camzoom = Mathf.Clamp(camzoom + Input.GetAxis("Mouse ScrollWheel") * -350 * Time.smoothDeltaTime, 1, 350);
+        var zoooooom = Input.GetAxis("Mouse ScrollWheel");
+        if (EventSystem.current.IsPointerOverGameObject()) zoooooom = 0 ;
+        camzoom = Mathf.Clamp(camzoom + zoooooom * -350 * Time.smoothDeltaTime, 1, 350);
+
         camera.transform.position = Vector3.Lerp(camera.transform.position, position + Vector3.forward * camzoom, 125 * Time.fixedDeltaTime);
         camera.transform.LookAt(position + CameraOffset + -Vector3.up * cameraSmoothness / 2 * Time.fixedDeltaTime);
         camera.transform.RotateAround(position, Vector3.up, cursorinput.x * cameraSmoothness *8* Time.fixedDeltaTime);
@@ -555,7 +580,7 @@ public class GameManager : MonoBehaviour
 
     //Nodes related - need to yeet to somewhere else 
 
-    node[] CreateNodes(Terrain a, int precision = 4)
+    node[] CreateNodes(Terrain a, int precision = 6)
     {
         var e = new List<node>();
         var t = a.terrainData;
