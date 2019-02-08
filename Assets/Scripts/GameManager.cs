@@ -114,8 +114,9 @@ public class GameManager : MonoBehaviour
             {
                 selection[0] = tempsel;
                 selection[0].OnSelected();
-                UiSelection[0].SetActive(true);
-                UiSelection[1].SetActive(true);
+                //UiSelection[0].SetActive(true);
+                // UiSelection[1].SetActive(true);
+                MUI.Action_sticker.SetTrigger("open");
             }
 
         }
@@ -340,8 +341,9 @@ public class GameManager : MonoBehaviour
         }
 
        if(x > 0) Cursor3D[ Mathf.Clamp(x-1, 0, Cursor3D.Length-1)].SetActive(true);
-        UiSelection[0].SetActive(true); // image nad name 
-      UiSelection[2].SetActive(true);
+        //UiSelection[0].SetActive(true); // image nad name 
+                                        //UiSelection[2].SetActive(true);
+        MUI.Action_sticker.SetBool("SWBC",true);
 
         currentmode = x;
     }
@@ -364,16 +366,18 @@ public class GameManager : MonoBehaviour
         if(currentmode > 0)
         {
             currentmode = 0;
-            UiSelection[0].SetActive(true); // image nad name 
-            UiSelection[1].SetActive(true); // main icons
+            //  UiSelection[0].SetActive(true); // image nad name 
+            //    UiSelection[1].SetActive(true); // main icons
+            MUI.Action_sticker.SetBool("SWCB", false);
         }
         else
         {
             if (selection.Length > 0)
                 foreach (var item in selection)
                     if(item!=null)item.OnDeselected();
-
-
+          
+            MUI.Action_sticker.SetTrigger("close");
+         
             selection = new entity[1];
 
         }

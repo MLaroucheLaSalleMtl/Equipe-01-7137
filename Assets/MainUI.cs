@@ -11,7 +11,8 @@ public class MainUI : MonoBehaviour
 
    public Text Builder, Merchant, Research,Civilian;
     public Text UnitInfo;
-    
+
+    public Animator Action_sticker;
     Owner lastOwner;
 
 
