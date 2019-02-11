@@ -5,6 +5,7 @@ using UnityEngine;
 public class Owner  
 {
     public string Name = "";
+    public Color MainColor;
     public delegate void OnGainHandler(Goods g, Vector3 p);
     public OnGainHandler OnGain;
     public delegate void EntitiesHandler(entity e);
@@ -20,7 +21,29 @@ public class Owner
     float fertilityMod = 1f, EconomyMod = 1f;
     public float FertilityRate { get { return baseFertilityRate * fertilityMod; } }
     
- 
+    [System.Serializable]
+ public struct multiplier
+    {
+        public float fertility, economy, storageEfficiency;
+    //    public Dictionary<entity.DamageType, SoliderMultiplier> DamageTypesMod = new Dictionary<entity.DamageType, SoliderMultiplier>();
+
+        
+      
+
+        //One For Each type A B C, There will also be one for each unit
+        public struct SoliderMultiplier
+        {
+            public float AttackMod,
+                SpeedMod,
+                DefenseMod,
+                HpMod,
+                CostMod,
+                RecoveryMod,
+                RangeMod;
+
+
+        }
+    }
     public void Gain(Goods r,int h)
     {
         int ok = -1;
@@ -206,7 +229,7 @@ public class Owner
             Storages.Add(e as Storage);
         else if (e is building)
             Building.Add(e as building);
-        else if (e is unit) Units.Add(e as unit);
+        else if (e is unit) {(e as unit).ChangeColor(MainColor); Units.Add(e as unit); } 
 
         _getbuildings = GetBuildings();
     }

@@ -12,7 +12,7 @@ public class entity : MonoBehaviour
 
     [SerializeField]
     float HealthToSet = 1;
-
+   
 
     public enum DamageType
     {
@@ -22,6 +22,10 @@ public class entity : MonoBehaviour
     [SerializeField]
     Owner owner;
 
+    public void SetOwner(Owner s)
+    {
+        owner = s;
+    }
     public DamageType Type = DamageType.Null;
     public virtual void TransferOwner(Owner n)
     {

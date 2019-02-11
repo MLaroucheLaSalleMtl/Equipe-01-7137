@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class TurnTowardCam : MonoBehaviour
 {
-    private Camera cam;
+    [HideInInspector]
+    public Camera cam;
     private void Awake()
     {
         if (GetComponentInParent<entity>()) ent = GetComponentInParent<entity>();
@@ -13,12 +14,15 @@ public class TurnTowardCam : MonoBehaviour
     entity ent;
     private void Update()
     {
+
+        if (!cam) cam = Camera.main;
+        else
         transform.LookAt(cam.transform);
     }
 
     public void  Menu(int f)
     {
-        ent.info.gameObject.SetActive(f >0);
+      //  ent.info.gameObject.SetActive(f >0);
     }
    
 

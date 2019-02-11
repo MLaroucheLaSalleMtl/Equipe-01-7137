@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public Terrain[] terrain;
     public node[] Nodes;
-    public static Owner[] owners = new Owner[2] { new Owner() { Name = "Nana" }, new Owner() { Name = "David" } };
+    public static Owner[] owners = new Owner[2] { new Owner() { Name = "Nana", MainColor = Color.blue }, new Owner() { Name = "David", MainColor = Color.green } };
     public static float SecondPerGenerations = 60;
     public static bool DEBUG_GODMODE = true;
     [Header("Assets")]
@@ -315,13 +315,14 @@ public class GameManager : MonoBehaviour
 
         dragged = false;
         TimeWithMouse = 0;
-    }
+    } 
 
     public void OnDragSelection(unit[] e)
     {
         selection = e;
         UiSelection[0].SetActive(true);
         UiSelection[1].SetActive(true);
+        MUI.Action_sticker.SetTrigger("open");
     }
     public GameObject[] UiSelection;
     int currentmode = 0;
@@ -648,6 +649,7 @@ public class GameManager : MonoBehaviour
     
     void SpawnRessource(node n,int x, int y)
     {
+
         //tree for now
         var seed = Random.Range(0, 1f);
    //Sparse Ressources, so it is not easy
@@ -668,7 +670,8 @@ public class GameManager : MonoBehaviour
                 if (Random.Range(0, 1f) > .3f) continue;
                 var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize/1.4f) - 2, .45f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)-2);
                
-                var e = Instantiate(n.resource.model, n.transform.position,Quaternion.identity);
+                var e = Instantiate(n.resource.model, n.transform.position,Quaternion.identity).GetComponent<GetRessourceInfo>();
+                e.SetNode(n);
 
                 e.transform.position = n.transform.position + t;
                 e.transform.parent = n.transform;
@@ -692,7 +695,8 @@ public class GameManager : MonoBehaviour
                 if (Random.Range(0, 1f) > .3f) continue;
                 var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)  ,-.1f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)  );
 
-                var e = Instantiate(n.resource.model, n.transform.position, Quaternion.identity);
+                var e = Instantiate(n.resource.model, n.transform.position, Quaternion.identity).GetComponent<GetRessourceInfo>();
+                e.SetNode(n);
                 e.transform.rotation = Quaternion.Euler(Random.insideUnitSphere * 360);
                 e.transform.position = n.transform.position + t;
                 e.transform.parent = n.transform;
