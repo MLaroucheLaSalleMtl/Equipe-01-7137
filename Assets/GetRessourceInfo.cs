@@ -17,7 +17,7 @@ public class GetRessourceInfo : MonoBehaviour
 
     private void OnMouseEnter()
     {
-
+        if (!nd) return;
             anim.gameObject.SetActive(true);
             Main.text = nd.resource.Name + ": " + nd.resource.getAmount;
             anim.SetTrigger("open");

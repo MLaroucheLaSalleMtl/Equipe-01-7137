@@ -1969,7 +1969,7 @@ MonoBehaviour:
   - materials: []
     Gold: 20
     ConstructionEffort: 10
-  SpaceNeed: 0.27
+  SpaceNeed: {x: 1, y: 1, z: 1}
   RequiredCloseness: 12
   type: 3
   ContextMenu: {fileID: 8575704521477194603}
@@ -1978,6 +1978,7 @@ MonoBehaviour:
   Bar: {fileID: 0}
   description: "Gather Nearby ressource each tick. \nThis one has a low yield, But
     it does the job"
+  BuildRoad: 1
   gauge: {fileID: 0}
   graphics:
   - {fileID: 1961366550180395875}
@@ -15131,6 +15132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
 --- !u!1 &8599538196889274844
 GameObject:
   m_ObjectHideFlags: 0

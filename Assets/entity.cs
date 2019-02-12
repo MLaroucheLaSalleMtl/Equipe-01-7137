@@ -25,6 +25,7 @@ public class entity : MonoBehaviour
     public void SetOwner(Owner s)
     {
         owner = s;
+        owner = s;
     }
     public DamageType Type = DamageType.Null;
     public virtual void TransferOwner(Owner n)

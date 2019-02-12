@@ -22,8 +22,9 @@ public class Tower : fortification
 
 
     }
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmos()
     {
+        base.OnDrawGizmos();
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, Range);
     }

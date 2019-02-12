@@ -3311,9 +3311,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1852152406670046314}
-  - component: {fileID: 7585474839740838889}
   - component: {fileID: 4526186926052867210}
   - component: {fileID: 6398262226126678082}
+  - component: {fileID: 56710311851074698}
   m_Layer: 10
   m_Name: Garison
   m_TagString: Untagged
@@ -3339,19 +3339,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &7585474839740838889
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1852152406670046312}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.21
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!208 &4526186926052867210
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -3401,7 +3388,7 @@ MonoBehaviour:
       hardness: 2
     Gold: 10
     ConstructionEffort: 35
-  SpaceNeed: 1
+  SpaceNeed: {x: 1, y: 1, z: 1}
   RequiredCloseness: 5
   type: 0
   ContextMenu: {fileID: 9121388655588984782}
@@ -3419,6 +3406,7 @@ MonoBehaviour:
   - {fileID: 7494158685186581687}
   Bar: {fileID: 0}
   description: ' a normal building'
+  BuildRoad: 1
   gauge: {fileID: 0}
   graphics:
   - {fileID: 1852152405421505079}
@@ -3437,6 +3425,19 @@ MonoBehaviour:
     goldCost: 10
     civilianCost: 1
     unit: {fileID: 3598109090698866636, guid: c4df2d0b215ee9444b31b9139e8416c5, type: 3}
+--- !u!65 &56710311851074698
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1852152406670046312}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1.24, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2298739440920664118
 GameObject:
   m_ObjectHideFlags: 0
@@ -5841,3 +5842,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}

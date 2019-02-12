@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -399,21 +400,42 @@ public class GameManager : MonoBehaviour
 
 
     
-    float TimeWithMouse = 0;
+    float TimeWithMouse = 0, rotationQE;
     void MouseInteraction()
     {
-
-     
+        var ctrl = Input.GetKey(KeyCode.LeftControl);
 
 
         var r = Camera.main.ScreenPointToRay(Input.mousePosition);
         var y = Physics.Raycast(r, out lastresult, Mathf.Infinity, Interatable);
         if (buildmode >= 0)
         {
-
+         
             BUI.CanBePlaceThere(lastresult.point,owners[0]);
-            if (owners[0].Settled)
-                BUI.Highlight.transform.right = (owners[0].Cores[0].transform.position - BUI.Highlight.transform.position);
+            /*  if (owners[0].Settled)
+                   BUI.Highlight.transform.right = (owners[0].Cores[0].transform.position - BUI.Highlight.transform.position);
+              */
+            if (building_highlight)
+            {
+                rotationQE += Time.fixedDeltaTime;
+               
+
+
+                    var lolrot = 0;
+                    if(rotationQE > .1f)
+                    {
+                        if (Input.GetKey(KeyCode.E)) { lolrot = -30; rotationQE = 0; }
+                        else if (Input.GetKey(KeyCode.Q)) { lolrot = 30; rotationQE = 0; }
+
+                    }
+                   
+
+                    building_highlight.transform.rotation =
+                        Quaternion.Euler(building_highlight.transform.eulerAngles +
+                        Vector3.up * lolrot);
+                 
+             
+            }
             y = Physics.Raycast(r, out lastresult, Mathf.Infinity, BuildingMask);
         }
         
@@ -439,10 +461,9 @@ public class GameManager : MonoBehaviour
 
 
         }
-   
-           
-            BUI.Highlight.transform.position = MousePosition;
-     
+
+        if (!ctrl) { BUI.Highlight.transform.position = MousePosition; }
+       
 
 
     }
@@ -480,9 +501,12 @@ public class GameManager : MonoBehaviour
     building _lastbuilding;
     public void Build(int x)
     {
+        buildmode = -1;
+        ClearHighLight();
         if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold)  ) { print("Not enough ressource or Gold"); _lastbuilding = null; return; } 
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
+        
         BUI.Planing(g, Buildings[x].GetComponent<building>());
       
        
@@ -493,12 +517,14 @@ public class GameManager : MonoBehaviour
         }
         buildmode = x;
         BUI.BuildingSticker.SetBool("SWCB", true);
+        building_highlight.transform.localRotation = lastrotation;
     }
  
    void PlaceBuilding(int j, Owner n)
     {
         var x = Instantiate(Buildings[j], MousePosition, Quaternion.identity).GetComponent<building>();
         x.transform.rotation = building_highlight.transform.rotation;
+        lastrotation = building_highlight.transform.rotation;
         x.TransferOwner(n);
         x.build(MousePosition, n);
         x.Tier = 0;
@@ -530,12 +556,34 @@ public class GameManager : MonoBehaviour
         CancelSelection();
 
         _lastbuilding = x;
+        BUI.SetStartingPoint(x.transform.position);
         if (_lastbuilding is Wall)Build(j);
         else BUI.BuildingSticker.SetBool("SWCB", false);
+        var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness );
+        if(x.BuildRoad)
+        foreach (var item in e)
+        {
+
+            
+            if (!item.transform.IsChildOf(x.transform) && item.GetComponent<building>() 
+                 )
+            {
+
+
+                if (Vector3.Distance(item.transform.position, x.transform.position) <= (x.RequiredCloseness/1.3f)) return;
+
+                    BUI.CreateRoad(item.transform.position, x.gameObject);
+                    break;
+                
+             
+            }
+        }
+      
 
     }
-
-    GameObject building_highlight;
+    Quaternion lastrotation;
+    [HideInInspector]
+    public GameObject building_highlight;
     void ClearHighLight()
     {
         if(building_highlight)Destroy(building_highlight.gameObject);
@@ -545,10 +593,10 @@ public class GameManager : MonoBehaviour
     {
 
         Cursor.lockState = CursorLockMode.Confined;
-     
-        if(Input.GetKey(KeyCode.Mouse1))
+        var ctrl = Input.GetKey(KeyCode.LeftControl);
+        if (Input.GetKey(KeyCode.Mouse1) && !ctrl)
         cursorinput += new Vector2(Input.GetAxis("Mouse X"),
-                  Input.GetAxis("Mouse Y"));
+                  Input.GetAxis("Mouse Y")); 
 
         cursorinput.y = Mathf.Clamp(cursorinput.y, -70, -20);
         var zoooooom = Input.GetAxis("Mouse ScrollWheel");
@@ -646,7 +694,6 @@ public class GameManager : MonoBehaviour
     }
 
 
-    
     void SpawnRessource(node n,int x, int y)
     {
 
@@ -668,7 +715,7 @@ public class GameManager : MonoBehaviour
             for (int i = 0; i <n.resource.getAmount/50; i++)
             {
                 if (Random.Range(0, 1f) > .3f) continue;
-                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize/1.4f) - 2, .45f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)-2);
+                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize/1.4f) , .45f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f));
                
                 var e = Instantiate(n.resource.model, n.transform.position,Quaternion.identity).GetComponent<GetRessourceInfo>();
                 e.SetNode(n);
@@ -676,6 +723,8 @@ public class GameManager : MonoBehaviour
                 e.transform.position = n.transform.position + t;
                 e.transform.parent = n.transform;
             }
+
+            return;
         }
 
         if (  n.AverageHeight > 28 && n.AverageHeight < 35)

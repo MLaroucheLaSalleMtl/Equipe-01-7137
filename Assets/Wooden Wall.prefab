@@ -393,7 +393,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthToSet: 10
+  Type: 3
   GoldCost: 5
+  uianim: {fileID: 0}
   Inventory: []
   info: {fileID: 0}
   infotext: {fileID: 0}
@@ -403,7 +405,7 @@ MonoBehaviour:
   - materials: []
     Gold: 0
     ConstructionEffort: 5
-  SpaceNeed: 0.3
+  SpaceNeed: {x: 1, y: 1, z: 1}
   RequiredCloseness: 10
   type: 2
   ContextMenu: {fileID: 7922375029139093804}
@@ -411,6 +413,7 @@ MonoBehaviour:
   buttons: []
   Bar: {fileID: 7925965220509402381}
   description: Wall. Protect.
+  BuildRoad: 0
   gauge: {fileID: 0}
   graphics:
   - {fileID: 129135109231821092}
@@ -4422,6 +4425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
 --- !u!1 &7925965220509402381
 GameObject:
   m_ObjectHideFlags: 0
@@ -4527,6 +4531,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
 --- !u!1 &8022023300999956433
 GameObject:
   m_ObjectHideFlags: 0

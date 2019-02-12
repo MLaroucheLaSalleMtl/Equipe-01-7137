@@ -58,12 +58,22 @@ public class unit : entity
         }
     }
 
+    IEnumerator _delay;
+    IEnumerator DelayClose()
+    {
+        yield return new WaitForSeconds(1f);
+        if (uianim.GetCurrentAnimatorStateInfo(0).IsTag("open")) uianim.SetTrigger("close");
+        yield break;
+    }
     protected override void OnMouseEnter()
     {
         base.OnMouseEnter();
+        if (_delay != null) StopCoroutine(_delay);
+        _delay = DelayClose();
+        StartCoroutine(_delay);
         if (infotext) infotext.text = Name + " Type " + Type.ToString() + "\n" + "HP:" + Hp + " /" + maximumHp + " lvl:" + (getAttack + defense + Speed).ToString("0.0"); 
     }
-
+   
     protected override void OnMouseExit()
     {
         base.OnMouseExit();
@@ -81,7 +91,7 @@ public class unit : entity
     public virtual void AI()
     {
         aitimer += Time.fixedDeltaTime;
-
+       
         if (last_agressor)
             Attack(last_agressor);
         else
@@ -160,7 +170,7 @@ public class unit : entity
         agi.isStopped = false;
         minimumdistance = .35f + agi.radius + agi.stoppingDistance;
         yield return new WaitForFixedUpdate();
-        while (agi.remainingDistance > (minimumdistance))
+        while (agi.remainingDistance > (minimumdistance + .1f))
         {
             yield return new WaitForSeconds(.05f);
             agi.SetDestination(pos);
@@ -320,6 +330,7 @@ public class unit : entity
     public void MoveTo(Vector3 v)
     {
         previousTarget = v;
+        if (!agi) return;
         agi.SetDestination(v);
         agi.isStopped = false;
         if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);

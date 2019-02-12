@@ -1093,7 +1093,7 @@ MonoBehaviour:
       hardness: 0
     Gold: 10
     ConstructionEffort: 30
-  SpaceNeed: 0.21
+  SpaceNeed: {x: 0.31, y: 3.92, z: 0.58}
   RequiredCloseness: 5
   type: 0
   ContextMenu: {fileID: 7551467081080324608}
@@ -1101,6 +1101,7 @@ MonoBehaviour:
   buttons: []
   Bar: {fileID: 7669118758783925501}
   description: Attack nearby foes
+  BuildRoad: 0
   gauge: {fileID: 0}
   graphics:
   - {fileID: 357784256859126280}
@@ -24917,6 +24918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
 --- !u!1 &7551467081080324608
 GameObject:
   m_ObjectHideFlags: 0
@@ -24961,6 +24963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
 --- !u!1 &7590888593934711055
 GameObject:
   m_ObjectHideFlags: 0

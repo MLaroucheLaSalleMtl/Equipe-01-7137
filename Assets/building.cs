@@ -18,7 +18,7 @@ public class building : entity
         public float ConstructionEffort;
     }
     public Cost[] costs;
-    public float SpaceNeed = 1;
+    public Vector3 SpaceNeed = Vector3.one;
     public float RequiredCloseness = 5;
     public enum BuildingType
     {
@@ -44,6 +44,16 @@ public class building : entity
                 x += item.getAmount * item.Value;
             return x * (Hp/maximumHp);
         }
+    }
+    public bool BuildRoad = false;
+    protected virtual void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, RequiredCloseness / 1.3f);
+        Gizmos.color = Color.cyan + Color.blue;
+        Gizmos.DrawWireSphere(transform.position, RequiredCloseness );
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(transform.position, SpaceNeed);
     }
     protected virtual void Start()
     {

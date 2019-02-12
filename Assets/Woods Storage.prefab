@@ -6281,6 +6281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
 --- !u!1 &3642118519948392276
 GameObject:
   m_ObjectHideFlags: 0
@@ -6325,6 +6326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
 --- !u!1 &3666189672555955439
 GameObject:
   m_ObjectHideFlags: 0
@@ -22848,8 +22850,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.21
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.17
+  m_Center: {x: 0, y: 0.33, z: 0}
 --- !u!208 &8778741747028167137
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -22891,7 +22893,7 @@ MonoBehaviour:
   - materials: []
     Gold: 20
     ConstructionEffort: 60
-  SpaceNeed: 0.08
+  SpaceNeed: {x: 0.22, y: 0.45, z: 0.78}
   RequiredCloseness: 2.88
   type: 3
   ContextMenu: {fileID: 3642118519948392276}

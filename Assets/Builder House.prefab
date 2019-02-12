@@ -2067,9 +2067,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3526464389635145477}
-  - component: {fileID: 4612155836567779462}
   - component: {fileID: 1699142827206932453}
   - component: {fileID: 2549416605970866110}
+  - component: {fileID: 7106905086792718543}
   m_Layer: 10
   m_Name: Builder House
   m_TagString: Untagged
@@ -2094,19 +2094,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &4612155836567779462
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3526464389635145479}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.21
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!208 &1699142827206932453
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -2117,7 +2104,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_Extents: {x: 1.165, y: 0.68, z: 0.725}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1
@@ -2156,7 +2143,7 @@ MonoBehaviour:
       hardness: 2
     Gold: 20
     ConstructionEffort: 10
-  SpaceNeed: 1
+  SpaceNeed: {x: 2.33, y: 1, z: 1.37}
   RequiredCloseness: 5
   type: 3
   ContextMenu: {fileID: 6686628296730790224}
@@ -2165,11 +2152,25 @@ MonoBehaviour:
   Bar: {fileID: 0}
   description: "A Builder Center. \nGive the ability to turn Citizen into builder.\nBuilder
     are paid 1 gold each second when there is a project going on."
+  BuildRoad: 1
   gauge: {fileID: 0}
   graphics:
   - {fileID: 3526464390674985304}
   - {fileID: 3526464390838670246}
   constructionBonus: 0
+--- !u!65 &7106905086792718543
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3526464389635145479}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.42, y: 1.37, z: 1.34}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3526464389725105681
 GameObject:
   m_ObjectHideFlags: 0
@@ -5804,6 +5805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
 --- !u!1 &6728341258968068703
 GameObject:
   m_ObjectHideFlags: 0
