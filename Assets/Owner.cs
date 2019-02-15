@@ -404,7 +404,7 @@ public class Owner
             //1 gold per second per builder
             if (useB) Gold -= builder * Time.fixedDeltaTime;
             if (e <= 0) e = 1;
-            return constructEffortBase + builder * 5/e;
+            return (constructEffortBase + builder * 5)/e;
         }
     }
 }

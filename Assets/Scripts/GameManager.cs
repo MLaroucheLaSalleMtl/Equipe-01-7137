@@ -562,20 +562,14 @@ public class GameManager : MonoBehaviour
         var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness );
         if(x.BuildRoad)
         foreach (var item in e)
-        {
-
-            
-            if (!item.transform.IsChildOf(x.transform) && item.GetComponent<building>() 
-                 )
+        {        
+            if (!item.transform.IsChildOf(x.transform) && item.GetComponent<building>() )
             {
-
-
-                if (Vector3.Distance(item.transform.position, x.transform.position) <= (x.RequiredCloseness/1.3f)) return;
+              //  if (Vector3.Distance(item.transform.position, x.transform.position) <= (x.RequiredCloseness/1.3f)) break;
 
                     BUI.CreateRoad(item.transform.position, x.gameObject);
-                    break;
-                
-             
+                   break;
+                          
             }
         }
       
