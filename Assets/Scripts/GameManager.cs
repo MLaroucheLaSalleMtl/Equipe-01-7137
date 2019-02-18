@@ -45,7 +45,8 @@ public class GameManager : MonoBehaviour
         owners[0].OnGain += OnOwnerGain;
     }
 
-    public void SeeFogofWar()
+    //Depreciated, was using shader before but wasn't optimized as using a for loop not clean 
+   /* public void SeeFogofWar()
     {
         var mat = Fog.material;
         List<Vector4> lol= new List<Vector4>();
@@ -60,7 +61,7 @@ public class GameManager : MonoBehaviour
         mat.SetInt("arr", 0);
       //  mat.SetVectorArray("_Holes",lol);
         mat.SetInt("arr", lol.Count);
-    }
+    }*/
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
         if (g.bit)
@@ -96,7 +97,7 @@ public class GameManager : MonoBehaviour
             item.Routine();
 
         MUI.ShowUI(owners[0], selection[0]);
-        SeeFogofWar();
+        //Useless SeeFogofWar();
       //  BUI.CancelUI.SetActive(buildmode >= 0);
     }
 
