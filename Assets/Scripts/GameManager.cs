@@ -43,6 +43,12 @@ public class GameManager : MonoBehaviour
         _main = UnityEngine.Camera.main;
 
         owners[0].OnGain += OnOwnerGain;
+        owners[1].Gold += 100;
+        for (int i = 1; i < owners.Length; i++)
+        {
+          var t =  gameObject.AddComponent<Owner_AI>();
+            t.owner = owners[i];
+        }
     }
 
     //Depreciated, was using shader before but wasn't optimized as using a for loop not clean 
@@ -108,7 +114,7 @@ public class GameManager : MonoBehaviour
         MouseInteraction();
     }
     RaycastHit lastresult;
-    public LayerMask Interatable, BuildingMask, Unit;
+    public LayerMask Interatable, BuildingMask, Unit    ;
     Vector3 MousePosition;
     [SerializeField]
     MainUI MUI;
@@ -124,7 +130,7 @@ public class GameManager : MonoBehaviour
         if (buildmode >= 0)
         {
 
-            if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, owners[0]);
+            if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, MousePosition,building_highlight.transform.rotation,owners[0]);
         }
 
         if (buildmode > 0) return;
@@ -539,13 +545,19 @@ public class GameManager : MonoBehaviour
         building_highlight.transform.localRotation = lastrotation;
     }
  
-   void PlaceBuilding(int j, Owner n)
+    public void PlaceBuilding(int j , Owner n)
     {
-        var x = Instantiate(Buildings[j], MousePosition, Quaternion.identity).GetComponent<building>();
-        x.transform.rotation = building_highlight.transform.rotation;
-        lastrotation = building_highlight.transform.rotation;
+        PlaceBuilding(j, MousePosition, building_highlight.transform.rotation, n);
+    }
+
+    
+   public building PlaceBuilding(int j,Vector3 pos,Quaternion rot,Owner n)
+    {
+        var x = Instantiate(Buildings[j],pos, Quaternion.identity).GetComponent<building>();
+        x.transform.rotation = rot; //building_highlight.transform.rotation;
+        lastrotation = rot;//building_highlight.transform.rotation;
         x.TransferOwner(n);
-        x.build(MousePosition, n);
+        x.build(pos, n);
         x.Tier = 0;
         owners[0].Pay(x.costs[0].materials);
         buildmode = -1;
@@ -579,8 +591,10 @@ public class GameManager : MonoBehaviour
         if (_lastbuilding is Wall)Build(j);
         else BUI.BuildingSticker.SetBool("SWCB", false);
         var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness );
-        if(x.BuildRoad)
-        foreach (var item in e)
+
+        /*
+         *    if(x.BuildRoad)
+         * foreach (var item in e)
         {        
             if (!item.transform.IsChildOf(x.transform) && item.GetComponent<building>() )
             {
@@ -590,8 +604,8 @@ public class GameManager : MonoBehaviour
                    break;
                           
             }
-        }
-      
+        }-*/
+        return x;
 
     }
     Quaternion lastrotation;

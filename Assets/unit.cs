@@ -97,13 +97,13 @@ public class unit : entity
         else
         if (aitimer > .3f)
         {
-            var s = Physics.OverlapSphereNonAlloc(transform.position, DetectionRange, _col, GameManager.instance.Interatable, QueryTriggerInteraction.Collide);
-            for (int i = s - 1; i >= 0; i--)
+            var s = Physics.OverlapSphere(transform.position, DetectionRange, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
+            for (int i = s.Length - 1; i >= 0; i--)
             {
 
-                if (_col[i].gameObject.GetComponent<entity>())
+                if (s[i].gameObject.GetComponent<entity>())
                 {
-                    var sauce = _col[i].gameObject.GetComponent<entity>();
+                    var sauce = s[i].gameObject.GetComponent<entity>();
                     if (!sauce) continue;
 
                     if (GetOwner == null && sauce.GetOwner == null) continue;

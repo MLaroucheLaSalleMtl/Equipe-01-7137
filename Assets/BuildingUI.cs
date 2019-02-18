@@ -14,7 +14,9 @@ public class BuildingUI : MonoBehaviour
     public Animator BuildingSticker;
     public GameObject RoadPiece;
     MeshRenderer[] colz;
-    
+
+    [HideInInspector]
+    public static LayerMask _blayer;
 
     public GameObject[] Uis;
 
@@ -38,6 +40,10 @@ public class BuildingUI : MonoBehaviour
     NavMeshAgent agi;
     NavMeshPath RoadCreator;
 
+    private void Awake()
+    {
+        _blayer = BuildingLayer;
+    }
     void _createRoad(Vector3 pos, Vector3 dest,GameObject g)
     {
         var x = (dest - pos).normalized;
@@ -80,6 +86,8 @@ public class BuildingUI : MonoBehaviour
         colz = z.GetComponentsInChildren<MeshRenderer>();
         bref = b;
     }
+
+    //Need to move to Building
     bool Intersect(Vector3 p)
     {
       //  var e = Physics.OverlapBox(p, bref.SpaceNeed, GameManager.instance.building_highlight.transform.rotation, BuildingLayer);

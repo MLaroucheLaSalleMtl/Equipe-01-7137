@@ -87,7 +87,7 @@ public class Owner
     public void Gain(Goods r, int h, Vector3 pos)
     {
         Gain(r, h);
-        OnGain(r, pos);
+        if(OnGain != null)OnGain(r, pos);
     }
     public void Pay(Goods  x)
     {
