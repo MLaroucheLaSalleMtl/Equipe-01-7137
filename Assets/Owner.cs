@@ -20,6 +20,22 @@ public class Owner
     float baseFertilityRate = 1.00f;
     float fertilityMod = 1f, EconomyMod = 1f;
     public float FertilityRate { get { return baseFertilityRate * fertilityMod; } }
+
+    // instantiate factions
+    BorderCalculation border = new BorderCalculation();
+    NodesLineRenderer nodesLineRenderer = new NodesLineRenderer();
+    List<List<node>> nodes = new List<List<node>>();
+    List<node> nodesToRender = new List<node>();
+    
+    public void GenFactions()
+    {
+        nodes = border.GetInitBorderCalculation(new Vector3(200, 10, 250));
+        nodesToRender = border.CornerDraw(nodes, this);        
+        Faction faction = new Faction("Wessex", new Vector3(200, 10, 250),nodesToRender ,GameManager.instance.gameObject.GetComponent<NodesLineRenderer>());
+        faction.GenFrontieres();
+       //odesLineRenderer.Gen(faction);
+    }
+    
     
     [System.Serializable]
  public struct multiplier

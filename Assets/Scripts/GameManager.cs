@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
         _main = UnityEngine.Camera.main;
 
         owners[0].OnGain += OnOwnerGain;
+        
     }
 
     public void OnOwnerGain(Goods g, Vector3 pos)
@@ -619,7 +620,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Nodes = CreateNodes(terrain[0]);
-        BorderCalculation borderCalculation = new BorderCalculation();
+        owners[0].GenFactions();
+
     }
 
 
