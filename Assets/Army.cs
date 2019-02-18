@@ -13,10 +13,10 @@ public class Army : unit
 
             return x;
         } set { Hp = Hp; } }
-    public override void TakeDamage(float t)
+    public override void TakeDamage(float t,DamageType p = DamageType.Null)
     { 
         var x = Random.Range(0, Soldier.Count);
-        Soldier[x].TakeDamage(t);
+        Soldier[x].TakeDamage(t,p);
     }
     public override float getAttack
     {

@@ -18,7 +18,7 @@ public class building : entity
         public float ConstructionEffort;
     }
     public Cost[] costs;
-    public float SpaceNeed = 1;
+    public Vector3 SpaceNeed = Vector3.one;
     public float RequiredCloseness = 5;
     public enum BuildingType
     {
@@ -45,7 +45,17 @@ public class building : entity
             return x * (Hp/maximumHp);
         }
     }
-    private void Start()
+    public bool BuildRoad = false;
+    protected virtual void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, RequiredCloseness / 1.3f);
+        Gizmos.color = Color.cyan + Color.blue;
+        Gizmos.DrawWireSphere(transform.position, RequiredCloseness );
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(transform.position, SpaceNeed);
+    }
+    protected virtual void Start()
     {
      if(ContextMenu)   ContextMenu.SetActive(false);
     }
@@ -57,7 +67,8 @@ public class building : entity
 
     public virtual bool HasEnoughRessource(Dictionary<string ,Goods> x, float g)
     {
-        if(g < costs[Tier].Gold)
+        if (GameManager.DEBUG_GODMODE) return true;
+        if(g < costs[Tier].Gold + GoldCost  )
         {
             print("Not enough gold!");
             return false;
@@ -172,7 +183,7 @@ bool ctxmenu = false;
         //So we do not click when there is an UI;
         if (EventSystem.current.IsPointerOverGameObject()) return;
         if (!BeingBuild)
-            interact(GameManager.selection);
+            interact(GameManager.selection[0]);
 
         OpenContextMenu();
     }

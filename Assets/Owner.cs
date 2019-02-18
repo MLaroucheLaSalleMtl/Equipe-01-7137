@@ -5,6 +5,7 @@ using UnityEngine;
 public class Owner  
 {
     public string Name = "";
+    public Color MainColor;
     public delegate void OnGainHandler(Goods g, Vector3 p);
     public OnGainHandler OnGain;
     public delegate void EntitiesHandler(entity e);
@@ -20,60 +21,100 @@ public class Owner
     float fertilityMod = 1f, EconomyMod = 1f;
     public float FertilityRate { get { return baseFertilityRate * fertilityMod; } }
     
- 
-    public void Gain(Goods r)
+    [System.Serializable]
+ public struct multiplier
     {
-        var s = r.Exploit();
+        public float fertility, economy, storageEfficiency;
+    //    public Dictionary<entity.DamageType, SoliderMultiplier> DamageTypesMod = new Dictionary<entity.DamageType, SoliderMultiplier>();
 
-        if (Inventory.ContainsKey(r.Name))
+        
+      
+
+        //One For Each type A B C, There will also be one for each unit
+        public struct SoliderMultiplier
         {
-            Inventory[s.Name].Merge(s);
-            return;
+            public float AttackMod,
+                SpeedMod,
+                DefenseMod,
+                HpMod,
+                CostMod,
+                RecoveryMod,
+                RangeMod;
+
+
         }
- 
-        Inventory.Add(s.Name,s);
     }
     public void Gain(Goods r,int h)
     {
-      if(r.getAmount <= 0)
+        int ok = -1;
+        for (int i = 0; i < Storages.Count; i++)
         {
-            Debug.Log("Not enough");
-        }
-      
-        var s = r.Exploit(h);
-        if(s == null)
-        {
+            if (Storages[i].StorageType == r.Name)
+            {
 
+                if (Storages[i].HasEnoughSpace(h* r.StorageSize))
+                {
+
+                    ok = i;
+                    break;
+                }
+            }
+        }
+         
+
+
+        if (ok< 0)
+        {
+            Debug.Log("Not enough storage");
             return;
         }
+        var s = r.Exploit(h);
+        if(s == null)
+              return;
+     
 
         if (Inventory.ContainsKey(r.Name))
         {
             Inventory[s.Name].Merge(s);
+            Storages[ok].addStorage(Mathf.Abs(h));
             return;
         }
        // Debug.Log(Name + " gains " + h.ToString() + " " + r.Name);
+       
         Inventory.Add(s.Name,s);
+        Storages[ok].addStorage(Mathf.Abs(h));
     }
     public void Gain(Goods r, int h, Vector3 pos)
     {
         Gain(r, h);
         OnGain(r, pos);
     }
+    public void Pay(Goods  x)
+    {
+
+        foreach (var item in Storages)
+            if (item.StorageType == x.Name)
+            {
+                item.addStorage(-x.getAmount);
+                break;
+            }
+
+        if (Inventory.ContainsKey(x.Name))
+        {
+            if (x.getAmount >= Inventory[x.Name].getAmount)
+            {
+                Inventory[x.Name].Exploit(x.getAmount);
+            }
+            else
+                Inventory.Remove(x.Name);
+        }
+    }
     public void Pay( Goods[] x)
     {
         foreach (var item in x)
-        {
-            if (Inventory.ContainsKey(item.Name))
-            {
-                if(item.getAmount >= Inventory[item.Name].getAmount)
-                {
-                    Inventory[item.Name].Exploit(item.getAmount);
-                }
-                else
-                Inventory.Remove(item.Name);
-            }
-        }
+            Pay(item);
+
+
     }
     //Two similar function, we could add a function for those type of stuff
     public int AddFighter(int m)
@@ -158,6 +199,7 @@ public class Owner
     public List<unit> Units = new List<unit>();
     public List<building> Building = new List<building>();
     public List<CityCore> Cores = new List<CityCore>();
+    public List<Storage> Storages = new List<Storage>();
     public bool Settled = false;
     public List<entity> GetEntities
     {
@@ -177,18 +219,27 @@ public class Owner
     void OnEntitesReceived(entity e)
     {
 
-        if (e is CityCore) {Settled =true;
-            
-            Cores.Add(e as CityCore); }
+        if (e is CityCore)
+        {
+            Settled = true;
+
+            Cores.Add(e as CityCore);
+        }
+        else if (e is Storage)
+            Storages.Add(e as Storage);
         else if (e is building)
-        Building.Add(e as building);
-        else if (e is unit) Units.Add(e as unit);
+            Building.Add(e as building);
+        else if (e is unit) {(e as unit).ChangeColor(MainColor); Units.Add(e as unit); } 
+
+        _getbuildings = GetBuildings();
     }
     void OnEntitiesLost(entity e)
     {
         if (e is CityCore) Cores.Remove(e as CityCore);
+        else if (e is Storage) Storages.Remove(e as Storage);
         else if (e is building) Building.Remove(e as building);
         else if (e is unit) Units.Remove(e as unit);
+        _getbuildings = GetBuildings();
     }
     System.Random randy = new System.Random();
     public Owner()
@@ -230,6 +281,9 @@ public class Owner
             Generation();
             tim2 = 0;
         }
+        for (int i = 0; i < Units.Count; i++)        
+            Units[i].AI();
+        
        
     }
     void buildingRoutine()
@@ -250,19 +304,34 @@ public class Owner
 
     public void GainGold(float g)
     {
-        Gold += g * EconomyMod;
+        Gold += g * EconomyMod; 
 
     }
 
+    private List<building> _getbuildings = new List<building>();
+    public List<building> GetBuildings()
+    {
+
+        var x = new List<building>();
+        for (int i = 0; i < Building.Count; i++)
+            x.Add(Building[i]);
+
+        for (int i = 0; i < Storages.Count; i++)
+            x.Add(Storages[i]);
+
+        return x;
+    }
     float KidPerPerson
     {
         get
         {
+            if (totalPopulation == 0) return 1;
             // This will force the player to expand more and more
 
             // Fertility Rate > Security > Wealth > Space >Infrastructure efficiency
+          
             // 10% of Production Efficiency + 20% of Ratio of Gold/Person + 30% security + base Fertility rate* 30% + HousingSpace/People Ratio 20%
-            return FertilityRate * .3f + (getHousingSpace/totalPopulation) * .2f + getSecurity * .3f + (Gold / totalPopulation) * 0.2f + ProductionEfficiency * .1f; 
+            return (FertilityRate * .6f +  (Gold / totalPopulation) * 0.2f + ProductionEfficiency * .4f) * Mathf.Clamp((getHousingSpace / totalPopulation), .25f, 2) *Mathf.Clamp(getSecurity,.5f,1.5f);
         }
     }
        
@@ -312,7 +381,7 @@ public class Owner
             foreach (var item in Cores)
                 item.interact(item, 1);
  
-            foreach (var item in Building)
+            foreach (var item in _getbuildings)
             {
                 if (item.IsBeingBuild) {
 
@@ -335,7 +404,7 @@ public class Owner
             //1 gold per second per builder
             if (useB) Gold -= builder * Time.fixedDeltaTime;
             if (e <= 0) e = 1;
-            return constructEffortBase + builder * 5/e;
+            return (constructEffortBase + builder * 5)/e;
         }
     }
 }

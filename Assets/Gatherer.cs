@@ -8,6 +8,8 @@ public class Gatherer : building
     bool HasResource = false;
     public Goods Primary;
     public int Yield = 1;
+    [Range(.01f,1000)]
+    public float GatheringSpeed = .25f;
     
     // Start is called before the first frame update
 
@@ -16,8 +18,8 @@ public class Gatherer : building
     private void FixedUpdate()
     {
         timer += Time.fixedDeltaTime;
-        //Different ressource, different timing OR we can use one fix timer
-        if(timer > 1 && HasResource  )
+        //Different ressourc, different timing OR we can use one fix timer
+        if(timer > (  Primary.hardness/GatheringSpeed) && HasResource  )
         {
             GatherRessource();
             timer = 0;
@@ -27,7 +29,7 @@ public class Gatherer : building
     {
         //Ressource are currently finite, we should find a way to replenish 'em
         if(Primary.getAmount > 0) GetOwner.Gain(Primary,Yield,transform.position);
-    }
+    } 
     public override bool ApprovedBuilding(Vector3 pos, Owner g)
     {
 
@@ -62,9 +64,10 @@ public class Gatherer : building
                         Primary = item.resource;
                         HasResource = true;
                         if (item.resource.Name == "Wood")
-                        {
                             RessourceAddon[0].SetActive(true);
-                        }
+                        else if (item.resource.Name == "Stone")                
+                            RessourceAddon[1].SetActive(true);
+ 
                         return;
                     }
                 }

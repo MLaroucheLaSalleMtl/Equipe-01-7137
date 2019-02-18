@@ -5,29 +5,60 @@ using UnityEngine.UI;
 
 public class MainUI : MonoBehaviour
 {
-    public Text Population, Gold, Security, Growth;
+    public Text[] Txt;
     public GameObject Jobs;
-    
+    public RectTransform BSelection;
 
    public Text Builder, Merchant, Research,Civilian;
     public Text UnitInfo;
-    
+
+    public Animator Action_sticker;
     Owner lastOwner;
 
 
-    
+    Camera _main;
+    GameObject draggor;
     private void Awake()
     {
-      
+        _main = Camera.main;
+        draggor = Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cube), transform.position, Quaternion.identity);
+        if (draggor.GetComponent<Collider>()) Destroy(draggor.GetComponent<Collider>());
+
+
+    }
+
+    Rect lastbox;
+    public void BoxSelection(Vector3 MouseClickPos, Vector3 MouseReleasePos)
+    {
+        var e = new List<entity>();
+        //   
+ 
+        BSelection.gameObject.SetActive(true);
+         var a = _main.WorldToScreenPoint(MouseClickPos);
+        var b = _main.WorldToScreenPoint(MouseReleasePos);
+        BSelection.position = (a + b) / 2f;
+        var size = new Vector2(Mathf.Abs(b.x - a.x),Mathf.Abs( b.y - a.y));
+        BSelection.sizeDelta = size; 
+    }
+    string uiressource(string w,Owner n)
+    {
+        if (!n.Inventory.ContainsKey(w)) return "0";
+        else return n.Inventory[w].getAmount.ToString();
+
     }
     public void ShowUI(Owner n,entity e)
     {
         lastOwner = n;
-        Population.text = "POP: " + n.totalPopulation.ToString() + "/ HOUSE:" + n.getHousingSpace;
-        Gold.text = "Gold: " + n.Gold.ToString("0.00");
-    
-        Security.text = "Security: "+( n.getSecurity * 100).ToString("0") + "%";
-        Growth.text =  "     +" +n.getPopulationGrowth.ToString("0");
+        Txt[0].text =  n.totalPopulation.ToString() ;
+        Txt[1].text = n.getHousingSpace.ToString();
+        Txt[4].text =  n.Gold.ToString("0.00");
+        Txt[2].text = n.getSecurity.ToString();
+        Txt[3].text = n.ProductionEfficiency.ToString();
+        Txt[5].text = uiressource("Wood",n);
+        Txt[6].text = uiressource("Stone",n);
+      
+
+        //  Growth.text =  "     +" +n.getPopulationGrowth.ToString("0");
         Builder.gameObject.SetActive(n.BuilderCenter);
         Merchant.gameObject.SetActive(n.MerchantCenter);
         Research.gameObject.SetActive(n.ResearchCenter);
