@@ -33,7 +33,7 @@ public class unit : entity
     protected virtual float GetMovingSpeed
     {
         get { return Speed; }
-    }
+    } 
     public virtual float getAttack
     {
         get { return attack; }

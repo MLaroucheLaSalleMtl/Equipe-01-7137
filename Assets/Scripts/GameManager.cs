@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    public MeshRenderer Fog;
     public Terrain[] terrain;
     public node[] Nodes;
     public static Owner[] owners = new Owner[2] { new Owner() { Name = "Nana", MainColor = Color.blue }, new Owner() { Name = "David", MainColor = Color.green } };
@@ -44,6 +45,22 @@ public class GameManager : MonoBehaviour
         owners[0].OnGain += OnOwnerGain;
     }
 
+    public void SeeFogofWar()
+    {
+        var mat = Fog.material;
+        List<Vector4> lol= new List<Vector4>();
+        for (int i = 0; i < owners[0].Units.Count; i++)  
+        {
+            var item = owners[0].Units[i];
+            var e = new Vector4(item.transform.position.z, item.DetectionRange, item.transform.position.z, 0);
+            //   lol.Add(e);
+            mat.SetVector("_Holes" + i,e);
+        }
+       
+        mat.SetInt("arr", 0);
+      //  mat.SetVectorArray("_Holes",lol);
+        mat.SetInt("arr", lol.Count);
+    }
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
         if (g.bit)
@@ -79,6 +96,7 @@ public class GameManager : MonoBehaviour
             item.Routine();
 
         MUI.ShowUI(owners[0], selection[0]);
+        SeeFogofWar();
       //  BUI.CancelUI.SetActive(buildmode >= 0);
     }
 
