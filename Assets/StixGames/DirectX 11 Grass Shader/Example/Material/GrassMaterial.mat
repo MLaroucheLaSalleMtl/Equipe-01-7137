@@ -4,14 +4,16 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: GrassMaterial
   m_Shader: {fileID: 4800000, guid: 1902925be899f6c4794040c4a1c39b50, type: 3}
   m_ShaderKeywords: GRASS_CALC_GLOBAL_WIND GRASS_FOLLOW_SURFACE_NORMAL GRASS_HEIGHT_SMOOTHING
     GRASS_IGNORE_GI_SPECULAR GRASS_OBJECT_MODE GRASS_WIDTH_SMOOTHING ONE_GRASS_TYPE
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []

@@ -87,7 +87,7 @@ public class Owner
     public void Gain(Goods r, int h, Vector3 pos)
     {
         Gain(r, h);
-        OnGain(r, pos);
+        if(OnGain != null)OnGain(r, pos);
     }
     public void Pay(Goods  x)
     {
@@ -404,7 +404,7 @@ public class Owner
             //1 gold per second per builder
             if (useB) Gold -= builder * Time.fixedDeltaTime;
             if (e <= 0) e = 1;
-            return constructEffortBase + builder * 5/e;
+            return (constructEffortBase + builder * 5)/e;
         }
     }
 }
