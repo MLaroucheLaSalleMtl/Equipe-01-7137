@@ -5,6 +5,9 @@ using UnityEngine;
 public class Owner  
 {
     public string Name = "";
+    public Faction faction;
+    public Vector3 vector3;
+    public NodesLineRenderer nodeLineRenderer;
     public Color MainColor;
     public delegate void OnGainHandler(Goods g, Vector3 p);
     public OnGainHandler OnGain;
@@ -29,11 +32,13 @@ public class Owner
     
     public void GenFactions()
     {
-        nodes = border.GetInitBorderCalculation(new Vector3(200, 10, 250));
-        nodesToRender = border.CornerDraw(nodes, this);        
-        Faction faction = new Faction("Wessex", new Vector3(200, 10, 250),nodesToRender ,GameManager.instance.gameObject.GetComponent<NodesLineRenderer>());
+        nodes = border.GetInitBorderCalculation(vector3, this);
+        nodesToRender = border.CornerDraw(nodes, this);
+
+        nodeLineRenderer = GameManager.instance.transform.Find(Name).gameObject.GetComponent<NodesLineRenderer>();
+        faction = new Faction(Name, vector3, nodesToRender, nodeLineRenderer);
         faction.GenFrontieres();
-       //odesLineRenderer.Gen(faction);
+        //odesLineRenderer.Gen(faction);
     }
     
     

@@ -34,16 +34,17 @@ public class BorderCalculation
     }
 
 
-    public List<List<node>> GetInitBorderCalculation(Vector3 pointPivot)
+    public List<List<node>> GetInitBorderCalculation(Vector3 pointPivot, Owner owner)
     {
         List<node> Borders = new List<node>();
-        int width=4;
+
+        int width = 4;
         int index = 0;
         var listNodeList = new List<List<node>>();
         float terrainWidth = Mathf.Sqrt(GameManager.instance.Nodes.Length);
         UnityEngine.Debug.Log("this is the " + " groupe, positions : " + terrainWidth);
 
-        for (int z = 0; z < (terrainWidth/4); z++)
+        for (int z = 0; z < (terrainWidth / 4); z++)
         {
             for (int i = 0; i < terrainWidth; i += ((int)terrainWidth * 4))
             {
@@ -59,61 +60,68 @@ public class BorderCalculation
             }
 
         }
-       
-        //foreach (var item in listNodeList)
-        //{
-        //    foreach (var item2 in item)
-        //    {
-        //        Borders.Add(item2);
-        //    }
-            
-        //}
+
+
         foreach (var item in GameManager.instance.Nodes)
         {
+
             float dist = Vector3.Distance(pointPivot, item.transform.position);
 
-            if (dist < 100)
+            if (dist < 75)
             {
-                //NodesList.Add(item);
-                //Borders.Add(item);
-                
+                if (item.GetOwner.Name == "Neutral")
+                {
+                    item.SetOwner(owner);
+                    UnityEngine.Debug.Log(owner.Name);
+                }
 
             }
+            else if (item.GetOwner.Name == "Neutral")
+            {
+                item.SetOwner(GameManager.owners[2]);
+            }
+
 
         }
 
-       
+
         return listNodeList;
     }
-    // the owner has to be set right (not implemented yet)!!! 
+
     public List<node> CornerDraw(List<List<node>> input, Owner owner)
     {
-        int x = 0;
+
         int y = 0;
+
+
+
         int listWidth = (int)Math.Sqrt(input.Count);
         List<node> borders = new List<node>();
-      
-        for (; x < input.Count; x++)
+
+        for (int x = 0; x < input.Count; x++)
         {
             if (input[x][0].GetOwner == owner)
             {
                 //left
-                if (x>=1)
+                if (x >= 1)
                 {
                     if (input[x - 1][0].GetOwner != owner)
                     {
                         borders.Add(input[x][4]);
                         borders.Add(input[x][8]);
                     }
-                }       
+                }
                 //right
-                if (input[x + 1][0].GetOwner != owner)
+                if (x + 1 < input.Count)
                 {
-                    borders.Add(input[x][7]);
-                    borders.Add(input[x][11]);
+                    if (input[x + 1][0].GetOwner != owner)
+                    {
+                        borders.Add(input[x][7]);
+                        borders.Add(input[x][11]);
+                    }
                 }
                 //up
-                if (x>=listWidth)
+                if (x >= listWidth)
                 {
                     if (input[x - listWidth][0].GetOwner != owner)
                     {
@@ -122,22 +130,84 @@ public class BorderCalculation
                     }
                 }
                 //down
-                if (input[x + listWidth][0].GetOwner != owner)
+                if (x + listWidth < input.Count)
                 {
-                    borders.Add(input[x][13]);
-                    borders.Add(input[x][14]);
+                    if (input[x + listWidth][0].GetOwner != owner)
+                    {
+                        borders.Add(input[x][13]);
+                        borders.Add(input[x][14]);
+                    }
                 }
+
 
                 //check up down left and right for owners
                 // if not owner then create a line renderer on corner
-                
+
             }
-            
+
+
         }
-        
-        return borders;
+
+
+        List<node> Fnodes = new List<node>();
+        node ToAdd = new node();
+        node tempNode = new node();
+        node initialNode = new node();
+        int count = 0;
+        while (borders.Count > 1)
+        {
+            int closest = 90;
+            int curr = 100;
+
+            if (count == 0)
+            {
+                Fnodes.Add(borders[1]);
+                ToAdd = borders[1];
+                initialNode = borders[1];
+            }
+            for (int x = 0; x < borders.Count - 1; x++)
+            {
+
+                curr = (int)Vector3.Distance(ToAdd.GetPosition, borders[x].GetPosition);
+                if (closest > curr)
+                {
+                    // UnityEngine.Debug.Log(closest);
+                    closest = curr;
+                    tempNode = borders[x];
+                }
+
+
+            }
+            ToAdd = tempNode;
+            Fnodes.Add(ToAdd);
+            borders.Remove(ToAdd);
+            count++;
+            if (count == 200)
+            {
+                break;
+            }
+        }
+        Fnodes.Add(initialNode);
+
+
+        return Fnodes;
     }
-    
-    
+
+    public void GenLineRenderers(List<List<node>> input)
+    {
+        foreach (var listNodes in input)
+        {
+            foreach (var item in listNodes)
+            {
+                item.gameObject.AddComponent<LineRenderer>();
+                break;
+            }
+        }
+    }
+
+
+
+
 }
+
 
