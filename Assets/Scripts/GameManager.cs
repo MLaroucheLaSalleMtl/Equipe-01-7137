@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    public MeshRenderer Fog;
     public Terrain[] terrain;
     public node[] Nodes;
     public static Owner[] owners = new Owner[2] { new Owner() { Name = "Nana", MainColor = Color.blue }, new Owner() { Name = "David", MainColor = Color.green } };
@@ -42,9 +43,31 @@ public class GameManager : MonoBehaviour
         _main = UnityEngine.Camera.main;
 
         owners[0].OnGain += OnOwnerGain;
-        
+        owners[1].Gold += 100;
+        for (int i = 1; i < owners.Length; i++)
+        {
+          var t =  gameObject.AddComponent<Owner_AI>();
+            t.owner = owners[i];
+        }
     }
 
+    //Depreciated, was using shader before but wasn't optimized as using a for loop not clean 
+   /* public void SeeFogofWar()
+    {
+        var mat = Fog.material;
+        List<Vector4> lol= new List<Vector4>();
+        for (int i = 0; i < owners[0].Units.Count; i++)  
+        {
+            var item = owners[0].Units[i];
+            var e = new Vector4(item.transform.position.z, item.DetectionRange, item.transform.position.z, 0);
+            //   lol.Add(e);
+            mat.SetVector("_Holes" + i,e);
+        }
+       
+        mat.SetInt("arr", 0);
+      //  mat.SetVectorArray("_Holes",lol);
+        mat.SetInt("arr", lol.Count);
+    }*/
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
         if (g.bit)
@@ -80,6 +103,7 @@ public class GameManager : MonoBehaviour
             item.Routine();
 
         MUI.ShowUI(owners[0], selection[0]);
+        //Useless SeeFogofWar();
       //  BUI.CancelUI.SetActive(buildmode >= 0);
     }
 
@@ -90,7 +114,7 @@ public class GameManager : MonoBehaviour
         MouseInteraction();
     }
     RaycastHit lastresult;
-    public LayerMask Interatable, BuildingMask, Unit;
+    public LayerMask Interatable, BuildingMask, Unit    ;
     Vector3 MousePosition;
     [SerializeField]
     MainUI MUI;
@@ -106,7 +130,7 @@ public class GameManager : MonoBehaviour
         if (buildmode >= 0)
         {
 
-            if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, owners[0]);
+            if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, MousePosition,building_highlight.transform.rotation,owners[0]);
         }
 
         if (buildmode > 0) return;
@@ -521,13 +545,19 @@ public class GameManager : MonoBehaviour
         building_highlight.transform.localRotation = lastrotation;
     }
  
-   void PlaceBuilding(int j, Owner n)
+    public void PlaceBuilding(int j , Owner n)
     {
-        var x = Instantiate(Buildings[j], MousePosition, Quaternion.identity).GetComponent<building>();
-        x.transform.rotation = building_highlight.transform.rotation;
-        lastrotation = building_highlight.transform.rotation;
+        PlaceBuilding(j, MousePosition, building_highlight.transform.rotation, n);
+    }
+
+    
+   public building PlaceBuilding(int j,Vector3 pos,Quaternion rot,Owner n)
+    {
+        var x = Instantiate(Buildings[j],pos, Quaternion.identity).GetComponent<building>();
+        x.transform.rotation = rot; //building_highlight.transform.rotation;
+        lastrotation = rot;//building_highlight.transform.rotation;
         x.TransferOwner(n);
-        x.build(MousePosition, n);
+        x.build(pos, n);
         x.Tier = 0;
         owners[0].Pay(x.costs[0].materials);
         buildmode = -1;
@@ -561,8 +591,10 @@ public class GameManager : MonoBehaviour
         if (_lastbuilding is Wall)Build(j);
         else BUI.BuildingSticker.SetBool("SWCB", false);
         var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness );
-        if(x.BuildRoad)
-        foreach (var item in e)
+
+        /*
+         *    if(x.BuildRoad)
+         * foreach (var item in e)
         {        
             if (!item.transform.IsChildOf(x.transform) && item.GetComponent<building>() )
             {
@@ -572,8 +604,8 @@ public class GameManager : MonoBehaviour
                    break;
                           
             }
-        }
-      
+        }-*/
+        return x;
 
     }
     Quaternion lastrotation;

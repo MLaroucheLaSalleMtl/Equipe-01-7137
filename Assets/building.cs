@@ -204,6 +204,12 @@ bool ctxmenu = false;
             tim = 0;
         }
     }
+
+    public bool Intersect(Vector3 p)
+    {
+ 
+        return !Physics.CheckBox(p,  SpaceNeed, transform.rotation,BuildingUI._blayer);//Physics.CheckBox(p + Vector3.up * .65f, new Vector3(bref.SpaceNeed,.24f,bref.SpaceNeed),Quaternion.identity, BuildingLayer);
+    }
     protected virtual void  Construction(float x )
     {
         currEffort += Time.fixedDeltaTime * x;
