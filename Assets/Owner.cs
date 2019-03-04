@@ -5,6 +5,9 @@ using UnityEngine;
 public class Owner  
 {
     public string Name = "";
+    public Faction faction;
+    public Vector3 vector3;
+    public NodesLineRenderer nodeLineRenderer;
     public Color MainColor;
     public delegate void OnGainHandler(Goods g, Vector3 p);
     public OnGainHandler OnGain;
@@ -20,6 +23,24 @@ public class Owner
     float baseFertilityRate = 1.00f;
     float fertilityMod = 1f, EconomyMod = 1f;
     public float FertilityRate { get { return baseFertilityRate * fertilityMod; } }
+
+    // instantiate factions
+    BorderCalculation border = new BorderCalculation();
+    NodesLineRenderer nodesLineRenderer = new NodesLineRenderer();
+    List<List<node>> nodes = new List<List<node>>();
+    List<node> nodesToRender = new List<node>();
+    
+    public void GenFactions()
+    {
+        nodes = border.GetInitBorderCalculation(vector3, this);
+        nodesToRender = border.CornerDraw(nodes, this);
+
+        nodeLineRenderer = GameManager.instance.transform.Find(Name).gameObject.GetComponent<NodesLineRenderer>();
+        faction = new Faction(Name, vector3, nodesToRender, nodeLineRenderer);
+        faction.GenFrontieres();
+        //odesLineRenderer.Gen(faction);
+    }
+    
     
     [System.Serializable]
  public struct multiplier

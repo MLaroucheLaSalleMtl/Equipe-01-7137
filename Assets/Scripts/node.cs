@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class node : MonoBehaviour
 {
+  
+
     [SerializeField]
     protected Owner owner;
+    protected float AngleToCenter;
 
     MeshRenderer rendi;
     MeshFilter filty;
@@ -84,9 +87,21 @@ public class node : MonoBehaviour
         filty.sharedMesh = m;*/
     }
     //We don't want to reset it, do we ?
-  
-     
- 
+
+
+    //add DD 05/02/2019
+    public void SetNodeAngleToCenter(float angle)
+    {
+       AngleToCenter = angle;
+        
+    }
+    public float GetNodeAngleToCenter
+    {
+        get { return AngleToCenter; }
+    }
+    //
+
+
     public Owner GetOwner
     {
         get { return owner; }
@@ -116,6 +131,8 @@ public class node : MonoBehaviour
     public float AverageHeight = 1;
     public float terrainhardness;
    
+    
+
     public Goods resource;
     public Terrain terrain;
     

@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public MeshRenderer Fog;
     public Terrain[] terrain;
     public node[] Nodes;
-    public static Owner[] owners = new Owner[2] { new Owner() { Name = "Nana", MainColor = Color.blue }, new Owner() { Name = "David", MainColor = Color.green } };
+    public static Owner[] owners = new Owner[3] { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) }, new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) }, new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) } };
     public static float SecondPerGenerations = 60;
     public static bool DEBUG_GODMODE = true;
     [Header("Assets")]
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
 
         owners[0].OnGain += OnOwnerGain;
         owners[1].Gold += 100;
-        for (int i = 1; i < owners.Length; i++)
+        for (int i = 1; i < owners.Length-1; i++)
         {
           var t =  gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
@@ -652,6 +652,16 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Nodes = CreateNodes(terrain[0]);
+       
+        foreach (var item in GameManager.instance.Nodes)
+        {
+            item.SetOwner(owners[2]);
+        }
+
+        owners[0].GenFactions();
+        owners[1].GenFactions();
+
+
     }
 
 
