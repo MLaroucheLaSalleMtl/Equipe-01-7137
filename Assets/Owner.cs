@@ -30,18 +30,53 @@ public class Owner
     List<List<node>> nodes = new List<List<node>>();
     List<node> nodesToRender = new List<node>();
     
-    public void GenFactions()
+     public void Start()
+    {
+        GenFactions();
+    }
+     void GenFactions()
     {
         nodes = border.GetInitBorderCalculation(vector3, this);
         nodesToRender = border.CornerDraw(nodes, this);
 
-        nodeLineRenderer = GameManager.instance.transform.Find(Name).gameObject.GetComponent<NodesLineRenderer>();
+        //     nodeLineRenderer = GameManager.instance.transform.Find(Name).gameObject.GetComponent<NodesLineRenderer>();
+        nodeLineRenderer = GameObject.Instantiate(GameManager.instance.NodeRendererPrefab, GameManager.instance.transform).GetComponent<NodesLineRenderer>();
+        nodeLineRenderer.name = Name;
         faction = new Faction(Name, vector3, nodesToRender, nodeLineRenderer);
         faction.GenFrontieres();
+        Vector3[] e = new Vector3[nodeLineRenderer.lineRenderer.positionCount];
+         nodeLineRenderer.lineRenderer.GetPositions(e);
+        var y = Vector3.zero;
+        for (int i = 0; i < nodeLineRenderer.lineRenderer.positionCount; i++)
+           e[i] += Vector3.up * 4;
+
+
+
+        nodeLineRenderer.lineRenderer.SetPositions(e);
+
+        foreach (var item in e)
+        {
+            y += item;
+        }
+        y /= e.Length;
+        var fx = y;
+        var f22 = new RaycastHit();
+        var rc = Physics.Raycast(fx + Vector3.up * 3, Vector3.down, out f22, 111, GameManager.instance.Interatable);
+
+        var cc = GameObject.Instantiate(GameManager.instance.Buildings[4], y - Vector3.up * 4, Quaternion.identity).GetComponent<CityCore>();
+        if (rc) { fx.y = f22.point.y + .2f;   }
+        cc.transform.position = fx;
+        cc.TransferOwner(this);
+        
+
+        nodeLineRenderer.transform.position = y - Vector3.up * 11;
+        nodeLineRenderer.lineRenderer.material.color= MainColor;
+        nodeLineRenderer.lineRenderer.endColor = MainColor;
+        nodeLineRenderer.txt.text = Name;
         //odesLineRenderer.Gen(faction);
     }
-    
-    
+
+
     [System.Serializable]
  public struct multiplier
     {

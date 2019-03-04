@@ -79,6 +79,7 @@ public class BuildingUI : MonoBehaviour
     }
     public void SetStartingPoint(Vector3 pos)
     {
+        if (!agi) return;
         agi.transform.position = pos;
     }
     public void Planing(GameObject z, building b)
