@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+
     public static GameManager instance;
     public MeshRenderer Fog;
     public Terrain[] terrain;
@@ -22,8 +23,16 @@ public class GameManager : MonoBehaviour
     public GameObject _army;
     public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
+    public GameObject NodeRendererPrefab;
     Camera _main;
     [Header("Flair")]
+
+   //
+   public Text countsoldierssword;
+   public Text countsoldierspear;
+
+
+
 
     public GameObject[] Cursor3D;
 
@@ -43,10 +52,11 @@ public class GameManager : MonoBehaviour
         _main = UnityEngine.Camera.main;
 
         owners[0].OnGain += OnOwnerGain;
-        owners[1].Gold += 100;
-        for (int i = 1; i < owners.Length-1; i++)
+      
+        for (int i = 0; i < owners.Length-1; i++)
         {
-          var t =  gameObject.AddComponent<Owner_AI>();
+            owners[i].Gold += 100;
+            var t =  gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
         }
     }
@@ -102,6 +112,7 @@ public class GameManager : MonoBehaviour
         foreach (var item in owners)
             item.Routine();
 
+        if(owners.Length > 0)
         MUI.ShowUI(owners[0], selection[0]);
         //Useless SeeFogofWar();
       //  BUI.CancelUI.SetActive(buildmode >= 0);
@@ -331,9 +342,13 @@ public class GameManager : MonoBehaviour
                
                 }
             }
-            if (s.Count > 0) OnDragSelection(s.ToArray());
+            if (s.Count > 0) {
 
+              //  countsoldierspear.text = s.Count.ToString("D4"); this also 
 
+                OnDragSelection(s.ToArray()); }
+
+          
         }
      
 
@@ -346,10 +361,12 @@ public class GameManager : MonoBehaviour
     public void OnDragSelection(unit[] e)
     {
         selection = e;
+        //countsoldierspear.text = e.ToString(); nevermind this 
         UiSelection[0].SetActive(true);
         UiSelection[1].SetActive(true);
         MUI.Action_sticker.SetTrigger("open");
     }
+
     public GameObject[] UiSelection;
     int currentmode = 0;
     entity target;
@@ -487,7 +504,7 @@ public class GameManager : MonoBehaviour
 
         }
 
-        if (!ctrl) { BUI.Highlight.transform.position = MousePosition; }
+        if (!ctrl && BUI.Highlight) { BUI.Highlight.transform.position = MousePosition; }
        
 
 
@@ -495,6 +512,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public static entity[] selection = new entity[1];
 
+    
     //Relate to camera
     Vector3 EdgeScrolling
     {
@@ -651,6 +669,14 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
+     /*   var e = new List<node>();
+        foreach (var item in terrain)
+        {
+            var y = CreateNodes(item);
+            for (int i = 0; i < y.Length; i++)
+                e.Add(y[i]);
+        }
+        Nodes = e.ToArray();    */
         Nodes = CreateNodes(terrain[0]);
        
         foreach (var item in GameManager.instance.Nodes)
@@ -658,8 +684,8 @@ public class GameManager : MonoBehaviour
             item.SetOwner(owners[2]);
         }
 
-        owners[0].GenFactions();
-        owners[1].GenFactions();
+        owners[0].Start();
+        owners[1].Start();
 
 
     }

@@ -49,14 +49,19 @@ public class MainUI : MonoBehaviour
     public void ShowUI(Owner n,entity e)
     {
         lastOwner = n;
-        Txt[0].text =  n.totalPopulation.ToString() ;
-        Txt[1].text = n.getHousingSpace.ToString();
-        Txt[4].text =  n.Gold.ToString("0.00");
-        Txt[2].text = n.getSecurity.ToString();
-        Txt[3].text = n.ProductionEfficiency.ToString();
-        Txt[5].text = uiressource("Wood",n);
-        Txt[6].text = uiressource("Stone",n);
-      
+ 
+        if(Txt.Length > 0)
+        {
+            Txt[0].text = n.totalPopulation.ToString();
+            Txt[1].text = n.getHousingSpace.ToString();
+            Txt[4].text = n.Gold.ToString("0.00");
+            Txt[2].text = n.getSecurity.ToString();
+            Txt[3].text = n.ProductionEfficiency.ToString();
+            Txt[5].text = uiressource("Wood", n);
+            Txt[6].text = uiressource("Stone", n);
+
+        }
+
 
         //  Growth.text =  "     +" +n.getPopulationGrowth.ToString("0");
         Builder.gameObject.SetActive(n.BuilderCenter);

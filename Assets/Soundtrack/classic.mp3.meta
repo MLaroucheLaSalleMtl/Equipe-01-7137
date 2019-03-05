@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 2c7e56d7851563140ad20a5e8a3ff66c
+=======
+guid: c55d8c0edd62ddd4488fa018f2800102
+>>>>>>> Gameplay
 AudioImporter:
   externalObjects: {}
   serializedVersion: 6

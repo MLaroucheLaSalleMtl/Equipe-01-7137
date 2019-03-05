@@ -14,6 +14,7 @@ public class Owner_AI : MonoBehaviour
     building lastbuilding;
     private void Start()
     {
+        if (owner.Cores.Count == 0) return;
         StartCoroutine(Act());
     }
     int garisson = 0;
@@ -31,6 +32,8 @@ public class Owner_AI : MonoBehaviour
         while (true)
         {
  
+
+            
             if (!lastbuilding || !lastbuilding.IsBeingBuild)
             {
 
@@ -137,17 +140,34 @@ public class Owner_AI : MonoBehaviour
             f.Normalize();
             if (y.Intersect(e.transform.position + (f + dir) * (1f + y.SpaceNeed.magnitude))) break;
         }
-      
-            
+        var fx = e.transform.position + (f + dir) * (1f + y.SpaceNeed.magnitude);
+       
+        var f22 = new RaycastHit();
+        var rc = Physics.Raycast(fx + Vector3.up * 2, Vector3.down, out f22, 8, GameManager.instance.Interatable);
+
         lastbuilding = GameManager.instance.PlaceBuilding(c, e.transform.position + (f + dir) * (1f +y.SpaceNeed.magnitude) , Quaternion.Euler(f), owner);
+       
+        if (rc) {   fx.y = f22.point.y + .1f; }
+    
+        lastbuilding.transform.position = fx;
         print(owner.Name + " built building " + lastbuilding.name);
     }
     public void NearBuildingPlanning(int c, Vector3 pos)
     {
-     
 
+        var fx = pos;
+
+        var f22 = new RaycastHit();
+        var rc = Physics.Raycast(fx + Vector3.up * 3, Vector3.down, out f22, 5, GameManager.instance.Interatable);
         lastbuilding = GameManager.instance.PlaceBuilding(c, pos ,
             Quaternion.identity, owner);
+
+
+       
+        if (rc) { fx = f22.point; }
+
+
+        lastbuilding.transform.position = fx;
         print(owner.Name + " built building " + lastbuilding.name);
     }
     private void FixedUpdate()
