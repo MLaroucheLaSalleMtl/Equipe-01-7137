@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+
     public static GameManager instance;
     public MeshRenderer Fog;
     public Terrain[] terrain;
@@ -25,6 +26,13 @@ public class GameManager : MonoBehaviour
     public GameObject NodeRendererPrefab;
     Camera _main;
     [Header("Flair")]
+
+   //
+   public Text countsoldierssword;
+   public Text countsoldierspear;
+
+
+
 
     public GameObject[] Cursor3D;
 
@@ -334,9 +342,13 @@ public class GameManager : MonoBehaviour
                
                 }
             }
-            if (s.Count > 0) OnDragSelection(s.ToArray());
+            if (s.Count > 0) {
 
+              //  countsoldierspear.text = s.Count.ToString("D4"); this also 
 
+                OnDragSelection(s.ToArray()); }
+
+          
         }
      
 
@@ -349,10 +361,12 @@ public class GameManager : MonoBehaviour
     public void OnDragSelection(unit[] e)
     {
         selection = e;
+        //countsoldierspear.text = e.ToString(); nevermind this 
         UiSelection[0].SetActive(true);
         UiSelection[1].SetActive(true);
         MUI.Action_sticker.SetTrigger("open");
     }
+
     public GameObject[] UiSelection;
     int currentmode = 0;
     entity target;
