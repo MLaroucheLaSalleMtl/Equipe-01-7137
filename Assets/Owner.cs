@@ -57,34 +57,42 @@ public class Owner
         nodeLineRenderer.name = Name;
         faction = new Faction(Name, vector3, nodesToRender, nodeLineRenderer);
         faction.GenFrontieres();
-        Vector3[] e = new Vector3[nodeLineRenderer.lineRenderer.positionCount];
-         nodeLineRenderer.lineRenderer.GetPositions(e);
-        var y = Vector3.zero;
+
+
+
+         Vector3[] borderpath = new Vector3[nodeLineRenderer.lineRenderer.positionCount];
+         nodeLineRenderer.lineRenderer.GetPositions(borderpath);
+        var center = Vector3.zero;
+
+        //Adjust the Heigth of each position for visual appeal
         for (int i = 0; i < nodeLineRenderer.lineRenderer.positionCount; i++)
-           e[i] += Vector3.up * 4;
+           borderpath[i] += Vector3.up * 4;
+        nodeLineRenderer.lineRenderer.SetPositions(borderpath);
 
 
 
-        nodeLineRenderer.lineRenderer.SetPositions(e);
+        //Get the center from the borer
+        foreach (var item in borderpath)
+            center += item;
 
-        foreach (var item in e)
-        {
-            y += item;
-        }
-        y /= e.Length;
-        var fx = y;
-        var f22 = new RaycastHit();
-        var rc = Physics.Raycast(fx + Vector3.up * 3, Vector3.down, out f22, 111, GameManager.instance.Interatable);
+        center /= borderpath.Length;
 
-        var cc = GameObject.Instantiate(GameManager.instance.Buildings[4], y - Vector3.up * 4, Quaternion.identity).GetComponent<CityCore>();
-        if (rc) { fx.y = f22.point.y + .2f;   }
-        cc.transform.position = fx;
+        //Set the City center in... the center
+        var ccpos = center;
+        var rch = new RaycastHit();
+        //raycast for more precision
+        var hitConfirmed = Physics.Raycast(ccpos + Vector3.up * 3, Vector3.down, out rch, 111, GameManager.instance.Interatable);
+        var cc = GameObject.Instantiate(GameManager.instance.Buildings[4], center - Vector3.up * 4, Quaternion.identity).GetComponent<CityCore>();
+        if (hitConfirmed) { ccpos.y = rch.point.y + .2f;   }
+        cc.transform.position = ccpos;
         cc.TransferOwner(this);
         
-
-        nodeLineRenderer.transform.position = y - Vector3.up * 11;
+        //Change the NLR center so we see the name 
+        nodeLineRenderer.transform.position = center - Vector3.up * 11;
+        //And the color
         nodeLineRenderer.lineRenderer.material.color= MainColor;
         nodeLineRenderer.lineRenderer.endColor = MainColor;
+        //Naming
         nodeLineRenderer.txt.text = Name;
         //odesLineRenderer.Gen(faction);
     }
