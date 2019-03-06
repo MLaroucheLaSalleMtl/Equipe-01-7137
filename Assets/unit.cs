@@ -12,7 +12,11 @@ public class unit : entity
      NavMeshAgent agi;
     [SerializeField]
     GameObject indicator;
-
+    public bool HasIssuesCommand
+    {
+        get { return Ordered; }
+    }
+    bool Ordered = false;
     public override void Death()
     {
         StopAllCoroutines();
@@ -42,7 +46,7 @@ public class unit : entity
       float attack = 5;
     public float defense = 5;
     public float DetectionRange = 1;
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, DetectionRange);
@@ -103,17 +107,26 @@ public class unit : entity
 
                 if (s[i].gameObject.GetComponent<entity>())
                 {
+
+
                     var sauce = s[i].gameObject.GetComponent<entity>();
                     if (!sauce) continue;
-
+                    if (last_agressor && last_agressor == sauce)
+                    {
+                        Attack(last_agressor);
+                        return;
+                    }
                     if (GetOwner == null && sauce.GetOwner == null) continue;
+                    if (sauce.GetOwner == GetOwner) continue;
                     if ((sauce.gameObject == this.gameObject))
                         continue;
-                    if (GetOwner != null && sauce.GetOwner != null && sauce.GetOwner == GetOwner) continue;
+                
 
                     else
                     {
 
+                        if (!GetOwner.Relation.ContainsKey(sauce.GetOwner.Name) ||  GetOwner.Relation[sauce.GetOwner.Name] > -10) continue;
+                        
                         Attack(sauce);
                         //Returning right now will improve performance
                         return;
@@ -237,6 +250,7 @@ public class unit : entity
     IEnumerator currentAttackRoutine;
     IEnumerator AttackSequence(entity x)  {
 
+        Ordered = true;
         yield return StartCoroutine(GoThere(x.transform.position));
 
         while (x && x.Hp > 0  )
@@ -260,6 +274,7 @@ public class unit : entity
         currentAttackRoutine = null;
 
         MoveTo(previousTarget);
+        Ordered = false;
         yield  break;
     }
 
@@ -312,9 +327,9 @@ public class unit : entity
 
         agi.speed = GetMovingSpeed;
         timer += Time.fixedDeltaTime;
-        if(timer > 1)
+        if(timer > .21f)
         {
-
+            
             timer = 0;
         }
     }
@@ -329,11 +344,25 @@ public class unit : entity
 
     public void MoveTo(Vector3 v)
     {
+        Ordered = true;
         previousTarget = v;
         if (!agi) return;
         agi.SetDestination(v);
         agi.isStopped = false;
         if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);
+        StartCoroutine(reachedPosition(v));
+      
+
+    }
+    IEnumerator reachedPosition(Vector3 v)
+    {
+        yield return new WaitForSeconds(.1f);
+        while (Ordered)
+        {
+            if (Vector3.Distance(v, transform.position) < 2) Ordered = false;
+            yield return new WaitForSeconds(.1f);
+        }
+        yield break;
     }
     public override string ToString()
     {

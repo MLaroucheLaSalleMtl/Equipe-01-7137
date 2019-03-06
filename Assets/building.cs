@@ -89,6 +89,11 @@ public class building : entity
         }
         return true;
     }
+
+    public bool CanUpgrade
+    {
+        get { return (Tier >= costs.Length); }
+    }
     public void Upgrade()
     {
         var e = Tier;

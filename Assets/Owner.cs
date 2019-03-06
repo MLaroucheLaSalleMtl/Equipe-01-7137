@@ -18,7 +18,20 @@ public class Owner
     public int totalPopulation { get { return population + builder + fighter; } }
     public float Gold = 100;
     int builder = 0, fighter = 0;
+    public Dictionary<string, int> Relation = new Dictionary<string, int>();
+    public void modRelation(Owner x, int z)
+    {
+        if (x == this) return;
+        if (  Relation.ContainsKey(x.Name))
+             Relation[x.Name]+= z;
+        else Relation.Add(x.Name, z);
 
+        if (Relation[x.Name] <= -10) OnBadTerm.Add(x);
+        else if (Relation[x.Name] > 50) OnGoodTerm.Add(x);
+    }
+    //Quick Access
+    public List<Owner> OnBadTerm = new List<Owner>(), OnGoodTerm = new List<Owner>();
+    public Owner_AI ai;
     //Some population initiated coitus more often than other
     float baseFertilityRate = 1.00f;
     float fertilityMod = 1f, EconomyMod = 1f;
@@ -251,6 +264,8 @@ public class Owner
             return  x/ totalPopulation;
         }
     }
+
+   
     public Dictionary<string, Goods> Inventory = new Dictionary<string, Goods>();
     public List<unit> Units = new List<unit>();
     public List<building> Building = new List<building>();
@@ -387,7 +402,7 @@ public class Owner
             // Fertility Rate > Security > Wealth > Space >Infrastructure efficiency
           
             // 10% of Production Efficiency + 20% of Ratio of Gold/Person + 30% security + base Fertility rate* 30% + HousingSpace/People Ratio 20%
-            return (FertilityRate * .6f +  (Gold / totalPopulation) * 0.2f + ProductionEfficiency * .4f) * Mathf.Clamp((getHousingSpace / totalPopulation), .25f, 2) *Mathf.Clamp(getSecurity,.5f,1.5f);
+            return 1 +  (FertilityRate * .1f +  (Gold / totalPopulation) * 0.1f + ProductionEfficiency * .1f) * Mathf.Clamp((getHousingSpace / totalPopulation), 0f, 1) *Mathf.Clamp(getSecurity,.1f,1.5f);
         }
     }
        

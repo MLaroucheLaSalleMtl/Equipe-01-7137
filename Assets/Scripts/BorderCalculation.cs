@@ -72,7 +72,7 @@ public class BorderCalculation
                 if (item.GetOwner.Name == "Neutral")
                 {
                     item.SetOwner(owner);
-                    UnityEngine.Debug.Log(owner.Name);
+                   // UnityEngine.Debug.Log(owner.Name);
                 }
 
             }

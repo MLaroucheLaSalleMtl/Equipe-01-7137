@@ -332,6 +332,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  MinView: 0
+  View: 10
+  todis: {fileID: 0}
 --- !u!1 &425426045763387034
 GameObject:
   m_ObjectHideFlags: 0
@@ -3997,13 +4000,14 @@ MonoBehaviour:
     Gold: 0
     ConstructionEffort: 0
   SpaceNeed: {x: 1.75, y: 1, z: 1.01}
-  RequiredCloseness: 5
+  RequiredCloseness: 1.7
   type: 0
   ContextMenu: {fileID: 384559986144527840}
   ContextMenuText: {fileID: 507114791039181256}
   buttons: []
   Bar: {fileID: 0}
   description: City Center. Destroy This and you destroy a faction
+  BuildRoad: 0
   gauge: {fileID: 0}
   graphics:
   - {fileID: 7596748946105482728}

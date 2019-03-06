@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class node : MonoBehaviour
 {
-  
 
+    private void OnTriggerEnter(Collider other)
+    {
+        
+    }
+ 
     [SerializeField]
     protected Owner owner;
     protected float AngleToCenter;
@@ -27,11 +31,7 @@ public class node : MonoBehaviour
 
     }
 
-
- 
-
-
- void generateMesh()
+    void generateMesh()
     {
       /*  collider.enabled = false;
         //Gonna try something later, for now just boring plane
@@ -189,7 +189,7 @@ public class node : MonoBehaviour
         AverageHeight = avgh;
         return val;
     }
-    
+   
     private void Awake()
     {
         _collider = GetComponent<BoxCollider>();
