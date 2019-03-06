@@ -12,6 +12,16 @@ public class GameManager : MonoBehaviour
     public Terrain[] terrain;
     public node[] Nodes;
     public static Owner[] owners = new Owner[3] { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) }, new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) }, new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) } };
+
+    //Should have use a dictionary, gonna change it later, for now let's use that
+    public static Owner GetOwner(string a)
+    {
+        foreach (var item in owners)
+        {
+            if (item.Name == a) return item;
+        }
+        return null;
+    }
     public static float SecondPerGenerations = 60;
     public static bool DEBUG_GODMODE = true;
     [Header("Assets")]
@@ -53,7 +63,7 @@ public class GameManager : MonoBehaviour
 
         owners[0].OnGain += OnOwnerGain;
       
-        for (int i = 0; i < owners.Length-1; i++)
+        for (int i = 1; i < owners.Length-1; i++)
         {
             owners[i].Gold += 100;
             var t =  gameObject.AddComponent<Owner_AI>();
@@ -211,7 +221,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public Vector3[] Formation(Vector3 pos, Vector3 dir, entity[] e,float dist =2)
+    public static Vector3[] Formation(Vector3 pos, Vector3 dir, entity[] e,float dist =2)
     {
         var t = new Vector3[e.Length];
         var q = (int)Mathf.Sqrt(t.Length) + 1;
@@ -393,8 +403,12 @@ public class GameManager : MonoBehaviour
     }
     public void Chillout()
     {
-        if (selection[0])
-            (selection[0] as unit).Chill();
+      /*  if (selection[0])
+            (selection[0] as unit).Chill();*/
+        foreach (var item in selection)
+        {
+            (item as unit).Chill();
+        }
     }
     
     public void CancelSelection()
@@ -538,6 +552,10 @@ public class GameManager : MonoBehaviour
     }
     Vector2 cam;
     private float camzoom;
+    public float GetZoomLevel
+    {
+        get { return camzoom; }
+    }
     [SerializeField]
     int buildmode = -1;
 
@@ -710,7 +728,7 @@ public class GameManager : MonoBehaviour
                 n.Initialize(x,y); 
                 n.terrain = a;
                 n.Value = n.GetValue(x, y);
-
+              
 
                
                 if (x > t.size.x / 2) n.SetOwner(owners[1]);
@@ -729,7 +747,12 @@ public class GameManager : MonoBehaviour
                     n.GetComponent<MeshRenderer>().material.color = Color.red;
                     n.type = global::node.NodeType.montain;
 
-                } 
+                }
+                if (n.AverageHeight > 43 && n.AverageHeight < 55 && Random.Range(0, 1f) > .3f)
+                {
+                    print("plain");
+                    n.type = global::node.NodeType.plain;
+                }
 
                 if (n.transform.position.y < 0) //It's Water or there is a small hole
                 {
@@ -745,7 +768,9 @@ public class GameManager : MonoBehaviour
                     n.transform.position = b;
                   
                 }
-             
+                RaycastHit harambe;
+                var extraPrecision = Physics.Raycast(pos + Vector3.up, Vector3.down, out harambe, 9);
+                n.transform.position = morePrecision(n.transform.position);
                 n.transform.parent = a.transform;
                 SpawnRessource(n, x, y);
                 e.Add(n);
@@ -755,18 +780,28 @@ public class GameManager : MonoBehaviour
 
         return e.ToArray();
     }
-
-
+    //Costly
+    Vector3 morePrecision(Vector3 pos)
+    {
+        RaycastHit harambe;
+        var extraPrecision = Physics.Raycast(pos + Vector3.up, Vector3.down, out harambe, 9,Precison,QueryTriggerInteraction.Ignore);
+        if (extraPrecision)
+            pos = harambe.point;
+        return pos;
+    }
+    [SerializeField]
+    LayerMask Precison;
     void SpawnRessource(node n,int x, int y)
     {
-
+ 
         //tree for now
         var seed = Random.Range(0, 1f);
    //Sparse Ressources, so it is not easy
-        if (n.AverageHeight > 28.5f && n.AverageHeight < 32 && n.type == global::node.NodeType.plain)
+        if (n.AverageHeight > 49 && n.AverageHeight < 55 && n.type == global::node.NodeType.plain)
         {
             if (seed < .6f) return;
             //tree
+          
             var q = new Goods() ;
            
             q.setRessource(Resources[0], 100 * Random.Range(1, 10));
@@ -779,12 +814,15 @@ public class GameManager : MonoBehaviour
             {
                 if (Random.Range(0, 1f) > .3f) continue;
                 var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize/1.4f) , .45f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f));
-               
+
+              
+
                 var e = Instantiate(n.resource.model, n.transform.position,Quaternion.identity).GetComponent<GetRessourceInfo>();
                 e.SetNode(n);
 
                 e.transform.position = n.transform.position + t;
                 e.transform.parent = n.transform;
+                e.transform.position = morePrecision(e.transform.position) + Vector3.up*.5f;
             }
 
             return;

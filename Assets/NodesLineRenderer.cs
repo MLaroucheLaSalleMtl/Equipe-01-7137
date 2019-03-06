@@ -39,8 +39,8 @@ public class NodesLineRenderer : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-       
+         lineRenderer.enabled = GameManager.instance.GetZoomLevel >= 15;
     }
 }

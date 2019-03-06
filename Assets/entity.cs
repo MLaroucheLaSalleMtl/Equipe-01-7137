@@ -140,11 +140,15 @@ public class entity : MonoBehaviour
 
     protected virtual void OnKill(entity z)
     {
+       z.owner.modRelation(owner, -10);
         killcount++;
     }
     public virtual void TakeDamage(float t,entity e, DamageType p = DamageType.Null)
     {
         last_agressor = e;
+
+        owner.modRelation(e.owner, -1);
+
         TakeDamage(t,p);
     }
     public virtual void Death()
