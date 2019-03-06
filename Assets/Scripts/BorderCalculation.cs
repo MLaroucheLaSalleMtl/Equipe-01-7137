@@ -205,7 +205,42 @@ public class BorderCalculation
         }
     }
 
+    public void UpdateDraw(List<node> cornerDraw, Owner owner, node node)
+    {
+       
+        float smallest = float.MaxValue;
+        int index= 200;
+        for (int q = 0; q < 2; q++)
+        {
+            for (int i = 0; i < cornerDraw.Count - 2; i++)
+            {
+                var speculation = cornerDraw[i].transform.position + cornerDraw[i + 1].transform.position;
+                float dist = Vector3.Distance(speculation, node.transform.position);
+                if (dist < smallest)
+                {
+                    smallest = dist;
+                    index = i;
+                }
+            }
 
+        }
+
+
+        cornerDraw.Insert(index, node);
+        owner.faction.NodesList = cornerDraw;
+
+        owner.faction.GenFrontieres();
+        UnityEngine.Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+    public void RemoveDraw(List<node> cornerDraw, Owner owner, node node)
+    {
+        cornerDraw.Remove(node);
+        owner.faction.NodesList = cornerDraw;
+
+        owner.faction.GenFrontieres();
+        UnityEngine.Debug.Log("ÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉ");
+
+    }
 
 
 }

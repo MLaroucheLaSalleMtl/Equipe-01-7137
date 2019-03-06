@@ -12,7 +12,6 @@ public class node : MonoBehaviour
  
     [SerializeField]
     protected Owner owner;
-    protected float AngleToCenter;
 
     MeshRenderer rendi;
     MeshFilter filty;
@@ -88,18 +87,23 @@ public class node : MonoBehaviour
     }
     //We don't want to reset it, do we ?
 
+    void OnTriggerEnter(Collider collision)
+    {
+        BorderCalculation borderCalculation = new BorderCalculation();
+        if (collision.gameObject.GetComponent<unit>() != null)
+        {
+            unit unit = collision.gameObject.GetComponent<unit>();
+            if(unit.GetOwner != this.GetOwner)
+            {
+                this.SetOwner(unit.GetOwner);
+                borderCalculation.UpdateDraw(this.GetOwner.faction.NodesList, this.GetOwner, this);
+                borderCalculation.RemoveDraw(this.GetOwner.faction.NodesList, unit.GetOwner, this);
+                UnityEngine.Debug.Log("hahahah " + this.transform.position);
+            }
+        }
+    }
 
-    //add DD 05/02/2019
-    public void SetNodeAngleToCenter(float angle)
-    {
-       AngleToCenter = angle;
-        
-    }
-    public float GetNodeAngleToCenter
-    {
-        get { return AngleToCenter; }
-    }
-    //
+
 
 
     public Owner GetOwner

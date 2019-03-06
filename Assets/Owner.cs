@@ -142,7 +142,7 @@ public class Owner
 
         if (ok< 0)
         {
-            Debug.Log("Not enough storage");
+            //Debug.Log("Not enough storage");
             return;
         }
         var s = r.Exploit(h);
