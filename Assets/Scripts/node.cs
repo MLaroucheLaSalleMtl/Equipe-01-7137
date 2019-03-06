@@ -5,10 +5,7 @@ using UnityEngine;
 public class node : MonoBehaviour
 {
 
-    private void OnTriggerEnter(Collider other)
-    {
-        
-    }
+   
  
     [SerializeField]
     protected Owner owner;
@@ -89,17 +86,22 @@ public class node : MonoBehaviour
     //We don't want to reset it, do we ?
 
 
-    //add DD 05/02/2019
-    public void SetNodeAngleToCenter(float angle)
+
+    void OnTriggerEnter(Collider collision)
     {
-       AngleToCenter = angle;
-        
+        BorderCalculation borderCalculation = new BorderCalculation();
+        if (collision.gameObject.GetComponent<unit>() != null)
+        {
+            unit unit = collision.gameObject.GetComponent<unit>();
+            if (unit.GetOwner != this.GetOwner)
+            {
+                this.SetOwner(unit.GetOwner);
+              //  borderCalculation.UpdateDraw(unit.GetOwner.faction.NodesList, this.GetOwner, this);
+                borderCalculation.RemoveDraw(unit.GetOwner.faction.NodesList, unit.GetOwner, this);
+                UnityEngine.Debug.Log("hahahah " + this.transform.position);
+            }
+        }
     }
-    public float GetNodeAngleToCenter
-    {
-        get { return AngleToCenter; }
-    }
-    //
 
 
     public Owner GetOwner
