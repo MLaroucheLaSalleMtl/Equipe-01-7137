@@ -21,7 +21,7 @@ public class TurnTowardCam : MonoBehaviour
     private void FixedUpdate()
     {
         if (!MinView) return;
-        dist= Vector3.Distance(transform.position, cam.gameObject.transform.position);
+        dist = GameManager.instance.GetZoomLevel;
         todis.SetActive(dist > View);
     }
     private void Update()

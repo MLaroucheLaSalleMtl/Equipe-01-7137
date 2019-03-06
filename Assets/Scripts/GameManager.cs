@@ -705,6 +705,7 @@ public class GameManager : MonoBehaviour
         owners[0].Start();
         owners[1].Start();
 
+        CameraPosition = owners[0].Cores[0].transform.position + Vector3.up * 2 + Vector3.forward * 2;
 
     }
 
@@ -750,7 +751,7 @@ public class GameManager : MonoBehaviour
                 }
                 if (n.AverageHeight > 43 && n.AverageHeight < 55 && Random.Range(0, 1f) > .3f)
                 {
-                    print("plain");
+                    
                     n.type = global::node.NodeType.plain;
                 }
 
@@ -822,7 +823,7 @@ public class GameManager : MonoBehaviour
 
                 e.transform.position = n.transform.position + t;
                 e.transform.parent = n.transform;
-                e.transform.position = morePrecision(e.transform.position) + Vector3.up*.5f;
+                e.transform.position = morePrecision(e.transform.position) - Vector3.up * .05f  ;
             }
 
             return;
