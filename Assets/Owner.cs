@@ -183,15 +183,15 @@ public class Owner
                 item.addStorage(-x.getAmount);
                 break;
             }
-
+        
         if (Inventory.ContainsKey(x.Name))
         {
             if (x.getAmount >= Inventory[x.Name].getAmount)
-            {
-                Inventory[x.Name].Exploit(x.getAmount);
-            }
-            else
                 Inventory.Remove(x.Name);
+            else
+            {
+                Inventory[x.Name].amount -= x.getAmount;
+            }
         }
     }
     public void Pay( Goods[] x)
@@ -368,6 +368,8 @@ public class Owner
             Generation();
             tim2 = 0;
         }
+
+
         for (int i = 0; i < Units.Count; i++)        
             Units[i].AI();
         

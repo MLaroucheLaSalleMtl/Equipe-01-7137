@@ -92,9 +92,7 @@ public class BorderCalculation
     {
 
         int y = 0;
-
-
-
+ 
         int listWidth = (int)Math.Sqrt(input.Count);
         List<node> borders = new List<node>();
 
