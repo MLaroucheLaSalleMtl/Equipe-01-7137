@@ -19,6 +19,8 @@ public class unit : entity
     bool Ordered = false;
     public override void Death()
     {
+        if(Oof)
+        AudioSource.PlayClipAtPoint(Oof, transform.position);
         StopAllCoroutines();
         base.Death();
     }
@@ -30,7 +32,9 @@ public class unit : entity
     //So it's 10m per turn or 1 nodes
     public string Name = "Security";
     public float Speed = 10;
- 
+
+    [Header("Flair")]
+    public AudioClip Oof;
    protected Animator anim;
     [SerializeField]
     MeshRenderer[] rendies;

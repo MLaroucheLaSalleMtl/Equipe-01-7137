@@ -2473,6 +2473,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  MinView: 0
+  View: 10
+  todis: {fileID: 0}
 --- !u!95 &799867967052470086
 Animator:
   serializedVersion: 3
@@ -3406,6 +3409,7 @@ MonoBehaviour:
   indicator: {fileID: 7262807572265487372}
   Name: Clubber
   Speed: 4.8
+  Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
   rendies:
   - {fileID: 5516078774436349674}
   - {fileID: 5516078772675661452}
