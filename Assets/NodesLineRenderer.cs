@@ -28,7 +28,10 @@ public class NodesLineRenderer : MonoBehaviour
         int counter = 0;
         foreach (var item in faction.NodesList)
         {
-            vector3s.SetValue(item.transform.position, counter);
+            Vector3 vector = new Vector3();
+            vector = item.transform.position;
+            vector.y += 5;
+            vector3s.SetValue(vector, counter);
 
             counter++;
         }

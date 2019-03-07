@@ -154,6 +154,7 @@ public class BorderCalculation
         node tempNode = new node();
         node initialNode = new node();
         int count = 0;
+        int maxCount = borders.Count;
         while (borders.Count > 1)
         {
             int closest = 90;
@@ -182,7 +183,7 @@ public class BorderCalculation
             Fnodes.Add(ToAdd);
             borders.Remove(ToAdd);
             count++;
-            if (count == 200)
+            if (count == (maxCount + 40))
             {
                 break;
             }
@@ -207,9 +208,9 @@ public class BorderCalculation
 
     public void UpdateDraw(List<node> cornerDraw, Owner owner, node node)
     {
-       
+
         float smallest = float.MaxValue;
-        int index= 200;
+        int index = 200;
         for (int q = 0; q < 2; q++)
         {
             for (int i = 0; i < cornerDraw.Count - 2; i++)
@@ -234,14 +235,15 @@ public class BorderCalculation
     }
     public void RemoveDraw(List<node> cornerDraw, Owner owner, node node)
     {
-        // cornerDraw.Remove(node);
-        if(owner.faction.NodesList.Contains(node))
+          
+       
         owner.faction.NodesList.Remove(node);
-
+         
         owner.faction.GenFrontieres();
         UnityEngine.Debug.Log("ÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉ");
 
     }
+
 
 
 }

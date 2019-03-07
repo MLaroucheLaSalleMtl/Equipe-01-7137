@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 1; i < owners.Length - 1; i++)
         {
-           
+
             var t = gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
         }
@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
      }*/
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
-        if (g.bit )
+        if (g.bit)
         {
             var e = Instantiate(g.bit, pos, Quaternion.identity);
             if (e)
@@ -589,11 +589,12 @@ public class GameManager : MonoBehaviour
     {
         buildmode = -1;
         ClearHighLight();
-        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold,true))
+        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold, true))
         {
             print(owners[0] + " :Not enough ressource or Gold");
             _lastbuilding = null;
-            return; }
+            return;
+        }
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
 
@@ -779,7 +780,7 @@ public class GameManager : MonoBehaviour
                 }
                 if (n.AverageHeight > 43 && n.AverageHeight < 55 && Random.Range(0, 1f) > .3f)
                 {
- 
+
                     n.type = global::node.NodeType.plain;
                 }
 

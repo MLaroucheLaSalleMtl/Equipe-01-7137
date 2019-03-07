@@ -5,7 +5,7 @@ using UnityEngine;
 public class node : MonoBehaviour
 {
 
-    
+   
  
     [SerializeField]
     protected Owner owner;
@@ -84,21 +84,85 @@ public class node : MonoBehaviour
     }
     //We don't want to reset it, do we ?
 
+
+
     void OnTriggerEnter(Collider collision)
     {
-       
         BorderCalculation borderCalculation = new BorderCalculation();
         if (collision.gameObject.GetComponent<unit>() != null)
         {
             unit unit = collision.gameObject.GetComponent<unit>();
-            if(unit.GetOwner != this.GetOwner)
+            Owner ownerNode = this.GetOwner;
+            node thisNode = this;
+            if (unit.GetOwner != this.GetOwner)
             {
+                int indexConquered=0;
+                int indexLost = 0;
+                foreach (var item in unit.GetOwner.faction.NodeSquares)
+                {
+                    
+                    if (item.Contains(this))
+                    {
+                        break;
+                    }
+                    indexConquered++;
+                }
                 
-                borderCalculation.UpdateDraw(unit.GetOwner.faction.NodesList, unit.GetOwner, this);
-                borderCalculation.RemoveDraw(this.GetOwner.faction.NodesList, this.GetOwner, this);
-                this.SetOwner(unit.GetOwner);
-                GetOwner.GenBorder();
-              /*  UnityEngine.Debug.Log("hahahah " + this.transform.position);*/
+                foreach (var item in unit.GetOwner.faction.NodeSquares[indexConquered])
+                {
+                    item.SetOwner(unit.GetOwner);
+                }
+                
+                if (ownerNode.Name != "Neutral")
+                {
+                    foreach (var item in unit.GetOwner.faction.NodeSquares)
+                    {
+
+                        if (item.Contains(thisNode))
+                        {
+                            break;
+                        }
+                        indexLost++;
+                    }
+                   
+                    foreach (var item in ownerNode.faction.NodeSquares[indexLost])
+                    {
+                        item.SetOwner(unit.GetOwner);
+                    }
+                    
+                    ownerNode.faction.NodesList = borderCalculation.CornerDraw(ownerNode.faction.NodeSquares, ownerNode);
+                    unit.GetOwner.faction.NodesList = borderCalculation.CornerDraw(unit.GetOwner.faction.NodeSquares, unit.GetOwner);
+                    foreach (var item in ownerNode.faction.NodesList)
+                    {
+                        Vector3 vector3Unit = new Vector3();
+                        vector3Unit = item.transform.position;
+                        vector3Unit.y += 5;
+                    }
+                    foreach (var item in unit.GetOwner.faction.NodesList)
+                    {
+                        Vector3 vector3Unit = new Vector3();
+                        vector3Unit = item.transform.position;
+                        vector3Unit.y += 5;
+                    }
+                    ownerNode.faction.GenFrontieres();
+                    unit.GetOwner.faction.GenFrontieres();
+                   
+                }
+                else
+                {
+                    unit.GetOwner.faction.NodesList = borderCalculation.CornerDraw(unit.GetOwner.faction.NodeSquares, unit.GetOwner);
+                    foreach (var item in unit.GetOwner.faction.NodesList)
+                    {
+                        Vector3 vector3Unit = new Vector3();
+                        vector3Unit = item.transform.position;
+                        vector3Unit.y += 5;
+                    }
+                    unit.GetOwner.faction.GenFrontieres();
+                   
+                }
+              
+               
+
             }
         }
     }

@@ -54,7 +54,8 @@ public class Owner
         nodesToRender = border.CornerDraw(border.GetInitBorderCalculation(vector3, this), this);
       
     }
-     void GenFactions()
+   
+    void GenFactions()
     {
         nodes = border.GetInitBorderCalculation(vector3, this);
         nodesToRender = border.CornerDraw(nodes, this);
@@ -62,7 +63,7 @@ public class Owner
         //     nodeLineRenderer = GameManager.instance.transform.Find(Name).gameObject.GetComponent<NodesLineRenderer>();
         nodeLineRenderer = GameObject.Instantiate(GameManager.instance.NodeRendererPrefab, GameManager.instance.transform).GetComponent<NodesLineRenderer>();
         nodeLineRenderer.name = Name;
-        faction = new Faction(Name, vector3, nodesToRender, nodeLineRenderer);
+        faction = new Faction(Name, vector3, nodesToRender, nodes, nodeLineRenderer);
         faction.GenFrontieres();
 
 
@@ -72,9 +73,9 @@ public class Owner
         var center = Vector3.zero;
 
         //Adjust the Heigth of each position for visual appeal
-        for (int i = 0; i < nodeLineRenderer.lineRenderer.positionCount; i++)
-           borderpath[i] += Vector3.up * 4;
-        nodeLineRenderer.lineRenderer.SetPositions(borderpath);
+            //for (int i = 0; i < nodeLineRenderer.lineRenderer.positionCount; i++)
+            //   borderpath[i] += Vector3.up * 4;
+            //nodeLineRenderer.lineRenderer.SetPositions(borderpath);
 
 
 
