@@ -47,6 +47,12 @@ public class Owner
     {
         GenFactions();
     }
+
+    public void GenBorder()
+    {
+        nodesToRender = border.CornerDraw(border.GetInitBorderCalculation(vector3, this), this);
+      
+    }
      void GenFactions()
     {
         nodes = border.GetInitBorderCalculation(vector3, this);
@@ -142,7 +148,7 @@ public class Owner
 
         if (ok< 0)
         {
-            Debug.Log("Not enough storage");
+            //Debug.Log("Not enough storage");
             return;
         }
         var s = r.Exploit(h);

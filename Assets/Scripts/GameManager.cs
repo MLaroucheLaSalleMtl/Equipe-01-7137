@@ -37,9 +37,9 @@ public class GameManager : MonoBehaviour
     Camera _main;
     [Header("Flair")]
 
-   //
-   public Text countsoldierssword;
-   public Text countsoldierspear;
+    //
+    public Text countsoldierssword;
+    public Text countsoldierspear;
 
 
 
@@ -62,32 +62,32 @@ public class GameManager : MonoBehaviour
         _main = UnityEngine.Camera.main;
 
         owners[0].OnGain += OnOwnerGain;
-      
-        for (int i = 1; i < owners.Length-1; i++)
+
+        for (int i = 1; i < owners.Length - 1; i++)
         {
             owners[i].Gold += 100;
-            var t =  gameObject.AddComponent<Owner_AI>();
+            var t = gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
         }
     }
 
     //Depreciated, was using shader before but wasn't optimized as using a for loop not clean 
-   /* public void SeeFogofWar()
-    {
-        var mat = Fog.material;
-        List<Vector4> lol= new List<Vector4>();
-        for (int i = 0; i < owners[0].Units.Count; i++)  
-        {
-            var item = owners[0].Units[i];
-            var e = new Vector4(item.transform.position.z, item.DetectionRange, item.transform.position.z, 0);
-            //   lol.Add(e);
-            mat.SetVector("_Holes" + i,e);
-        }
-       
-        mat.SetInt("arr", 0);
-      //  mat.SetVectorArray("_Holes",lol);
-        mat.SetInt("arr", lol.Count);
-    }*/
+    /* public void SeeFogofWar()
+     {
+         var mat = Fog.material;
+         List<Vector4> lol= new List<Vector4>();
+         for (int i = 0; i < owners[0].Units.Count; i++)  
+         {
+             var item = owners[0].Units[i];
+             var e = new Vector4(item.transform.position.z, item.DetectionRange, item.transform.position.z, 0);
+             //   lol.Add(e);
+             mat.SetVector("_Holes" + i,e);
+         }
+
+         mat.SetInt("arr", 0);
+       //  mat.SetVectorArray("_Holes",lol);
+         mat.SetInt("arr", lol.Count);
+     }*/
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
         if (g.bit)
@@ -122,10 +122,10 @@ public class GameManager : MonoBehaviour
         foreach (var item in owners)
             item.Routine();
 
-        if(owners.Length > 0)
-        MUI.ShowUI(owners[0], selection[0]);
+        if (owners.Length > 0)
+            MUI.ShowUI(owners[0], selection[0]);
         //Useless SeeFogofWar();
-      //  BUI.CancelUI.SetActive(buildmode >= 0);
+        //  BUI.CancelUI.SetActive(buildmode >= 0);
     }
 
 
@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour
         MouseInteraction();
     }
     RaycastHit lastresult;
-    public LayerMask Interatable, BuildingMask, Unit    ;
+    public LayerMask Interatable, BuildingMask, Unit;
     Vector3 MousePosition;
     [SerializeField]
     MainUI MUI;
@@ -151,7 +151,7 @@ public class GameManager : MonoBehaviour
         if (buildmode >= 0)
         {
 
-            if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, MousePosition,building_highlight.transform.rotation,owners[0]);
+            if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, MousePosition, building_highlight.transform.rotation, owners[0]);
         }
 
         if (buildmode > 0) return;
@@ -177,8 +177,8 @@ public class GameManager : MonoBehaviour
             switch (currentmode)
             {
 
-                case 1: 
-                    if(selection.Length <= 1)
+                case 1:
+                    if (selection.Length <= 1)
                     {
                         foreach (var item in selection)
                             if (item) (item as unit).MoveTo(pos);
@@ -187,10 +187,11 @@ public class GameManager : MonoBehaviour
                     {
                         Formation(pos, _main.transform.forward, selection, .2f);
                     }
-                 
-               
+
+
                     break;
-                case 2: if (tempsel && tempsel.GetOwner != owners[0])
+                case 2:
+                    if (tempsel && tempsel.GetOwner != owners[0])
                         foreach (var item in selection)
                             if (item) (item as unit).Attack(tempsel);
                     //Need to be clean ahah
@@ -221,38 +222,38 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static Vector3[] Formation(Vector3 pos, Vector3 dir, entity[] e,float dist =2)
+    public static Vector3[] Formation(Vector3 pos, Vector3 dir, entity[] e, float dist = 2)
     {
         var t = new Vector3[e.Length];
         var q = (int)Mathf.Sqrt(t.Length) + 1;
-        for (int x = 0; x <q; x++)
+        for (int x = 0; x < q; x++)
             for (int y = 0; y < q; y++)
             {
                 if (y + x * q >= e.Length) break;
                 t[y + x * q] = new Vector3(pos.x - q * dist + q * x * dist, pos.y, pos.z - q * dist + q * y * dist);
                 (e[y + x * q] as unit).MoveTo(t[y + x * q]);
             }
-              
+
         return t;
     }
-    
+
     void OnMouseHold(Vector3 pos)
     {
         if (TimeWithMouse > .1f)
         {
             MouseReleasePos = pos;
-            MUI.BoxSelection(MouseClickPos,MouseReleasePos);
+            MUI.BoxSelection(MouseClickPos, MouseReleasePos);
             dragged = true;
         }
-      
+
         TimeWithMouse += Time.fixedDeltaTime;
     }
 
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawCube(TL, Vector3.one / 3f);        Gizmos.DrawCube(TR, Vector3.one / 3f);
-        Gizmos.DrawCube(BL, Vector3.one / 3f);        Gizmos.DrawCube(BR, Vector3.one / 3f);
+        Gizmos.DrawCube(TL, Vector3.one / 3f); Gizmos.DrawCube(TR, Vector3.one / 3f);
+        Gizmos.DrawCube(BL, Vector3.one / 3f); Gizmos.DrawCube(BR, Vector3.one / 3f);
     }
     bool dragged = false;
 
@@ -272,20 +273,20 @@ public class GameManager : MonoBehaviour
     Vector3 TL, TR, BL, BR;
     bool FrustrumSelection()
     {
-        var mstart  = _main.WorldToScreenPoint(MouseClickPos);
+        var mstart = _main.WorldToScreenPoint(MouseClickPos);
         var mend = _main.WorldToScreenPoint(MouseReleasePos);
         mstart.z = 0;
-       var m = (mstart + mend )/ 2f ;
+        var m = (mstart + mend) / 2f;
 
         var x = Mathf.Abs(mend.x - mstart.x);
         var y = Mathf.Abs(mend.y - mstart.y);
         RaycastHit hit;
         int i = 0;
         TL = new Vector3(m.x - x / 2f, m.y + y / 2f, 0f);
-        TR = new Vector3(m.x + x/ 2f, m.y +y / 2f, 0f);
+        TR = new Vector3(m.x + x / 2f, m.y + y / 2f, 0f);
         BL = new Vector3(m.x - x / 2f, m.y - y / 2f, 0f);
-        BR = new Vector3(m.x + x / 2f,m.y - y / 2f, 0f);
-        if (Physics.Raycast(_main.ScreenPointToRay(TL), out hit, 200f,BuildingMask))
+        BR = new Vector3(m.x + x / 2f, m.y - y / 2f, 0f);
+        if (Physics.Raycast(_main.ScreenPointToRay(TL), out hit, 200f, BuildingMask))
         {
             TL = hit.point;
             i++;
@@ -339,34 +340,36 @@ public class GameManager : MonoBehaviour
 
                 foreach (var item in FindObjectsOfType<entity>())
                 {
-                    if(item.GetOwner == owners[0])
-                    if(item is unit)
-                    {
-                        if (IsWithinPolygon(item.transform.position))
+                    if (item.GetOwner == owners[0])
+                        if (item is unit)
                         {
+                            if (IsWithinPolygon(item.transform.position))
+                            {
 
-                            item.OnSelected();
-                            s.Add(item as unit);
+                                item.OnSelected();
+                                s.Add(item as unit);
+                            }
                         }
-                    }
-               
+
                 }
             }
-            if (s.Count > 0) {
+            if (s.Count > 0)
+            {
 
-              //  countsoldierspear.text = s.Count.ToString("D4"); this also 
+                //  countsoldierspear.text = s.Count.ToString("D4"); this also 
 
-                OnDragSelection(s.ToArray()); }
+                OnDragSelection(s.ToArray());
+            }
 
-          
+
         }
-     
+
 
         MUI.BSelection.gameObject.SetActive(false);
 
         dragged = false;
         TimeWithMouse = 0;
-    } 
+    }
 
     public void OnDragSelection(unit[] e)
     {
@@ -380,8 +383,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] UiSelection;
     int currentmode = 0;
     entity target;
- 
-    public void SetUIMode(int x )
+
+    public void SetUIMode(int x)
     {
         if (x == 0) return;
         foreach (var item in UiSelection)
@@ -394,23 +397,23 @@ public class GameManager : MonoBehaviour
             item.SetActive(false);
         }
 
-       if(x > 0) Cursor3D[ Mathf.Clamp(x-1, 0, Cursor3D.Length-1)].SetActive(true);
+        if (x > 0) Cursor3D[Mathf.Clamp(x - 1, 0, Cursor3D.Length - 1)].SetActive(true);
         //UiSelection[0].SetActive(true); // image nad name 
-                                        //UiSelection[2].SetActive(true);
-        MUI.Action_sticker.SetBool("SWBC",true);
+        //UiSelection[2].SetActive(true);
+        MUI.Action_sticker.SetBool("SWBC", true);
 
         currentmode = x;
     }
     public void Chillout()
     {
-      /*  if (selection[0])
-            (selection[0] as unit).Chill();*/
+        /*  if (selection[0])
+              (selection[0] as unit).Chill();*/
         foreach (var item in selection)
         {
             (item as unit).Chill();
         }
     }
-    
+
     public void CancelSelection()
     {
         foreach (var item in UiSelection)
@@ -421,7 +424,7 @@ public class GameManager : MonoBehaviour
         {
             item.SetActive(false);
         }
-        if(currentmode > 0)
+        if (currentmode > 0)
         {
             currentmode = 0;
             //  UiSelection[0].SetActive(true); // image nad name 
@@ -432,30 +435,30 @@ public class GameManager : MonoBehaviour
         {
             if (selection.Length > 0)
                 foreach (var item in selection)
-                    if(item!=null)item.OnDeselected();
-          
+                    if (item != null) item.OnDeselected();
+
             MUI.Action_sticker.SetTrigger("close");
-         
+
             selection = new entity[1];
 
         }
     }
     public void CancelBuilding()
     {
-        if(!BUI.BuildingSticker.GetBool("SWCB")) BUI.BuildingSticker.SetTrigger("close");
+        if (!BUI.BuildingSticker.GetBool("SWCB")) BUI.BuildingSticker.SetTrigger("close");
         if (buildmode == -1)
             BUI.BuildingSticker.SetBool("SWCB", false);
 
 
         buildmode = -1;
-       
+
         ClearHighLight();
         _lastbuilding = null;
 
     }
 
 
-    
+
     float TimeWithMouse = 0, rotationQE;
     void MouseInteraction()
     {
@@ -466,35 +469,35 @@ public class GameManager : MonoBehaviour
         var y = Physics.Raycast(r, out lastresult, Mathf.Infinity, Interatable);
         if (buildmode >= 0)
         {
-         
-            BUI.CanBePlaceThere(lastresult.point,owners[0]);
+
+            BUI.CanBePlaceThere(lastresult.point, owners[0]);
             /*  if (owners[0].Settled)
                    BUI.Highlight.transform.right = (owners[0].Cores[0].transform.position - BUI.Highlight.transform.position);
               */
             if (building_highlight)
             {
                 rotationQE += Time.fixedDeltaTime;
-               
 
 
-                    var lolrot = 0;
-                    if(rotationQE > .1f)
-                    {
-                        if (Input.GetKey(KeyCode.E)) { lolrot = -30; rotationQE = 0; }
-                        else if (Input.GetKey(KeyCode.Q)) { lolrot = 30; rotationQE = 0; }
 
-                    }
-                   
+                var lolrot = 0;
+                if (rotationQE > .1f)
+                {
+                    if (Input.GetKey(KeyCode.E)) { lolrot = -30; rotationQE = 0; }
+                    else if (Input.GetKey(KeyCode.Q)) { lolrot = 30; rotationQE = 0; }
 
-                    building_highlight.transform.rotation =
-                        Quaternion.Euler(building_highlight.transform.eulerAngles +
-                        Vector3.up * lolrot);
-                 
-             
+                }
+
+
+                building_highlight.transform.rotation =
+                    Quaternion.Euler(building_highlight.transform.eulerAngles +
+                    Vector3.up * lolrot);
+
+
             }
             y = Physics.Raycast(r, out lastresult, Mathf.Infinity, BuildingMask);
         }
-        
+
         if (y)
         {
 
@@ -508,7 +511,7 @@ public class GameManager : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 OnMouseClick(lastresult.point);
-               
+
             }
             else if (Input.GetMouseButtonUp(0))
             {
@@ -519,28 +522,28 @@ public class GameManager : MonoBehaviour
         }
 
         if (!ctrl && BUI.Highlight) { BUI.Highlight.transform.position = MousePosition; }
-       
+
 
 
     }
     [SerializeField]
     public static entity[] selection = new entity[1];
 
-    
+
     //Relate to camera
     Vector3 EdgeScrolling
     {
         get
         {
-            Vector3 t =Vector3.zero;
+            Vector3 t = Vector3.zero;
             var pos = Input.mousePosition;
-      /*
-            if (pos.x > Screen.width - Boundary) t += Vector3.right;
-            if (pos.x < 0 + Boundary) t += -Vector3.right;
-            if (pos.y > Screen.height - Boundary) t += Vector3.up;
-            if (pos.y < 0 + Boundary) t += -Vector3.up;
+            /*
+                  if (pos.x > Screen.width - Boundary) t += Vector3.right;
+                  if (pos.x < 0 + Boundary) t += -Vector3.right;
+                  if (pos.y > Screen.height - Boundary) t += Vector3.up;
+                  if (pos.y < 0 + Boundary) t += -Vector3.up;
 
-    */
+          */
 
 
             return t;
@@ -564,13 +567,13 @@ public class GameManager : MonoBehaviour
     {
         buildmode = -1;
         ClearHighLight();
-        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold)  ) { print("Not enough ressource or Gold"); _lastbuilding = null; return; } 
+        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold)) { print("Not enough ressource or Gold"); _lastbuilding = null; return; }
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
-        
+
         BUI.Planing(g, Buildings[x].GetComponent<building>());
-      
-       
+
+
         var t = g.GetComponentsInChildren<Collider>();
         for (int i = 0; i < t.Length; i++)
         {
@@ -580,16 +583,16 @@ public class GameManager : MonoBehaviour
         BUI.BuildingSticker.SetBool("SWCB", true);
         building_highlight.transform.localRotation = lastrotation;
     }
- 
-    public void PlaceBuilding(int j , Owner n)
+
+    public void PlaceBuilding(int j, Owner n)
     {
         PlaceBuilding(j, MousePosition, building_highlight.transform.rotation, n);
     }
 
-    
-   public building PlaceBuilding(int j,Vector3 pos,Quaternion rot,Owner n)
+
+    public building PlaceBuilding(int j, Vector3 pos, Quaternion rot, Owner n)
     {
-        var x = Instantiate(Buildings[j],pos, Quaternion.identity).GetComponent<building>();
+        var x = Instantiate(Buildings[j], pos, Quaternion.identity).GetComponent<building>();
         x.transform.rotation = rot; //building_highlight.transform.rotation;
         lastrotation = rot;//building_highlight.transform.rotation;
         x.TransferOwner(n);
@@ -600,7 +603,7 @@ public class GameManager : MonoBehaviour
         ClearHighLight();
         if (owners[0].Settled)
         {
- 
+
             foreach (var item in BUI.Uis)
                 item.SetActive(false);
             BUI.Uis[1].gameObject.SetActive(true);
@@ -614,19 +617,19 @@ public class GameManager : MonoBehaviour
 
 
         buildmode = -1;
-        if(_lastbuilding  && _lastbuilding is Wall && x is Wall)
+        if (_lastbuilding && _lastbuilding is Wall && x is Wall)
         {
             (_lastbuilding as Wall).boundTo = x as Wall;
-            
+
         }
 
         CancelSelection();
 
         _lastbuilding = x;
         BUI.SetStartingPoint(x.transform.position);
-        if (_lastbuilding is Wall)Build(j);
+        if (_lastbuilding is Wall) Build(j);
         else BUI.BuildingSticker.SetBool("SWCB", false);
-        var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness );
+        var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness);
 
         /*
          *    if(x.BuildRoad)
@@ -649,8 +652,8 @@ public class GameManager : MonoBehaviour
     public GameObject building_highlight;
     void ClearHighLight()
     {
-        if(building_highlight)Destroy(building_highlight.gameObject);
- 
+        if (building_highlight) Destroy(building_highlight.gameObject);
+
     }
     public void CameraFunction(Transform camera, Vector3 position)
     {
@@ -658,26 +661,26 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         var ctrl = Input.GetKey(KeyCode.LeftControl);
         if (Input.GetKey(KeyCode.Mouse1) && !ctrl)
-        cursorinput += new Vector2(Input.GetAxis("Mouse X"),
-                  Input.GetAxis("Mouse Y")); 
+            cursorinput += new Vector2(Input.GetAxis("Mouse X"),
+                      Input.GetAxis("Mouse Y"));
 
         cursorinput.y = Mathf.Clamp(cursorinput.y, -70, -20);
         var zoooooom = Input.GetAxis("Mouse ScrollWheel");
-        if (EventSystem.current.IsPointerOverGameObject()) zoooooom = 0 ;
+        if (EventSystem.current.IsPointerOverGameObject()) zoooooom = 0;
         camzoom = Mathf.Clamp(camzoom + zoooooom * -350 * Time.smoothDeltaTime, 1, 350);
 
         camera.transform.position = Vector3.Lerp(camera.transform.position, position + Vector3.forward * camzoom, 125 * Time.fixedDeltaTime);
         camera.transform.LookAt(position + CameraOffset + -Vector3.up * cameraSmoothness / 2 * Time.fixedDeltaTime);
-        camera.transform.RotateAround(position, Vector3.up, cursorinput.x * cameraSmoothness *8* Time.fixedDeltaTime);
+        camera.transform.RotateAround(position, Vector3.up, cursorinput.x * cameraSmoothness * 8 * Time.fixedDeltaTime);
         camera.transform.RotateAround(position, camera.transform.right, (-cursorinput.y) * 8 * cameraSmoothness * Time.fixedDeltaTime);
 
 
-        var es = _main.gameObject.transform.TransformDirection(-EdgeScrolling *(1 + Mathf.Abs(camzoom)/20) * EdgeScrollingSpeed * cameraSmoothness * Time.smoothDeltaTime);
-     
-      
+        var es = _main.gameObject.transform.TransformDirection(-EdgeScrolling * (1 + Mathf.Abs(camzoom) / 20) * EdgeScrollingSpeed * cameraSmoothness * Time.smoothDeltaTime);
 
-        if(Input.GetMouseButton(2))es = _main.gameObject.transform.TransformDirection((new Vector2(Input.GetAxis("Mouse X"),
-                  Input.GetAxis("Mouse Y"))) * (1 + Mathf.Abs(camzoom) / 20) * EdgeScrollingSpeed * cameraSmoothness * Time.smoothDeltaTime);
+
+
+        if (Input.GetMouseButton(2)) es = _main.gameObject.transform.TransformDirection((new Vector2(Input.GetAxis("Mouse X"),
+                    Input.GetAxis("Mouse Y"))) * (1 + Mathf.Abs(camzoom) / 20) * EdgeScrollingSpeed * cameraSmoothness * Time.smoothDeltaTime);
 
 
         //if(camera.transform.eulerAngles.x > (90 -30) && camera.transform.eulerAngles.x <(90 +1))
@@ -687,16 +690,16 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-     /*   var e = new List<node>();
-        foreach (var item in terrain)
-        {
-            var y = CreateNodes(item);
-            for (int i = 0; i < y.Length; i++)
-                e.Add(y[i]);
-        }
-        Nodes = e.ToArray();    */
+        /*   var e = new List<node>();
+           foreach (var item in terrain)
+           {
+               var y = CreateNodes(item);
+               for (int i = 0; i < y.Length; i++)
+                   e.Add(y[i]);
+           }
+           Nodes = e.ToArray();    */
         Nodes = CreateNodes(terrain[0]);
-       
+
         foreach (var item in GameManager.instance.Nodes)
         {
             item.SetOwner(owners[2]);
@@ -705,7 +708,6 @@ public class GameManager : MonoBehaviour
         owners[0].Start();
         owners[1].Start();
 
-        CameraPosition = owners[0].Cores[0].transform.position + Vector3.up * 2 + Vector3.forward * 2;
 
     }
 
@@ -719,19 +721,19 @@ public class GameManager : MonoBehaviour
     {
         var e = new List<node>();
         var t = a.terrainData;
-        for (int x = 0; x < t.size.x; x+=precision)
+        for (int x = 0; x < t.size.x; x += precision)
         {
             for (int y = 0; y < t.size.z; y += precision)
             {
                 var pos = new Vector3(x, t.GetHeight(x/* + precision*/ , y /*+ precision*/), y);
                 var n = Instantiate(node, a.transform.position + new Vector3(x + precision / 2, t.GetHeight(x + 5, y + 5), y + precision / 2), Quaternion.identity).GetComponent<node>();
                 n.SetSize(precision);
-                n.Initialize(x,y); 
+                n.Initialize(x, y);
                 n.terrain = a;
                 n.Value = n.GetValue(x, y);
-              
 
-               
+
+
                 if (x > t.size.x / 2) n.SetOwner(owners[1]);
                 else n.SetOwner(owners[0]);
 
@@ -751,7 +753,7 @@ public class GameManager : MonoBehaviour
                 }
                 if (n.AverageHeight > 43 && n.AverageHeight < 55 && Random.Range(0, 1f) > .3f)
                 {
-                    
+                    print("plain");
                     n.type = global::node.NodeType.plain;
                 }
 
@@ -767,7 +769,7 @@ public class GameManager : MonoBehaviour
                     var b = n.transform.position;
                     b.y = 0;
                     n.transform.position = b;
-                  
+
                 }
                 RaycastHit harambe;
                 var extraPrecision = Physics.Raycast(pos + Vector3.up, Vector3.down, out harambe, 9);
@@ -777,7 +779,7 @@ public class GameManager : MonoBehaviour
                 e.Add(n);
             }
         }
-        
+
 
         return e.ToArray();
     }
@@ -785,51 +787,51 @@ public class GameManager : MonoBehaviour
     Vector3 morePrecision(Vector3 pos)
     {
         RaycastHit harambe;
-        var extraPrecision = Physics.Raycast(pos + Vector3.up, Vector3.down, out harambe, 9,Precison,QueryTriggerInteraction.Ignore);
+        var extraPrecision = Physics.Raycast(pos + Vector3.up, Vector3.down, out harambe, 9, Precison, QueryTriggerInteraction.Ignore);
         if (extraPrecision)
             pos = harambe.point;
         return pos;
     }
     [SerializeField]
     LayerMask Precison;
-    void SpawnRessource(node n,int x, int y)
+    void SpawnRessource(node n, int x, int y)
     {
- 
+
         //tree for now
         var seed = Random.Range(0, 1f);
-   //Sparse Ressources, so it is not easy
+        //Sparse Ressources, so it is not easy
         if (n.AverageHeight > 49 && n.AverageHeight < 55 && n.type == global::node.NodeType.plain)
         {
             if (seed < .6f) return;
             //tree
-          
-            var q = new Goods() ;
-           
+
+            var q = new Goods();
+
             q.setRessource(Resources[0], 100 * Random.Range(1, 10));
-          //  q.transform.parent = n.transform;
+            //  q.transform.parent = n.transform;
             n.resource = q;
-           
-            n.Value += n.resource.getAmount* n.Value;
-           
-            for (int i = 0; i <n.resource.getAmount/50; i++)
+
+            n.Value += n.resource.getAmount * n.Value;
+
+            for (int i = 0; i < n.resource.getAmount / 50; i++)
             {
                 if (Random.Range(0, 1f) > .3f) continue;
-                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize/1.4f) , .45f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f));
+                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f), .45f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f));
 
-              
 
-                var e = Instantiate(n.resource.model, n.transform.position,Quaternion.identity).GetComponent<GetRessourceInfo>();
+
+                var e = Instantiate(n.resource.model, n.transform.position, Quaternion.identity).GetComponent<GetRessourceInfo>();
                 e.SetNode(n);
 
                 e.transform.position = n.transform.position + t;
                 e.transform.parent = n.transform;
-                e.transform.position = morePrecision(e.transform.position) - Vector3.up * .05f  ;
+                e.transform.position = morePrecision(e.transform.position) + Vector3.up * .5f;
             }
 
             return;
         }
 
-        if (  n.AverageHeight > 28 && n.AverageHeight < 35)
+        if (n.AverageHeight > 28 && n.AverageHeight < 35)
         {
 
             if (seed < .93f) return;
@@ -842,9 +844,9 @@ public class GameManager : MonoBehaviour
             n.Value += n.resource.getAmount * n.Value;
 
             for (int i = 0; i < n.resource.getAmount / 80; i++)
-            {   
+            {
                 if (Random.Range(0, 1f) > .3f) continue;
-                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)  ,-.1f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)  );
+                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f), -.1f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f));
 
                 var e = Instantiate(n.resource.model, n.transform.position, Quaternion.identity).GetComponent<GetRessourceInfo>();
                 e.SetNode(n);
