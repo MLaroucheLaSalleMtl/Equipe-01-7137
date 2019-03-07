@@ -45,10 +45,16 @@ public class Owner
     
      public void Start()
     {
+        Gold += 100;
         GenFactions();
     }
 
     public void GenBorder()
+    {
+        nodesToRender = border.CornerDraw(border.GetInitBorderCalculation(vector3, this), this);
+      
+    }
+     void GenFactions()
     {
         nodesToRender = border.CornerDraw(border.GetInitBorderCalculation(vector3, this), this);
 

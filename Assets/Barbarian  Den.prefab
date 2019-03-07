@@ -2915,7 +2915,7 @@ MonoBehaviour:
   - materials: []
     Gold: 0
     ConstructionEffort: 0
-  SpaceNeed: 1
+  SpaceNeed: {x: 1.05, y: 1, z: 1}
   RequiredCloseness: 5
   type: 0
   ContextMenu: {fileID: 8320607159207620903}
@@ -2923,6 +2923,7 @@ MonoBehaviour:
   buttons: []
   Bar: {fileID: 0}
   description: Barbarians spawn from it!
+  BuildRoad: 0
   gauge: {fileID: 0}
   graphics:
   - {fileID: 1466265050498206942}
@@ -8900,6 +8901,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  MinView: 0
+  View: 10
+  todis: {fileID: 0}
 --- !u!1 &8354983827598883926
 GameObject:
   m_ObjectHideFlags: 0

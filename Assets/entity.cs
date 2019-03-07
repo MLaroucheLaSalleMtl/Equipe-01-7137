@@ -49,6 +49,12 @@ public class entity : MonoBehaviour
     public GameObject info;
     [SerializeField]
     protected Text infotext;
+    private void Awake()
+    {
+        Hp = HealthToSet;
+        maximumHp = HealthToSet;
+        print(Hp);
+    }
     private void Start()
     {
         Hp = HealthToSet;

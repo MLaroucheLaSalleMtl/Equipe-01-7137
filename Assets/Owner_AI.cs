@@ -17,7 +17,9 @@ public class Owner_AI : MonoBehaviour
         if (owner.Cores.Count == 0) return;
         StartCoroutine(Act());
         owner.ai = this;
-       
+
+        owner.modRelation(GameManager.owners[0], -100);
+        owner.modRelation(GameManager.owners[0], -100);
     }
 
     int garisson = 0;
@@ -37,9 +39,12 @@ public class Owner_AI : MonoBehaviour
     
     IEnumerator Act()
     { var core = owner.Cores[0];
+
+        SwitchBuilding(1);
         while (true)
         {
- 
+
+            if (core == null || owner.Cores[0] == null) break; 
 
             
             if (!lastbuilding || !lastbuilding.IsBeingBuild)
@@ -105,8 +110,8 @@ public class Owner_AI : MonoBehaviour
                 else
                 {
                     if (!HasBuilding(typeof(Storage))
-                        && owner.Storages.Count < 5)
-                        BuildingPlanning(7, Vector3.right); 
+                        && owner.Storages.Count * 3< owner.Building.Count)
+                        SwitchBuilding(7); 
                 }
 
  
@@ -121,22 +126,32 @@ public class Owner_AI : MonoBehaviour
                     }
                 }
 
-            if(owner.Units.Count > 5)
+
+            if (AvaillableUnit > 5)
+                foreach (var item in owner.OnBadTerm)
+                {
+
+                    foreach (var x in owner.Units)
+                    {
+                        x.Attack(item.Cores[0]);
+                    }
+
+                }
+
             GameManager.Formation(owner.Cores[0].transform.position + Vector3.right  * 3+ ( core.transform.right * .5f - core.transform.forward/3)* (+ Mathf.Sqrt(owner.Units.Count)),
                 owner.Cores[0].transform.right,
                 GetAvaillableUnit(owner.Units.Count),.15f);
+
+            print("ENEMIES : " + owner.OnBadTerm.Count);
             // If there are people on bad term with me , attack them  if there is 10 availlable unit
-            foreach (var item in owner.OnBadTerm )
-            {
-                if(AvaillableUnit > 10 && owner.Cores.Count > 0)
-                    foreach (var x in GetAvaillableUnit(10))
-                        x.Attack(item.Cores[0]);
-            }
+          
 
            
             yield return new WaitForSeconds(TBC);
         }
-       
+      
+        
+
     }
     int AvaillableUnit 
     {

@@ -202,7 +202,7 @@ public class unit : entity
         agi.SetDestination(e.transform.position);
         agi.isStopped = false;
         minimumdistance =  agi.radius + agi.stoppingDistance;
-       
+        if (e is building) minimumdistance += (e as building).SpaceNeed.magnitude;
         while ( agi.isOnNavMesh&& agi.remainingDistance > (minimumdistance) && e && e.gameObject )
         {
             yield return new WaitForSeconds(.01f);
@@ -255,9 +255,10 @@ public class unit : entity
 
         while (x && x.Hp > 0  )
         {    
-            if(agi.remainingDistance> (minimumdistance))
+            if(Vector3.Distance(transform.position,x.transform.position)> (minimumdistance  ))
             { 
                 yield return StartCoroutine(GoThere(x ));
+
                 yield return null;
             }
             else
