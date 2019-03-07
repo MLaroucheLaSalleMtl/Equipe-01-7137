@@ -255,7 +255,7 @@ public class unit : entity
 
         while (x && x.Hp > 0  )
         {    
-            if(Vector3.Distance(transform.position,x.transform.position)> (minimumdistance + .15f))
+            if(Vector3.Distance(transform.position,x.transform.position)> (minimumdistance  ))
             { 
                 yield return StartCoroutine(GoThere(x ));
 

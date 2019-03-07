@@ -3986,7 +3986,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9d130a469f6c4c42bc35e0267a5434a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthToSet: 100
+  HealthToSet: 200
   Type: 3
   GoldCost: 25
   uianim: {fileID: 0}

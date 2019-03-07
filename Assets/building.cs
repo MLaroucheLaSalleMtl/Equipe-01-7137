@@ -79,15 +79,17 @@ public class building : entity
         foreach (var item in costs[Tier].materials)
         {
             bool ok = false;
+            float a = item.getAmount;
             if (x.ContainsKey(item.Name)){
                 ok = x[item.Name].getAmount >= item.getAmount;
-
+                a = item.getAmount - x[item.Name].getAmount;
+                print(GetOwner + ":" + x[item.Name].getAmount + " vs " + item.getAmount);
  
             }
 
             if (!ok) {
 
-                if (t) GameManager.instance._pup.SetText("Not Enough Material!");
+                if (t) GameManager.instance._pup.SetText("Not Enough Material! Missing " + (int)a + "x " + item.Name);
                 return false;
             }
            

@@ -13,4 +13,15 @@ public class CityCore : building
         if (GameManager.DEBUG_GODMODE) return;
         base.TakeDamage(t);
     }
+    public override void TakeDamage(float t, entity e, DamageType p = DamageType.Null)
+    {
+        base.TakeDamage(t, e, p);
+        GetOwner.modRelation(e.GetOwner, -100);
+    }
+    public override void Death()
+    {
+        base.Death();
+        Time.timeScale = 0;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
+    }
 }
