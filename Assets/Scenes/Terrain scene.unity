@@ -251,7 +251,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 7479
   m_RenderingPath: 1
   m_TargetTexture: {fileID: 8400000, guid: 4b197b55a76469e45b93cce9833e4629, type: 2}
   m_TargetDisplay: 0
@@ -5792,7 +5792,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 6666037068887904348}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.54939234
+  m_Size: 0.5493915
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10126,7 +10126,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -19.771667, y: 85.18912}
+  m_AnchoredPosition: {x: -19.771729, y: 85.189224}
   m_SizeDelta: {x: 645.2, y: 71.04}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &6666037068523886340
@@ -10713,7 +10713,7 @@ MonoBehaviour:
   Cursor3D:
   - {fileID: 597833861}
   CameraOffset: {x: 0, y: 0, z: 0}
-  CameraPosition: {x: 319.84, y: 23.16, z: 256}
+  CameraPosition: {x: 319.84, y: 10, z: 256}
   Boundary: 40.25
   cameraSmoothness: 6
   EdgeScrollingSpeed: -2

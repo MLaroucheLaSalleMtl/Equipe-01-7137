@@ -28,7 +28,7 @@ public class GetRessourceInfo : MonoBehaviour
 
     private void OnMouseExit()
     {
-
+        if (!Main) return;
         anim.gameObject.SetActive(false);
         Main.text = nd.resource.Name + ": " + nd.resource.getAmount;
         anim.SetTrigger("close");
