@@ -132,17 +132,37 @@ public class node : MonoBehaviour
                     
                     ownerNode.faction.NodesList = borderCalculation.CornerDraw(ownerNode.faction.NodeSquares, ownerNode);
                     unit.GetOwner.faction.NodesList = borderCalculation.CornerDraw(unit.GetOwner.faction.NodeSquares, unit.GetOwner);
-
+                    foreach (var item in ownerNode.faction.NodesList)
+                    {
+                        Vector3 vector3Unit = new Vector3();
+                        vector3Unit = item.transform.position;
+                        vector3Unit.y += 5;
+                    }
+                    foreach (var item in unit.GetOwner.faction.NodesList)
+                    {
+                        Vector3 vector3Unit = new Vector3();
+                        vector3Unit = item.transform.position;
+                        vector3Unit.y += 5;
+                    }
                     ownerNode.faction.GenFrontieres();
-                    unit.GetOwner.faction.GenFrontieres();                   
+                    unit.GetOwner.faction.GenFrontieres();
+                   
                 }
                 else
                 {
                     unit.GetOwner.faction.NodesList = borderCalculation.CornerDraw(unit.GetOwner.faction.NodeSquares, unit.GetOwner);
+                    foreach (var item in unit.GetOwner.faction.NodesList)
+                    {
+                        Vector3 vector3Unit = new Vector3();
+                        vector3Unit = item.transform.position;
+                        vector3Unit.y += 5;
+                    }
                     unit.GetOwner.faction.GenFrontieres();
                    
                 }
               
+               
+
             }
         }
     }

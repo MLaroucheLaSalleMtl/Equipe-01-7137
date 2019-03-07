@@ -54,11 +54,7 @@ public class Owner
         nodesToRender = border.CornerDraw(border.GetInitBorderCalculation(vector3, this), this);
       
     }
-     void GenFactions()
-    {
-        nodesToRender = border.CornerDraw(border.GetInitBorderCalculation(vector3, this), this);
-
-    }
+   
     void GenFactions()
     {
         nodes = border.GetInitBorderCalculation(vector3, this);
@@ -77,9 +73,9 @@ public class Owner
         var center = Vector3.zero;
 
         //Adjust the Heigth of each position for visual appeal
-        for (int i = 0; i < nodeLineRenderer.lineRenderer.positionCount; i++)
-           borderpath[i] += Vector3.up * 4;
-        nodeLineRenderer.lineRenderer.SetPositions(borderpath);
+            //for (int i = 0; i < nodeLineRenderer.lineRenderer.positionCount; i++)
+            //   borderpath[i] += Vector3.up * 4;
+            //nodeLineRenderer.lineRenderer.SetPositions(borderpath);
 
 
 

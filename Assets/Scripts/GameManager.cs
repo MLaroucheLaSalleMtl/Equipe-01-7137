@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+
     public static GameManager instance;
     public MeshRenderer Fog;
     public Terrain[] terrain;
@@ -65,7 +66,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 1; i < owners.Length - 1; i++)
         {
-           
+
             var t = gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
         }
@@ -90,7 +91,7 @@ public class GameManager : MonoBehaviour
      }*/
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
-        if (g.bit )
+        if (g.bit)
         {
             var e = Instantiate(g.bit, pos, Quaternion.identity);
             if (e)
@@ -98,7 +99,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-           // print(g.Name + " has no bits!");
+            print(g.Name + " has no bits!");
         }
 
     }
@@ -374,10 +375,12 @@ public class GameManager : MonoBehaviour
     public void OnDragSelection(unit[] e)
     {
         selection = e;
+        //countsoldierspear.text = e.ToString(); nevermind this 
         UiSelection[0].SetActive(true);
         UiSelection[1].SetActive(true);
         MUI.Action_sticker.SetTrigger("open");
     }
+
     public GameObject[] UiSelection;
     int currentmode = 0;
     entity target;
@@ -567,11 +570,12 @@ public class GameManager : MonoBehaviour
     {
         buildmode = -1;
         ClearHighLight();
-        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold,true))
+        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold, true))
         {
             print(owners[0] + " :Not enough ressource or Gold");
             _lastbuilding = null;
-            return; }
+            return;
+        }
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
 
@@ -757,7 +761,7 @@ public class GameManager : MonoBehaviour
                 }
                 if (n.AverageHeight > 43 && n.AverageHeight < 55 && Random.Range(0, 1f) > .3f)
                 {
- 
+
                     n.type = global::node.NodeType.plain;
                 }
 
@@ -861,16 +865,3 @@ public class GameManager : MonoBehaviour
         }
     }
 }
-
-   //
-   public Text countsoldierssword;
-   public Text countsoldierspear;
-
-
-
-
-            if (s.Count > 0) {
-
-              //  countsoldierspear.text = s.Count.ToString("D4"); this also 
-
-                OnDragSelection(s.ToArray()); }
