@@ -34,7 +34,7 @@ public class unit : entity
     public float Speed = 10;
 
     [Header("Flair")]
-    public AudioClip Oof;
+    public AudioClip Oof, Hurt;
    protected Animator anim;
     [SerializeField]
     MeshRenderer[] rendies;
@@ -292,6 +292,8 @@ public class unit : entity
     {
         base.TakeDamage(t, p);
         anim.SetTrigger("damaged");
+        if (Hurt)
+            AudioSource.PlayClipAtPoint(Hurt, transform.position);
     }
     void _attack(entity e)
     {

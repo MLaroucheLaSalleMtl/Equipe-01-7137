@@ -5272,6 +5272,7 @@ MonoBehaviour:
   Name: Pikesman
   Speed: 2.71
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
+  Hurt: {fileID: 8300000, guid: 145fe60071025e246974696fbfb1bfb2, type: 3}
   rendies:
   - {fileID: 8677958751327435565}
   - {fileID: 8677958751747257163}

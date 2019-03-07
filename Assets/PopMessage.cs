@@ -9,11 +9,17 @@ public class PopMessage : MonoBehaviour
     Animator anim;
     [SerializeField]
     Text txt;
+    Camera cam;
+    private void Awake()
+    {
+        cam = Camera.main;
+    }
 
-        
+
     public void SetText(string t)
     {
         txt.text = t;
+        AudioSource.PlayClipAtPoint(GameManager.instance.error, cam.gameObject.transform.position);
         StartCoroutine(_popup());
     }
     public void PopTrueBuilding(int o)

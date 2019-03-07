@@ -244,6 +244,7 @@ bool ctxmenu = false;
                 }
             }
             BeingBuild = false;
+            AudioSource.PlayClipAtPoint(GameManager.instance.completeBuild,transform.position);
             if (Bar) Bar.transform.parent.gameObject.SetActive(false);
         }
     }

@@ -22,6 +22,7 @@ public class CityCore : building
     {
         base.Death();
         Time.timeScale = 0;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
+
 }

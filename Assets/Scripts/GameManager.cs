@@ -41,13 +41,14 @@ public class GameManager : MonoBehaviour
     public void HelpM(bool t)
     {
         Help.gameObject.SetActive(t);
+        AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
     }
     [Header("Flair")]
 
     //
     public Text countsoldierssword;
     public Text countsoldierspear;
-
+    public AudioClip error, build, completeBuild, menuClick, GainItem;
 
 
    
@@ -118,6 +119,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator popup(GameObject c)
     {
+        AudioSource.PlayClipAtPoint(GameManager.instance.GainItem, c.transform.position);
         var t = 1.5f;
         while (t > 0)
         {
@@ -404,6 +406,7 @@ public class GameManager : MonoBehaviour
     int currentmode = 0;
     entity target;
 
+   
     public void SetUIMode(int x)
     {
         if (x == 0) return;
@@ -421,7 +424,7 @@ public class GameManager : MonoBehaviour
         //UiSelection[0].SetActive(true); // image nad name 
         //UiSelection[2].SetActive(true);
         MUI.Action_sticker.SetBool("SWBC", true);
-
+        AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
         currentmode = x;
     }
     public void Chillout()
@@ -587,6 +590,7 @@ public class GameManager : MonoBehaviour
     building _lastbuilding;
     public void Build(int x)
     {
+
         buildmode = -1;
         ClearHighLight();
         if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold, true))
@@ -595,9 +599,10 @@ public class GameManager : MonoBehaviour
             _lastbuilding = null;
             return;
         }
+        
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
-
+       
         BUI.Planing(g, Buildings[x].GetComponent<building>());
 
 
@@ -609,6 +614,7 @@ public class GameManager : MonoBehaviour
         buildmode = x;
         BUI.BuildingSticker.SetBool("SWCB", true);
         building_highlight.transform.localRotation = lastrotation;
+        AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
     }
 
     public void PlaceBuilding(int j, Owner n)
@@ -619,6 +625,7 @@ public class GameManager : MonoBehaviour
 
     public building PlaceBuilding(int j, Vector3 pos, Quaternion rot, Owner n)
     {
+        
         var x = Instantiate(Buildings[j], pos, Quaternion.identity).GetComponent<building>();
         x.transform.rotation = rot; //building_highlight.transform.rotation;
         lastrotation = rot;//building_highlight.transform.rotation;
@@ -649,9 +656,9 @@ public class GameManager : MonoBehaviour
             (_lastbuilding as Wall).boundTo = x as Wall;
 
         }
-
+        if(n == owners[0])
         CancelSelection();
-
+      
         _lastbuilding = x;
         BUI.SetStartingPoint(x.transform.position);
         if (_lastbuilding is Wall) Build(j);
@@ -671,6 +678,7 @@ public class GameManager : MonoBehaviour
                           
             }
         }-*/
+        AudioSource.PlayClipAtPoint(build, x.transform.position);
         return x;
 
     }

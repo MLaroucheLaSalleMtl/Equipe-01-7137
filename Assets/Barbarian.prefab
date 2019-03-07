@@ -2026,6 +2026,8 @@ MonoBehaviour:
   indicator: {fileID: 1296628932979275369}
   Name: Barbarian
   Speed: 0.92
+  Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
+  Hurt: {fileID: 8300000, guid: 145fe60071025e246974696fbfb1bfb2, type: 3}
   rendies:
   - {fileID: 3523760368338696498}
   - {fileID: 3523760369024856404}
@@ -2987,6 +2989,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f919b2832ebe14086b71c8e5c0d795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  MinView: 0
+  View: 10
+  todis: {fileID: 0}
 --- !u!1 &5061886603449976011
 GameObject:
   m_ObjectHideFlags: 0

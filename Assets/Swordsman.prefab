@@ -1686,6 +1686,7 @@ MonoBehaviour:
   Name: Swordsman
   Speed: 3.26
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
+  Hurt: {fileID: 8300000, guid: 145fe60071025e246974696fbfb1bfb2, type: 3}
   rendies:
   - {fileID: 3598109092712613233}
   - {fileID: 3598109090980760855}
