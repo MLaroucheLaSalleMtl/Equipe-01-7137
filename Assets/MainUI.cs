@@ -67,6 +67,12 @@ public class MainUI : MonoBehaviour
 
     }
 
+
+    public void Exit( )
+    {
+        Application.Quit();
+    }
+
     Rect lastbox;
     public void BoxSelection(Vector3 MouseClickPos, Vector3 MouseReleasePos)
     {
