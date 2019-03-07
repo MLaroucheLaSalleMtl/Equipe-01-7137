@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
      }*/
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
-        if (g.bit)
+        if (g.bit )
         {
             var e = Instantiate(g.bit, pos, Quaternion.identity);
             if (e)
