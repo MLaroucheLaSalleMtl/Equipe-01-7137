@@ -29,6 +29,7 @@ public class Gatherer : building
     {
         //Ressource are currently finite, we should find a way to replenish 'em
         if(Primary.getAmount > 0) GetOwner.Gain(Primary,Yield,transform.position);
+ 
     } 
     public override bool ApprovedBuilding(Vector3 pos, Owner g)
     {
@@ -44,7 +45,7 @@ public class Gatherer : building
           
                 var t = x[i].gameObject.GetComponent<node>();
 
-                if (t.resource.getAmount > 1)
+                if (t.resource.getAmount > 1 && t.resource.Name != "NILL")
                     return true && base.ApprovedBuilding(pos, g);
             }
         }
@@ -55,7 +56,29 @@ public class Gatherer : building
         base.Construction(x);
         if (!BeingBuild)
         {
-            if (  affectednodes.Count > 0)
+
+            var w = Physics.OverlapSphere(transform.position, .5f);
+
+            for (int i = 0; i < w.Length; i++)
+            {
+
+                if (w[i].gameObject.GetComponent<node>())
+                {
+
+                    var t = w[i].gameObject.GetComponent<node>();
+
+                    if (t.resource.getAmount > 1 && t.resource.Name != "NILL")
+                    {
+                        Primary = t.resource;
+                             HasResource = true;
+                        if (t.resource.Name == "Wood")
+                            RessourceAddon[0].SetActive(true);
+                        else if (t.resource.Name == "Stone")
+                            RessourceAddon[1].SetActive(true);
+                    }
+                }
+            }
+           /* if (  affectednodes.Count > 0)
             {
                 foreach (var item in affectednodes)
                 {
@@ -73,7 +96,7 @@ public class Gatherer : building
                 }
            
                
-            }
+            }*/
         }
     }
 }

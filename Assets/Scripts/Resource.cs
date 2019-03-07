@@ -19,7 +19,7 @@ public class Goods
 
  
     [SerializeField]
-    float amount = 0;
+  public  float amount = 0;
     public float hardness = 2;
     public float getAmount
     {

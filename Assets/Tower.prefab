@@ -1064,9 +1064,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53e781fc14439fa4c830b0b7a299cfe9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthToSet: 10
+  HealthToSet: 15
   Type: 0
-  GoldCost: 5
+  GoldCost: 15
   uianim: {fileID: 0}
   Inventory: []
   info: {fileID: 0}
@@ -1081,15 +1081,7 @@ MonoBehaviour:
       icon: {fileID: 0}
       model: {fileID: 0}
       bit: {fileID: 0}
-      amount: 5
-      hardness: 0
-    - Name: Stone
-      Value: 0
-      StorageSize: 0
-      icon: {fileID: 0}
-      model: {fileID: 0}
-      bit: {fileID: 0}
-      amount: 5
+      amount: 10
       hardness: 0
     Gold: 10
     ConstructionEffort: 30
@@ -24919,6 +24911,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  MinView: 0
+  View: 10
+  todis: {fileID: 0}
 --- !u!1 &7551467081080324608
 GameObject:
   m_ObjectHideFlags: 0
@@ -24964,6 +24959,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  MinView: 0
+  View: 10
+  todis: {fileID: 0}
 --- !u!1 &7590888593934711055
 GameObject:
   m_ObjectHideFlags: 0

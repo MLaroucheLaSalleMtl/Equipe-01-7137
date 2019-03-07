@@ -53,7 +53,7 @@ public class entity : MonoBehaviour
     {
         Hp = HealthToSet;
         maximumHp = HealthToSet;
-        print(Hp);
+ 
     }
     private void Start()
     {

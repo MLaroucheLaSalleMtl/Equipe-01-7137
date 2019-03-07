@@ -3367,7 +3367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fd5752a76b78054d9139ccec48f075e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthToSet: 1
+  HealthToSet: 10
   Type: 3
   GoldCost: 5
   uianim: {fileID: 0}
@@ -3405,7 +3405,7 @@ MonoBehaviour:
   - {fileID: 7829788829288348454}
   - {fileID: 7494158685186581687}
   Bar: {fileID: 0}
-  description: ' a normal building'
+  description: It can create unit for millitary purpose
   BuildRoad: 1
   gauge: {fileID: 0}
   graphics:
@@ -3425,6 +3425,30 @@ MonoBehaviour:
     goldCost: 10
     civilianCost: 1
     unit: {fileID: 3598109090698866636, guid: c4df2d0b215ee9444b31b9139e8416c5, type: 3}
+  - Costs:
+    - Name: Wood
+      Value: 5
+      StorageSize: 1
+      icon: {fileID: 0}
+      model: {fileID: 0}
+      bit: {fileID: 0}
+      amount: 1
+      hardness: 2
+    goldCost: 7
+    civilianCost: 1
+    unit: {fileID: 8677958751998022032, guid: 2d3f1aaab9d58f044aa3d17d0785eb33, type: 3}
+  - Costs:
+    - Name: Wood
+      Value: 5
+      StorageSize: 1
+      icon: {fileID: 0}
+      model: {fileID: 0}
+      bit: {fileID: 0}
+      amount: 1
+      hardness: 2
+    goldCost: 25
+    civilianCost: 1
+    unit: {fileID: 5516078772422536279, guid: 38605d7b7ec7c864ca2e95704cf1424d, type: 3}
 --- !u!65 &56710311851074698
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5843,3 +5867,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  MinView: 0
+  View: 10
+  todis: {fileID: 0}
