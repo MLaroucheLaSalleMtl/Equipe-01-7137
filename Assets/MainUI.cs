@@ -15,6 +15,9 @@ public class MainUI : MonoBehaviour
     public Animator Action_sticker;
     Owner lastOwner;
 
+    public bool GameisPaused = false;
+    public GameObject InGamePause;
+
 
     Camera _main;
     GameObject draggor;
@@ -24,6 +27,43 @@ public class MainUI : MonoBehaviour
         draggor = Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cube), transform.position, Quaternion.identity);
         if (draggor.GetComponent<Collider>()) Destroy(draggor.GetComponent<Collider>());
 
+
+    }
+
+    private void Update()
+    {
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (GameisPaused)
+            {
+                Resume();
+            }
+            else
+            
+            {
+                Pause();
+
+            }
+            
+
+        }
+       
+    }
+
+    public void Resume()
+    {
+        InGamePause.SetActive(false);
+        Time.timeScale = 1f;
+        GameisPaused = false;
+
+    }
+
+    public void Pause()
+    {
+        InGamePause.SetActive(true);
+        Time.timeScale = 0f;
+        GameisPaused = true;
 
     }
 
