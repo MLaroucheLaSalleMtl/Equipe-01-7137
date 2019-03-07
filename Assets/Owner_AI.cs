@@ -126,17 +126,25 @@ public class Owner_AI : MonoBehaviour
                     }
                 }
 
-            if(owner.Units.Count > 5)
+
+            if (AvaillableUnit > 5)
+                foreach (var item in owner.OnBadTerm)
+                {
+
+                    foreach (var x in owner.Units)
+                    {
+                        x.Attack(item.Cores[0]);
+                    }
+
+                }
+
             GameManager.Formation(owner.Cores[0].transform.position + Vector3.right  * 3+ ( core.transform.right * .5f - core.transform.forward/3)* (+ Mathf.Sqrt(owner.Units.Count)),
                 owner.Cores[0].transform.right,
                 GetAvaillableUnit(owner.Units.Count),.15f);
+
+            print("ENEMIES : " + owner.OnBadTerm.Count);
             // If there are people on bad term with me , attack them  if there is 10 availlable unit
-            foreach (var item in owner.OnBadTerm )
-            {
-                if(AvaillableUnit > 10 && owner.Cores.Count > 0)
-                    foreach (var x in GetAvaillableUnit(10))
-                        x.Attack(item.Cores[0]);
-            }
+          
 
            
             yield return new WaitForSeconds(TBC);
