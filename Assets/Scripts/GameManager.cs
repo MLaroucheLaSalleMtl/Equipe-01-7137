@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
 
 
 
+   
 
     public GameObject[] Cursor3D;
 
@@ -103,6 +104,11 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+
+
+   
+
     IEnumerator popup(GameObject c)
     {
         var t = 1.5f;
@@ -222,6 +228,12 @@ public class GameManager : MonoBehaviour
 
         }
     }
+
+
+
+
+
+
 
     public static Vector3[] Formation(Vector3 pos, Vector3 dir, entity[] e, float dist = 2)
     {
