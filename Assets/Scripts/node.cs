@@ -9,7 +9,6 @@ public class node : MonoBehaviour
  
     [SerializeField]
     protected Owner owner;
-    protected float AngleToCenter;
 
     MeshRenderer rendi;
     MeshFilter filty;
@@ -147,6 +146,8 @@ public class node : MonoBehaviour
             }
         }
     }
+
+
 
 
     public Owner GetOwner

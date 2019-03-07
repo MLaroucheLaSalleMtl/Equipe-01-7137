@@ -13,7 +13,7 @@ public class NodesLineRenderer : MonoBehaviour
     void Start()
     {
 
-        Random random = new Random();
+        
         
 
     }
@@ -21,7 +21,7 @@ public class NodesLineRenderer : MonoBehaviour
     public void Gen(Faction faction)
     {
 
-        
+
         Vector3[] vector3s = new Vector3[faction.NodesList.Count];
         lineRenderer.SetVertexCount(faction.NodesList.Count);
         
@@ -33,7 +33,7 @@ public class NodesLineRenderer : MonoBehaviour
             counter++;
         }
         lineRenderer.SetPositions(vector3s);
-        //lineRenderer.SetPositions(vector3s);
+       
 
 
     }
