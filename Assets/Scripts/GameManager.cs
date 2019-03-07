@@ -674,7 +674,7 @@ public class GameManager : MonoBehaviour
         cursorinput.y = Mathf.Clamp(cursorinput.y, -70, -20);
         var zoooooom = Input.GetAxis("Mouse ScrollWheel");
         if (EventSystem.current.IsPointerOverGameObject()) zoooooom = 0;
-        camzoom = Mathf.Clamp(camzoom + zoooooom * -350 * Time.smoothDeltaTime, 1, 350);
+        camzoom = Mathf.Clamp(camzoom + zoooooom * -350 * Time.smoothDeltaTime, 1, 250);
 
         camera.transform.position = Vector3.Lerp(camera.transform.position, position + Vector3.forward * camzoom, 125 * Time.fixedDeltaTime);
         camera.transform.LookAt(position + CameraOffset + -Vector3.up * cameraSmoothness / 2 * Time.fixedDeltaTime);

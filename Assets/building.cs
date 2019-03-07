@@ -83,7 +83,8 @@ public class building : entity
             if (x.ContainsKey(item.Name)){
                 ok = x[item.Name].getAmount >= item.getAmount;
                 a = item.getAmount - x[item.Name].getAmount;
-                print(GetOwner + ":" + x[item.Name].getAmount + " vs " + item.getAmount);
+                //if(!ok)
+               // print(GetOwner + ":" + x[item.Name].getAmount + " vs " + item.getAmount);
  
             }
 

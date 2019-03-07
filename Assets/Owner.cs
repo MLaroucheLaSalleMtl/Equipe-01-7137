@@ -26,8 +26,8 @@ public class Owner
              Relation[x.Name]+= z;
         else Relation.Add(x.Name, z);
 
-        if (Relation[x.Name] <= -10) OnBadTerm.Add(x);
-        else if (Relation[x.Name] > 50) OnGoodTerm.Add(x);
+        if (Relation[x.Name] <= -10 && !OnBadTerm.Contains(x)) OnBadTerm.Add(x);
+        else if (Relation[x.Name] > 50 && !OnGoodTerm.Contains(x)) OnGoodTerm.Add(x);
     }
     //Quick Access
     public List<Owner> OnBadTerm = new List<Owner>(), OnGoodTerm = new List<Owner>();

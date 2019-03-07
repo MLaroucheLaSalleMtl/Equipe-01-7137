@@ -98,7 +98,7 @@ public class node : MonoBehaviour
                 borderCalculation.RemoveDraw(this.GetOwner.faction.NodesList, this.GetOwner, this);
                 this.SetOwner(unit.GetOwner);
                 GetOwner.GenBorder();
-                UnityEngine.Debug.Log("hahahah " + this.transform.position);
+              /*  UnityEngine.Debug.Log("hahahah " + this.transform.position);*/
             }
         }
     }
