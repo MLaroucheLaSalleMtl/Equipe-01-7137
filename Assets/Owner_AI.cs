@@ -17,7 +17,9 @@ public class Owner_AI : MonoBehaviour
         if (owner.Cores.Count == 0) return;
         StartCoroutine(Act());
         owner.ai = this;
-       
+
+        owner.modRelation(GameManager.owners[0], -100);
+        owner.modRelation(GameManager.owners[0], -100);
     }
 
     int garisson = 0;
@@ -37,9 +39,12 @@ public class Owner_AI : MonoBehaviour
     
     IEnumerator Act()
     { var core = owner.Cores[0];
+
+        SwitchBuilding(1);
         while (true)
         {
- 
+
+            if (core == null || owner.Cores[0] == null) break; 
 
             
             if (!lastbuilding || !lastbuilding.IsBeingBuild)
@@ -105,8 +110,8 @@ public class Owner_AI : MonoBehaviour
                 else
                 {
                     if (!HasBuilding(typeof(Storage))
-                        && owner.Storages.Count < 5)
-                        BuildingPlanning(7, Vector3.right); 
+                        && owner.Storages.Count * 3< owner.Building.Count)
+                        SwitchBuilding(7); 
                 }
 
  
@@ -136,7 +141,9 @@ public class Owner_AI : MonoBehaviour
            
             yield return new WaitForSeconds(TBC);
         }
-       
+      
+        
+
     }
     int AvaillableUnit 
     {

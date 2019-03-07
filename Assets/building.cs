@@ -65,11 +65,12 @@ public class building : entity
  
 
 
-    public virtual bool HasEnoughRessource(Dictionary<string ,Goods> x, float g)
+    public virtual bool HasEnoughRessource(Dictionary<string ,Goods> x, float g,bool t = false)
     {
         if (GameManager.DEBUG_GODMODE) return true;
         if(g < costs[Tier].Gold + GoldCost  )
         {
+            if (t) GameManager.instance._pup.SetText("Missing " + ((int)((costs[Tier].Gold + GoldCost) -g)).ToString()  + " Gold!");
             print("Not enough gold!");
             return false;
         }
@@ -81,10 +82,15 @@ public class building : entity
             if (x.ContainsKey(item.Name)){
                 ok = x[item.Name].getAmount >= item.getAmount;
 
-                print(ok);
+ 
             }
 
-            if (!ok) return false;
+            if (!ok) {
+
+                if (t) GameManager.instance._pup.SetText("Not Enough Material!");
+                return false;
+            }
+           
 
         }
         return true;

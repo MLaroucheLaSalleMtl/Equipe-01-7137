@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
     public static float SecondPerGenerations = 60;
-    public static bool DEBUG_GODMODE = true;
+    public static bool DEBUG_GODMODE = false;
     [Header("Assets")]
     public GameObject node;
     public GameObject node_bound;
@@ -62,10 +62,11 @@ public class GameManager : MonoBehaviour
         _main = UnityEngine.Camera.main;
 
         owners[0].OnGain += OnOwnerGain;
+        owners[1].OnGain += OnOwnerGain;
 
         for (int i = 1; i < owners.Length - 1; i++)
         {
-            owners[i].Gold += 100;
+           
             var t = gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
         }
@@ -562,12 +563,18 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     int buildmode = -1;
 
+    public PopMessage _pup, _buildpup;
+
     building _lastbuilding;
     public void Build(int x)
     {
         buildmode = -1;
         ClearHighLight();
-        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold)) { print("Not enough ressource or Gold"); _lastbuilding = null; return; }
+        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold,true))
+        {
+            print(owners[0] + " :Not enough ressource or Gold");
+            _lastbuilding = null;
+            return; }
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
 
@@ -753,7 +760,7 @@ public class GameManager : MonoBehaviour
                 }
                 if (n.AverageHeight > 43 && n.AverageHeight < 55 && Random.Range(0, 1f) > .3f)
                 {
-                    print("plain");
+ 
                     n.type = global::node.NodeType.plain;
                 }
 

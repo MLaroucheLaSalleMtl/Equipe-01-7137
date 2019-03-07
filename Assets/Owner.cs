@@ -45,6 +45,7 @@ public class Owner
     
      public void Start()
     {
+        Gold += 100;
         GenFactions();
     }
 
