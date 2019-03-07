@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     }
     public static float SecondPerGenerations = 60;
     public static bool DEBUG_GODMODE = false;
+    public GameObject Help;
     [Header("Assets")]
     public GameObject node;
     public GameObject node_bound;
@@ -35,6 +36,12 @@ public class GameManager : MonoBehaviour
     public static GameObject ArmyPrefab;
     public GameObject NodeRendererPrefab;
     Camera _main;
+
+
+    public void HelpM(bool t)
+    {
+        Help.gameObject.SetActive(t);
+    }
     [Header("Flair")]
 
     //
