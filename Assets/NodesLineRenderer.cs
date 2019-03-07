@@ -21,7 +21,7 @@ public class NodesLineRenderer : MonoBehaviour
     public void Gen(Faction faction)
     {
 
-        UnityEngine.Debug.Log("eeee");
+        
         Vector3[] vector3s = new Vector3[faction.NodesList.Count];
         lineRenderer.SetVertexCount(faction.NodesList.Count);
         

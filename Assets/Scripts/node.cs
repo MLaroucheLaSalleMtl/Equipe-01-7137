@@ -93,12 +93,57 @@ public class node : MonoBehaviour
         if (collision.gameObject.GetComponent<unit>() != null)
         {
             unit unit = collision.gameObject.GetComponent<unit>();
+            Owner ownerNode = this.GetOwner;
+            node thisNode = this;
             if (unit.GetOwner != this.GetOwner)
             {
-                this.SetOwner(unit.GetOwner);
-              //  borderCalculation.UpdateDraw(unit.GetOwner.faction.NodesList, this.GetOwner, this);
-                borderCalculation.RemoveDraw(unit.GetOwner.faction.NodesList, unit.GetOwner, this);
-                UnityEngine.Debug.Log("hahahah " + this.transform.position);
+                int indexConquered=0;
+                int indexLost = 0;
+                foreach (var item in unit.GetOwner.faction.NodeSquares)
+                {
+                    
+                    if (item.Contains(this))
+                    {
+                        break;
+                    }
+                    indexConquered++;
+                }
+                
+                foreach (var item in unit.GetOwner.faction.NodeSquares[indexConquered])
+                {
+                    item.SetOwner(unit.GetOwner);
+                }
+                
+                if (ownerNode.Name != "Neutral")
+                {
+                    foreach (var item in unit.GetOwner.faction.NodeSquares)
+                    {
+
+                        if (item.Contains(thisNode))
+                        {
+                            break;
+                        }
+                        indexLost++;
+                    }
+                   
+                    foreach (var item in ownerNode.faction.NodeSquares[indexLost])
+                    {
+                        item.SetOwner(unit.GetOwner);
+                    }
+                    
+                    ownerNode.faction.NodesList = borderCalculation.CornerDraw(ownerNode.faction.NodeSquares, ownerNode);
+                    unit.GetOwner.faction.NodesList = borderCalculation.CornerDraw(unit.GetOwner.faction.NodeSquares, unit.GetOwner);
+
+                    ownerNode.faction.GenFrontieres();
+                    unit.GetOwner.faction.GenFrontieres();                   
+                }
+                else
+                {
+                    unit.GetOwner.faction.NodesList = borderCalculation.CornerDraw(unit.GetOwner.faction.NodeSquares, unit.GetOwner);
+                    unit.GetOwner.faction.GenFrontieres();
+                   
+                }
+              
             }
         }
     }

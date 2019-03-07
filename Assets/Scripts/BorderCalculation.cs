@@ -154,6 +154,7 @@ public class BorderCalculation
         node tempNode = new node();
         node initialNode = new node();
         int count = 0;
+        int maxCount = borders.Count;
         while (borders.Count > 1)
         {
             int closest = 90;
@@ -182,7 +183,7 @@ public class BorderCalculation
             Fnodes.Add(ToAdd);
             borders.Remove(ToAdd);
             count++;
-            if (count == 200)
+            if (count == (maxCount + 40))
             {
                 break;
             }

@@ -47,7 +47,13 @@ public class Owner
     {
         GenFactions();
     }
-     void GenFactions()
+
+    public void GenBorder()
+    {
+        nodesToRender = border.CornerDraw(border.GetInitBorderCalculation(vector3, this), this);
+
+    }
+    void GenFactions()
     {
         nodes = border.GetInitBorderCalculation(vector3, this);
         nodesToRender = border.CornerDraw(nodes, this);
@@ -55,7 +61,7 @@ public class Owner
         //     nodeLineRenderer = GameManager.instance.transform.Find(Name).gameObject.GetComponent<NodesLineRenderer>();
         nodeLineRenderer = GameObject.Instantiate(GameManager.instance.NodeRendererPrefab, GameManager.instance.transform).GetComponent<NodesLineRenderer>();
         nodeLineRenderer.name = Name;
-        faction = new Faction(Name, vector3, nodesToRender, nodeLineRenderer);
+        faction = new Faction(Name, vector3, nodesToRender, nodes, nodeLineRenderer);
         faction.GenFrontieres();
 
 
