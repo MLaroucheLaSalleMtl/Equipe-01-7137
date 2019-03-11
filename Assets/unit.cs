@@ -12,6 +12,12 @@ public class unit : entity
      NavMeshAgent agi;
     [SerializeField]
     GameObject indicator;
+
+    private void Start()
+    {
+        if(onCreated)
+                AudioSource.PlayClipAtPoint(onCreated, transform.position);
+    }
     public bool HasIssuesCommand
     {
         get { return Ordered; }
@@ -19,6 +25,8 @@ public class unit : entity
     bool Ordered = false;
     public override void Death()
     {
+        if(Oof)
+        AudioSource.PlayClipAtPoint(Oof, transform.position);
         StopAllCoroutines();
         base.Death();
     }
@@ -30,7 +38,10 @@ public class unit : entity
     //So it's 10m per turn or 1 nodes
     public string Name = "Security";
     public float Speed = 10;
- 
+
+    [Header("Flair")]
+    public AudioClip Oof, Hurt;
+    public AudioClip onCreated;
    protected Animator anim;
     [SerializeField]
     MeshRenderer[] rendies;
@@ -108,29 +119,32 @@ public class unit : entity
                 if (s[i].gameObject.GetComponent<entity>())
                 {
 
+                   
 
-                    var sauce = s[i].gameObject.GetComponent<entity>();
-                    if (!sauce) continue;
-                    if (last_agressor && last_agressor == sauce)
+                        var sauce = s[i].gameObject.GetComponent<entity>();
+
+                    //ShortCut
+                    if (GetOwner.Relation.ContainsKey(sauce.GetOwner.Name) && GetOwner.Relation[sauce.GetOwner.Name] <= -10)
                     {
-                        Attack(last_agressor);
+                        Attack(sauce);
                         return;
                     }
+
+                    if (!sauce) continue;      
                     if (GetOwner == null && sauce.GetOwner == null) continue;
                     if (sauce.GetOwner == GetOwner) continue;
                     if ((sauce.gameObject == this.gameObject))
                         continue;
-                
+                    if (GetOwner.Relation.ContainsKey(sauce.GetOwner.Name) && GetOwner.Relation[sauce.GetOwner.Name] > -10) continue;
+                    Attack(sauce);
+                    //Returning right now will improve performance
+                    return;
 
-                    else
-                    {
 
-                        if (!GetOwner.Relation.ContainsKey(sauce.GetOwner.Name) ||  GetOwner.Relation[sauce.GetOwner.Name] > -10) continue;
-                        
-                        Attack(sauce);
-                        //Returning right now will improve performance
-                        return;
-                    }
+
+
+
+
 
 
                 }
@@ -203,10 +217,12 @@ public class unit : entity
         agi.isStopped = false;
         minimumdistance =  agi.radius + agi.stoppingDistance;
         if (e is building) minimumdistance += (e as building).SpaceNeed.magnitude;
-        while ( agi.isOnNavMesh&& agi.remainingDistance > (minimumdistance) && e && e.gameObject )
+        else minimumdistance += .2f;
+        Vector3 ok = e.transform.position;
+        while ( agi.isOnNavMesh&& Vector3.Distance(transform.position, ok) > (minimumdistance) && e && e.gameObject )
         {
             yield return new WaitForSeconds(.01f);
-            if(e && e.gameObject)agi.SetDestination(e.transform.position);
+            if (e && e.gameObject) { ok = e.transform.position; agi.SetDestination(e.transform.position); } 
             else { break; }
             print(name + " distance to target : " + minimumdistance + "m. ");
             yield return null;
@@ -217,12 +233,14 @@ public class unit : entity
     IEnumerator currentMergingRoutine;
     IEnumerator MergingSequence(unit x)
     {
+        yield break;
         yield return StartCoroutine(GoThere(x.transform.position));
         Merge(x);
         yield break;
     }
     public virtual Army Merge(unit z)
     {
+         return null;
         if (currentMergingRoutine == null)
         {
             currentMergingRoutine = MergingSequence(z);
@@ -258,7 +276,6 @@ public class unit : entity
             if(Vector3.Distance(transform.position,x.transform.position)> (minimumdistance  ))
             { 
                 yield return StartCoroutine(GoThere(x ));
-
                 yield return null;
             }
             else
@@ -284,10 +301,20 @@ public class unit : entity
         base.OnKill(z);
         Chill();
     }
+
+    public override void TakeDamage(float t, entity e, DamageType p = DamageType.Null)
+    {
+        base.TakeDamage(t, e, p);
+        if (!Ordered && e)
+            Attack(e);
+
+    }
     public override void TakeDamage(float t, DamageType p = DamageType.Null)
     {
         base.TakeDamage(t, p);
         anim.SetTrigger("damaged");
+        if (Hurt)
+            AudioSource.PlayClipAtPoint(Hurt, transform.position);
     }
     void _attack(entity e)
     {

@@ -133,7 +133,9 @@ public class Owner_AI : MonoBehaviour
 
                     foreach (var x in owner.Units)
                     {
-                        x.Attack(item.Cores[0]);
+                        if (item.Building.Count > 0)
+                            x.Attack(item.Building[Random.Range(0, item.Building.Count)]);
+                        else x.Attack(item.Cores[0]);
                     }
 
                 }
@@ -142,7 +144,7 @@ public class Owner_AI : MonoBehaviour
                 owner.Cores[0].transform.right,
                 GetAvaillableUnit(owner.Units.Count),.15f);
 
-            print("ENEMIES : " + owner.OnBadTerm.Count);
+           /* print("ENEMIES : " + owner.OnBadTerm.Count);*/
             // If there are people on bad term with me , attack them  if there is 10 availlable unit
           
 

@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class CityCore : building
 {
+    private void Start()
+    {
+      /*  if (GetOwner == GameManager.owners[0])
+            StartCoroutine(DeathTEST());*/
+    }
+    IEnumerator DeathTEST()
+    {
+        yield return new WaitForSecondsRealtime(5);
+        Death();
+        yield break;
+    }
     public override bool ApprovedBuilding(Vector3 pos, Owner z)
     {
         return true;
@@ -21,7 +32,10 @@ public class CityCore : building
     public override void Death()
     {
         base.Death();
-        Time.timeScale = 0;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
+        GameManager.SetGameOver();
+        Camera.main.transform.position = transform.position - Vector3.right * 2 + Vector3.up * 2;
+        Camera.main.transform.LookAt(transform);
+        
     }
+
 }

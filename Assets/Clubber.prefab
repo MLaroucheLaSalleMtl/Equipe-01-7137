@@ -1332,7 +1332,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &913747008654732809
 Transform:
   m_ObjectHideFlags: 0
@@ -2473,6 +2473,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  MinView: 0
+  View: 10
+  todis: {fileID: 0}
 --- !u!95 &799867967052470086
 Animator:
   serializedVersion: 3
@@ -3406,6 +3409,9 @@ MonoBehaviour:
   indicator: {fileID: 7262807572265487372}
   Name: Clubber
   Speed: 4.8
+  Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
+  Hurt: {fileID: 8300000, guid: 145fe60071025e246974696fbfb1bfb2, type: 3}
+  onCreated: {fileID: 0}
   rendies:
   - {fileID: 5516078774436349674}
   - {fileID: 5516078772675661452}

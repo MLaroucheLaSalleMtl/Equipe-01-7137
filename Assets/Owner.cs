@@ -26,8 +26,8 @@ public class Owner
              Relation[x.Name]+= z;
         else Relation.Add(x.Name, z);
 
-        if (Relation[x.Name] <= -10) OnBadTerm.Add(x);
-        else if (Relation[x.Name] > 50) OnGoodTerm.Add(x);
+        if (Relation[x.Name] <= -10 && !OnBadTerm.Contains(x)) OnBadTerm.Add(x);
+        else if (Relation[x.Name] > 50 && !OnGoodTerm.Contains(x)) OnGoodTerm.Add(x);
     }
     //Quick Access
     public List<Owner> OnBadTerm = new List<Owner>(), OnGoodTerm = new List<Owner>();
@@ -183,15 +183,15 @@ public class Owner
                 item.addStorage(-x.getAmount);
                 break;
             }
-
+        
         if (Inventory.ContainsKey(x.Name))
         {
             if (x.getAmount >= Inventory[x.Name].getAmount)
-            {
-                Inventory[x.Name].Exploit(x.getAmount);
-            }
-            else
                 Inventory.Remove(x.Name);
+            else
+            {
+                Inventory[x.Name].amount -= x.getAmount;
+            }
         }
     }
     public void Pay( Goods[] x)
@@ -368,6 +368,8 @@ public class Owner
             Generation();
             tim2 = 0;
         }
+
+
         for (int i = 0; i < Units.Count; i++)        
             Units[i].AI();
         

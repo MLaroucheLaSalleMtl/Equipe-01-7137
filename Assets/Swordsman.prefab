@@ -1636,7 +1636,7 @@ GameObject:
   - component: {fileID: 5403923341665701655}
   - component: {fileID: 4114527860973832472}
   - component: {fileID: 6446420825861202062}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Swordsman
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1675,7 +1675,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthToSet: 5
   Type: 0
-  GoldCost: 5
+  GoldCost: 15
   uianim: {fileID: 8537614198484800733}
   Inventory: []
   info: {fileID: 142849206984126182}
@@ -1685,6 +1685,9 @@ MonoBehaviour:
   indicator: {fileID: 1848917094981308311}
   Name: Swordsman
   Speed: 3.26
+  Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
+  Hurt: {fileID: 8300000, guid: 145fe60071025e246974696fbfb1bfb2, type: 3}
+  onCreated: {fileID: 8300000, guid: 539d98873736ef3488c42910db86bc3c, type: 3}
   rendies:
   - {fileID: 3598109092712613233}
   - {fileID: 3598109090980760855}
@@ -1708,7 +1711,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.15
-  m_Speed: 3.5
+  m_Speed: 1.78
   m_Acceleration: 20
   avoidancePriority: 50
   m_AngularSpeed: 90
