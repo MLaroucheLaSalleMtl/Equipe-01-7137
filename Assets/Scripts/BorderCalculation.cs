@@ -155,8 +155,8 @@ public class BorderCalculation
         int maxCount = borders.Count;
         while (borders.Count > 1)
         {
-            int closest = 90;
-            int curr = 100;
+            float closest = 90f;
+            float curr = 100f;
 
             if (count == 0)
             {
@@ -167,7 +167,7 @@ public class BorderCalculation
             for (int x = 0; x < borders.Count - 1; x++)
             {
 
-                curr = (int)Vector3.Distance(ToAdd.GetPosition, borders[x].GetPosition);
+                curr = Vector3.Distance(ToAdd.GetPosition, borders[x].GetPosition);
                 if (closest > curr)
                 {
                     // UnityEngine.Debug.Log(closest);
