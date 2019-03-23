@@ -5,15 +5,18 @@ using UnityEngine.UI;
 
 public class MainUI : MonoBehaviour
 {
+
     public Text[] Txt;
     public GameObject Jobs;
     public RectTransform BSelection;
 
-   public Text Builder, Merchant, Research,Civilian;
+    public Text Builder, Merchant, Research,Civilian;
     public Text UnitInfo;
+
 
     public Animator Action_sticker;
     Owner lastOwner;
+
 
     public bool GameisPaused = false;
     public GameObject InGamePause;
@@ -46,7 +49,6 @@ public class MainUI : MonoBehaviour
 
             }
             
-
         }
        
     }
@@ -136,6 +138,7 @@ public class MainUI : MonoBehaviour
     public void AddBuilder(int x) { lastOwner.AllocateBuilder(x); }
     public void AddMerchant(int x) { }
     public void AddResearch(int x) { }
+
 
 
 }

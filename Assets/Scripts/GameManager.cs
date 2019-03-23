@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager instance;
     public MeshRenderer Fog;
     public Terrain[] terrain;
@@ -594,6 +593,7 @@ public class GameManager : MonoBehaviour
         {
             Vector3 t = Vector3.zero;
             var pos = Input.mousePosition;
+            
             /*
                   if (pos.x > Screen.width - Boundary) t += Vector3.right;
                   if (pos.x < 0 + Boundary) t += -Vector3.right;
@@ -700,6 +700,7 @@ public class GameManager : MonoBehaviour
         else BUI.BuildingSticker.SetBool("SWCB", false);
         var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness);
 
+
         /*
          *    if(x.BuildRoad)
          * foreach (var item in e)
@@ -713,6 +714,7 @@ public class GameManager : MonoBehaviour
                           
             }
         }-*/
+        
         AudioSource.PlayClipAtPoint(build, x.transform.position);
         return x;
 
