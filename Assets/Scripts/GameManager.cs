@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public MeshRenderer Fog;
     public Terrain[] terrain;
+    public GameObject radius;
     public node[] Nodes;
     public static Owner[] owners = new Owner[3] { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) }, new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) }, new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) } };
 
@@ -23,7 +24,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
     public static float SecondPerGenerations = 60;
-    public static bool DEBUG_GODMODE = false;
+    public static bool DEBUG_GODMODE = true;
     public GameObject Help;
     [Header("Assets")]
     public GameObject node;
@@ -637,8 +638,9 @@ public class GameManager : MonoBehaviour
         building_highlight = g;
        
         BUI.Planing(g, Buildings[x].GetComponent<building>());
-
-
+        
+      //  radius.gameObject.SetActive(true);
+        //radius.transform.localScale = new Vector3(Buildings[x].)
         var t = g.GetComponentsInChildren<Collider>();
         for (int i = 0; i < t.Length; i++)
         {
@@ -682,7 +684,7 @@ public class GameManager : MonoBehaviour
             BUI.Uis[0].gameObject.SetActive(true);
         }
 
-
+     
         buildmode = -1;
         if (_lastbuilding && _lastbuilding is Wall && x is Wall)
         {

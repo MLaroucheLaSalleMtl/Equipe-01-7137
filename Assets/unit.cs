@@ -190,6 +190,11 @@ public class unit : entity
     float minimumdistance = 0;
     IEnumerator GoThere(Vector3 pos)
     {
+        if(!agi || !agi.isOnNavMesh)
+        {
+            print("There is no valid nav mesh nor agi!");
+            yield break;
+        }
         agi.isStopped = true;
         yield return new WaitForFixedUpdate();
 
