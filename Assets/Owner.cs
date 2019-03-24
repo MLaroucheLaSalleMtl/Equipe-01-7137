@@ -22,6 +22,7 @@ public class Owner
     public void modRelation(Owner x, int z)
     {
         if (x == this) return;
+
         if (  Relation.ContainsKey(x.Name))
              Relation[x.Name]+= z;
         else Relation.Add(x.Name, z);

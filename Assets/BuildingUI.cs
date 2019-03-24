@@ -15,11 +15,17 @@ public class BuildingUI : MonoBehaviour
     public GameObject RoadPiece;
     MeshRenderer[] colz;
 
+    public GameObject BList;
+    public void SetBList(bool x)
+    {
+        BList.SetActive(x);
+    }
     [HideInInspector]
     public static LayerMask _blayer;
 
     public GameObject[] Uis;
 
+  
     public void BuildingMenu(int x)
     {
         if(x > 0)
@@ -87,7 +93,26 @@ public class BuildingUI : MonoBehaviour
         colz = z.GetComponentsInChildren<MeshRenderer>();
         bref = b;
     }
+    public bool Buildmode = false;
+    void InputInteraction()
+    {
 
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Buildmode = !Buildmode;
+           /* foreach (var item in GameManager.owners[0].Building)
+                item.SetRadius(Buildmode);*/
+        }
+
+
+
+
+
+    }
+    private void Update()
+    {
+        InputInteraction();   
+    }
     //Need to move to Building
     bool Intersect(Vector3 p)
     {

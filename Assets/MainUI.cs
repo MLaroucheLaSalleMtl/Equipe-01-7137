@@ -7,12 +7,12 @@ public class MainUI : MonoBehaviour
 {
 
     public Text[] Txt;
-    public GameObject Jobs;
+    public GameObject Jobs, attack;
     public RectTransform BSelection;
 
     public Text Builder, Merchant, Research,Civilian;
     public Text UnitInfo;
-
+    public textBox Desc, StatsInfo;
 
     public Animator Action_sticker;
     Owner lastOwner;
@@ -21,7 +21,22 @@ public class MainUI : MonoBehaviour
     public bool GameisPaused = false;
     public GameObject InGamePause;
 
+    void UpdateStatsInfo()
+    {
+        if (!StatsInfo) return;
+        if (!StatsInfo.gameObject.activeSelf) return;
+        var own = GameManager.owners[0];
+        var txt = "";
+        txt += "Name : " + own.Name + "\n";
+        txt += "Fertility Rate : " + own.FertilityRate+ "\n";
+        txt += "Security : " + own.getSecurity + "\n";
+        txt += "Housing Space : " + own.getHousingSpace + "\n";
+        txt += "Production Efficiency : " + own.ProductionEfficiency + "\n";
+        txt += "Total Population : " + own.totalPopulation + "\n";
 
+
+        StatsInfo.Texts[1].text = txt; 
+    }
     Camera _main;
     GameObject draggor;
     private void Awake()
@@ -35,6 +50,11 @@ public class MainUI : MonoBehaviour
 
     private void Update()
     {
+        if (!GameisPaused) {
+
+            UpdateDesc();
+            UpdateStatsInfo();
+        } 
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -53,6 +73,28 @@ public class MainUI : MonoBehaviour
        
     }
 
+    
+    public void showDescription(string title, string x)
+    {
+        Desc.gameObject.SetActive(true);
+        Desc.Header.text = title;
+        Desc.Texts[1].text = x;
+    }
+    public void UpdateDesc()
+    {
+        if (!Desc.gameObject.activeSelf) return;
+        
+        var e = Input.mousePosition;
+        var w = Screen.width; var h = Screen.height;
+        var saa = 100;
+        e.y = Mathf.Clamp(e.y, 0  , h - saa);
+        e.x = Mathf.Clamp(e.x, 0  , w - saa);
+        Desc.transform.position = e;
+    }
+    public void EndDescription()
+    {
+        Desc.gameObject.SetActive(false);
+    }
     public void Resume()
     {
         if (GameManager.owners[0].Cores[0] == null) return;
@@ -133,6 +175,26 @@ public class MainUI : MonoBehaviour
         {
             UnitInfo.text = e.ToString();
         }
+    }
+
+
+    public void ShowStats(bool x)
+    {
+        StatsInfo.gameObject.SetActive(x);
+    }
+    public RelationshipUI[] RUI;
+    public void ShowStatsToggle()
+    {
+        StatsInfo.gameObject.SetActive(!StatsInfo.gameObject.activeSelf);
+        var i = 0;
+        foreach (var item in GameManager.owners[0].Relation.Keys)
+        {
+            RUI[i].ShowRelationship(GameManager.owners[0], item);
+            i++;
+        }
+       
+          
+        
     }
 
     public void AddBuilder(int x) { lastOwner.AllocateBuilder(x); }

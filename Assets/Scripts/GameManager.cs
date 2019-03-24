@@ -35,8 +35,14 @@ public class GameManager : MonoBehaviour
     public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
     public GameObject NodeRendererPrefab;
+    
     Camera _main;
 
+    public void ShowBuildingDesc(int x)
+    {
+        var y = Buildings[x].GetComponent<building>();
+        MUI.showDescription(y.name,  y.GetSummary());
+    }
 
     public void HelpM(bool t)
     {
@@ -45,10 +51,11 @@ public class GameManager : MonoBehaviour
     }
     [Header("Flair")]
 
-    //
-    public Text countsoldierssword;
-    public Text countsoldierspear;
-    public AudioClip error, build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic;
+    /* //
+     public Text countsoldierssword;
+     public Text countsoldierspear;*/
+    public AudioClip error;
+    public AudioClip build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic;
     public GameObject[] Cursor3D;
 
     [Header("Camera")]
@@ -185,6 +192,8 @@ public class GameManager : MonoBehaviour
         CameraFunction(_main.transform, CameraPosition);
         MouseInteraction();
     }
+    
+
     RaycastHit lastresult;
     public LayerMask Interatable, BuildingMask, Unit;
     Vector3 MousePosition;
@@ -209,7 +218,7 @@ public class GameManager : MonoBehaviour
         var y = Physics.Raycast(r, out lastresult, Mathf.Infinity, Interatable);
         if (buildmode >= 0)
         {
-
+         
             BUI.CanBePlaceThere(lastresult.point, owners[0]);
             /*  if (owners[0].Settled)
                    BUI.Highlight.transform.right = (owners[0].Cores[0].transform.position - BUI.Highlight.transform.position);
@@ -276,8 +285,10 @@ public class GameManager : MonoBehaviour
 
             if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, MousePosition, building_highlight.transform.rotation, owners[0]);
         }
+      
 
         if (buildmode > 0) return;
+        BUI.SetBList(false);
         if (!selection[0])
         {
             if (tempsel && !(tempsel is building) && tempsel.GetOwner == owners[0])
@@ -401,13 +412,35 @@ public class GameManager : MonoBehaviour
         dragged = false;
         TimeWithMouse = 0;
     }
+    public Unit_UI[] unit_UIs;
+
+    /*int LengthOfArray(unit[][] b , int a)
+    {
+        var c = 0;
+        foreach (var x in b)
+        {
+
+        }
+  
+    }*/
     public void OnDragSelection(unit[] e)
     {
         selection = e;
+        var se = new  List<unit>[99];
+        for (int i = 0; i < e.Length; i++)
+        {
+            if (se[e[i].ID] == null /*|| se[e[i].ID].Length <= 0*/) { se[e[i].ID] = new List<unit>();  }
+            se[e[i].ID].Add(e[i]) ;
+        }
+
+        for (int i = 0; i < se.Length; i++)
+            if (se[i] != null) unit_UIs[i].General(se[i].ToArray(), i);
+
+        MUI.attack.SetActive(true);
         //countsoldierspear.text = e.ToString(); nevermind this 
-        UiSelection[0].SetActive(true);
-        UiSelection[1].SetActive(true);
-        MUI.Action_sticker.SetTrigger("open");
+        /*UiSelection[0].SetActive(true);
+        UiSelection[1].SetActive(true);*/
+        //MUI.Action_sticker.SetTrigger("open");
     }
     #endregion
     public static Vector3[] Formation(Vector3 pos, Vector3 dir, entity[] e, float dist = 2)
@@ -537,6 +570,7 @@ public class GameManager : MonoBehaviour
 
     public void CancelSelection()
     {
+
         foreach (var item in UiSelection)
         {
             item.SetActive(false);
@@ -550,7 +584,9 @@ public class GameManager : MonoBehaviour
             currentmode = 0;
             //  UiSelection[0].SetActive(true); // image nad name 
             //    UiSelection[1].SetActive(true); // main icons
-            MUI.Action_sticker.SetBool("SWCB", false);
+            //MUI.Action_sticker.SetBool("SWCB", false);
+
+            //MUI.attack.SetActive(false);
         }
         else
         {
@@ -558,10 +594,13 @@ public class GameManager : MonoBehaviour
                 foreach (var item in selection)
                     if (item != null) item.OnDeselected();
 
-            MUI.Action_sticker.SetTrigger("close");
-
+            // MUI.Action_sticker.SetTrigger("close");
+            MUI.attack.SetActive(false);
             selection = new entity[1];
-
+            foreach (var item in unit_UIs)            
+                item.Reset();
+            MUI.EndDescription();
+            BUI.SetBList(false);
         }
     }
     public void CancelBuilding()
@@ -625,6 +664,8 @@ public class GameManager : MonoBehaviour
     public void Build(int x)
     {
         if (Loser) return;
+        BUI.SetBList(false);
+        MUI.EndDescription();
         buildmode = -1;
         ClearHighLight();
         if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold, true))
@@ -636,7 +677,10 @@ public class GameManager : MonoBehaviour
         
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
-       
+        var yr = Instantiate(radius, building_highlight.transform);
+        yr.SetActive(true);
+        yr.transform.position = g.transform.position + Vector3.up * .1f; ;
+        yr.transform.localScale = Vector3.one * (Buildings[x].GetComponent<building>().RequiredCloseness);
         BUI.Planing(g, Buildings[x].GetComponent<building>());
         
       //  radius.gameObject.SetActive(true);
@@ -650,6 +694,7 @@ public class GameManager : MonoBehaviour
         BUI.BuildingSticker.SetBool("SWCB", true);
         building_highlight.transform.localRotation = lastrotation;
         AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
+     
     }
 
     public void PlaceBuilding(int j, Owner n)
@@ -668,40 +713,47 @@ public class GameManager : MonoBehaviour
         x.build(pos, n);
         x.Tier = 0;
         n.Pay(x.costs[0].materials);
-        buildmode = -1;
-        ClearHighLight();
-        if (n.Settled)
-        {
 
-            foreach (var item in BUI.Uis)
-                item.SetActive(false);
-            BUI.Uis[1].gameObject.SetActive(true);
-        }
-        else
-        {
-            foreach (var item in BUI.Uis)
-                item.SetActive(false);
-            BUI.Uis[0].gameObject.SetActive(true);
-        }
-
-     
-        buildmode = -1;
+   
+ 
         if (_lastbuilding && _lastbuilding is Wall && x is Wall)
         {
             (_lastbuilding as Wall).boundTo = x as Wall;
 
         }
-        if(n == owners[0])
-        CancelSelection();
-      
+
+        if (n == owners[0])
+        {
+            buildmode = -1;
+            ClearHighLight();
+            if (n.Settled)
+            {
+
+                foreach (var item in BUI.Uis)
+                    item.SetActive(false);
+                BUI.Uis[1].gameObject.SetActive(true);
+            }
+            else
+            {
+                foreach (var item in BUI.Uis)
+                    item.SetActive(false);
+                BUI.Uis[0].gameObject.SetActive(true);
+            }
+            CancelSelection();
+        }
+
+
         _lastbuilding = x;
         BUI.SetStartingPoint(x.transform.position);
         if (_lastbuilding is Wall) Build(j);
-        else BUI.BuildingSticker.SetBool("SWCB", false);
-        var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness);
+        else if (n == owners[0]) BUI.BuildingSticker.SetBool("SWCB", false);
 
 
         /*
+       var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness);
+         * 
+         * 
+         * 
          *    if(x.BuildRoad)
          * foreach (var item in e)
         {        
@@ -714,7 +766,7 @@ public class GameManager : MonoBehaviour
                           
             }
         }-*/
-        
+
         AudioSource.PlayClipAtPoint(build, x.transform.position);
         return x;
 
@@ -769,17 +821,21 @@ public class GameManager : MonoBehaviour
         {
             item.SetOwner(owners[2]);
         }
+        foreach (var item in unit_UIs)
+            item.Reset();
+
 
         owners[0].Start();
         owners[1].Start();
 
+        owners[0].modRelation(owners[1], -1);
 
     }
 
     #region Nodes
     //Nodes related - need to yeet to somewhere else 
 
-    node[] CreateNodes(Terrain a, int precision = 6)
+    node[] CreateNodes(Terrain a, int precision = 7)
     {
         var e = new List<node>();
         var t = a.terrainData;

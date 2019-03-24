@@ -98,6 +98,20 @@ public class building : entity
         }
         return true;
     }
+    public string GetSummary()
+    {
+        var e = this;
+        string text;
+        text =  e.description;
+        if (e.costs[0].materials.Length > 0) text += "\nCOST:";
+        foreach (var item in e.costs[0].materials)
+        {
+            text += "\n" + item.getAmount + "x " + item.Name;
+            if (item.getAmount > 1) text += "s";
+        }
+       text += "\nGold: " + (e.GoldCost + e.costs[0].Gold).ToString("0");
+        return text;
+    }
 
     public bool CanUpgrade
     {
@@ -139,7 +153,7 @@ public class building : entity
     private GameObject gauge;
     public GameObject[] graphics;
 
-
+  
     public virtual bool ApprovedBuilding(Vector3 pos, Owner g)
     {
         bool z = false;

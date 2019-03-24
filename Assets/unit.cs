@@ -4,19 +4,22 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class unit : entity
-{
-
+{   [Header("----ID---")]
+    public int ID = 0;
     [Header("DEBUG")]
     public int DEBUG_OWNER = -1;
     [SerializeField]
      NavMeshAgent agi;
     [SerializeField]
     GameObject indicator;
+    [SerializeField]
+    Renderer lifeindicator;
 
     private void Start()
     {
         if(onCreated)
                 AudioSource.PlayClipAtPoint(onCreated, transform.position);
+        updateLifeIndiactor();
     }
     public bool HasIssuesCommand
     {
@@ -29,6 +32,16 @@ public class unit : entity
         AudioSource.PlayClipAtPoint(Oof, transform.position);
         StopAllCoroutines();
         base.Death();
+    }
+    void updateLifeIndiactor()
+    {
+        if (!lifeindicator) return;
+
+        var e = new Color();
+        if (Hp > maximumHp * .75f) e = Color.green;
+        else if (Hp > maximumHp * .50) e = Color.yellow;
+        else if (Hp > maximumHp * .35f) e = Color.yellow + Color.red;
+        else e = Color.red;
     }
     public NavMeshAgent getAgi
     {
@@ -158,6 +171,7 @@ public class unit : entity
     }
  
     Army _army;
+    entity lastatk;
     public void Attack(entity e)
     {
         if(!e)
@@ -168,6 +182,7 @@ public class unit : entity
         //Need to go there first and ofremost
         if (currentAttackRoutine == null)
         {
+            lastatk = e;
             print("Initiating Attack on " + e.name);
             currentAttackRoutine = AttackSequence(e);
             StartCoroutine(currentAttackRoutine);
@@ -289,7 +304,7 @@ public class unit : entity
                 
                 agi.isStopped = true;
                 yield return new WaitForSeconds(1);
-                _attack(x);
+                //_attack(x);
             }
           
         }
@@ -312,7 +327,7 @@ public class unit : entity
         base.TakeDamage(t, e, p);
         if (!Ordered && e)
             Attack(e);
-
+   
     }
     public override void TakeDamage(float t, DamageType p = DamageType.Null)
     {
@@ -320,6 +335,7 @@ public class unit : entity
         anim.SetTrigger("damaged");
         if (Hurt)
             AudioSource.PlayClipAtPoint(Hurt, transform.position);
+        updateLifeIndiactor();
     }
     void _attack(entity e)
     {
@@ -360,9 +376,11 @@ public class unit : entity
 
         agi.speed = GetMovingSpeed;
         timer += Time.fixedDeltaTime;
-        if(timer > .21f)
+        if(timer > 1f)
         {
-            
+            //Let separate attack from motion
+            if (lastatk && Vector3.Distance(transform.position,lastatk.transform.position)<= minimumdistance )
+                _attack(lastatk);
             timer = 0;
         }
     }

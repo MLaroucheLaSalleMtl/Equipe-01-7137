@@ -42,7 +42,7 @@ public class BorderCalculation
         int index = 0;
         var listNodeList = new List<List<node>>();
         float terrainWidth = Mathf.Sqrt(GameManager.instance.Nodes.Length);
-        UnityEngine.Debug.Log("this is the " + " groupe, positions : " + terrainWidth);
+      //  UnityEngine.Debug.Log("this is the " + " groupe, positions : " + terrainWidth);
 
         for (int z = 0; z < (terrainWidth / 4); z++)
         {

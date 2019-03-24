@@ -25,15 +25,7 @@ public class PopMessage : MonoBehaviour
     public void PopTrueBuilding(int o)
     {
         var e = GameManager.instance.Buildings[o].GetComponent<building>();
-        txt.text =  "-" + e.name + "-" + "\n " + e.description ;
-        if (e.costs[0].materials.Length > 0) txt.text += "\nCOST:";
-        foreach (var item in e.costs[0].materials)
-        {
-            txt.text += "\n" + item.getAmount + "x " + item.Name;
-            if (item.getAmount > 1) txt.text += "s";
-        }
-        txt.text += "\nGold: " + (e.GoldCost + e.costs[0].Gold).ToString("0"); 
-        anim.SetBool("pop up s", true);
+       
     }
     public void PopClose()
     {

@@ -22,20 +22,28 @@ public class entity : MonoBehaviour
     [SerializeField]
     Owner owner;
 
+ 
     public void SetOwner(Owner s)
     {
         owner = s;
         owner = s;
     }
+ 
     public DamageType Type = DamageType.Null;
     public virtual void TransferOwner(Owner n)
     {
         if (owner != null) owner.onLostEntites(this);
+ 
+        
         owner = n;
         n.onNewEntites(this);
     }
     public float GoldCost = 5;
     protected node currentNode;
+    public float GetMaxmimumHP
+    {
+        get { return maximumHp; }
+    }
     protected float maximumHp = 1;
     [SerializeField]
     protected Animator uianim;
