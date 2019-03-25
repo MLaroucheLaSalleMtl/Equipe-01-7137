@@ -345,6 +345,7 @@ public class GameManager : MonoBehaviour
                      foreach (var item in selection)
                     {
                         (item as unit).Chill(); 
+                       if((item as unit).TargetToHunt.Count > 0)
                         (item as unit).Attack((item as unit).TargetToHunt.Dequeue());
 
                     }
