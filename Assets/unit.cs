@@ -59,7 +59,7 @@ public class unit : entity
    protected Animator anim;
     [SerializeField]
     MeshRenderer[] rendies;
-    protected virtual float GetMovingSpeed
+    public virtual float GetMovingSpeed
     {
         get { return Speed * MainUI.SpeedMult; }
     } 
@@ -79,6 +79,11 @@ public class unit : entity
     {
         get { return DetectionRange; }
     }
+    public virtual float GetAttackSpeed
+    {
+        get { return AtkSpeed; }
+    }
+    public float AtkSpeed = 1;
     public float DetectionRange = 1;
     private void OnDrawGizmosSelected()
     {
@@ -109,7 +114,7 @@ public class unit : entity
         if (_delay != null) StopCoroutine(_delay);
         _delay = DelayClose();
         StartCoroutine(_delay);
-        if (infotext) infotext.text = Name + " Type " + Type.ToString() + "\n" + "HP:" + Hp + " /" + maximumHp + " lvl:" + (getAttack + defense + GetMovingSpeed).ToString("0.0"); 
+        if (infotext) infotext.text = Name + " Type " + Type.ToString() + "\n" + "HP:" + Hp + " /" + maximumHp + " lvl:" + (getAttack + getDefense + GetMovingSpeed).ToString("0.0"); 
     }
    
     protected override void OnMouseExit()
@@ -391,7 +396,7 @@ public class unit : entity
 
         agi.speed = GetMovingSpeed;
         timer += Time.fixedDeltaTime;
-        if(timer > 1f)
+        if(timer > GetAttackSpeed)
         {
             //Let separate attack from motion
             Attack(lastatk);

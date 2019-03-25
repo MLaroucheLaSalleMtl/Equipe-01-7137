@@ -26,13 +26,13 @@ public class MainUI : MonoBehaviour
 
     public void OpenParams(bool x)
     {
-        Params.gameObject.SetActive(true);
-        OpenParams(false);
+        Params.gameObject.SetActive(x);
+        Options.gameObject.SetActive(false);
     }
     public void OpenOptions(bool x)
     {
-        Options.gameObject.SetActive(true);
-        OpenOptions(false);
+        Options.gameObject.SetActive(x);
+        Params.gameObject.SetActive(false);
     }
     public void SetVolume(Slider z)
     {
