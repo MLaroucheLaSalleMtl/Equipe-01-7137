@@ -64,6 +64,8 @@ public class GameManager : MonoBehaviour
     public float cameraSmoothness = 6;
     public float EdgeScrollingSpeed = 5;
     Vector2 cursorinput;
+
+    public grumbleAMP grumbleAMP;
     private void Awake()
     {
         instance = this;
@@ -149,14 +151,14 @@ public class GameManager : MonoBehaviour
             item.enabled = false;
         
 
-        var z = GetComponent<AudioSource>();
-        z.Stop();
+        var audioSource = GetComponent<AudioSource>();
+        audioSource.Stop();
        
         AudioSource.PlayClipAtPoint(GameManager.instance.endaudio, Camera.main.gameObject.transform.position);
        
         yield return new WaitForSecondsRealtime(2f);
-        z.clip = GameOverMusic;
-        z.Play();
+        audioSource.clip = GameOverMusic;
+        audioSource.Play();
         animBlack.SetTrigger("fade");
         yield return new WaitForSecondsRealtime(3f);
         GameOverItem.SetActive(true);
