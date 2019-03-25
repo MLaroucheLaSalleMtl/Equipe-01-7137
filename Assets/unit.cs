@@ -115,16 +115,24 @@ public class unit : entity
 
     //Maximum of 500 entity, after that, it cannot detect more than that. HardCap for performance;
     protected Collider[] _col = new Collider[500];
-   protected float aitimer = 0;
+    public Queue<entity> TargetToHunt = new Queue<entity>();
+
+    protected float aitimer = 0;
     public virtual void AI()
     {
         aitimer += Time.fixedDeltaTime;
-       
-        if (last_agressor)
-            Attack(last_agressor);
-        else
+
+     
+ 
         if (aitimer > .3f)
         {
+            if (last_agressor) { lastatk = last_agressor; last_agressor = null; return; }
+            if (!lastatk && TargetToHunt.Count > 0)
+            {
+                lastatk = TargetToHunt.Dequeue();
+            }
+            Attack(lastatk);
+   
             var s = Physics.OverlapSphere(transform.position, DetectionRange, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
             for (int i = s.Length - 1; i >= 0; i--)
             {
@@ -152,13 +160,6 @@ public class unit : entity
                     Attack(sauce);
                     //Returning right now will improve performance
                     return;
-
-
-
-
-
-
-
 
                 }
 
@@ -319,6 +320,7 @@ public class unit : entity
     protected override void OnKill(entity z)
     {
         base.OnKill(z);
+        
         Chill();
     }
 
@@ -379,7 +381,8 @@ public class unit : entity
         if(timer > 1f)
         {
             //Let separate attack from motion
-            if (lastatk && Vector3.Distance(transform.position,lastatk.transform.position)<= minimumdistance )
+            Attack(lastatk);
+            if (lastatk && Vector3.Distance(transform.position,lastatk.transform.position)<= minimumdistance)
                 _attack(lastatk);
             timer = 0;
         }
@@ -388,8 +391,15 @@ public class unit : entity
 
     public void Chill ()
     {
-        agi.isStopped = true;
-        agi.SetDestination(transform.position);
+        if (agi)
+        {
+            agi.isStopped = true;
+            agi.SetDestination(transform.position);
+        }
+
+        last_agressor = null;
+        lastatk = null;
+        TargetToHunt = new Queue<entity>();
         if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);
     }
 

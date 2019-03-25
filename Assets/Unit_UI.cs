@@ -26,8 +26,8 @@ public class Unit_UI : MonoBehaviour
         img.sprite = src[z];
         var count = x.Length;
         var s = 0f;
-        foreach (var item in x)
-            if (x != null)
+        foreach (var item in cachedUnit)
+            if (item != null)
                 s += item.Hp;
             else count--;
         if (count <= 0) { Reset(); return; }  

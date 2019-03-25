@@ -250,6 +250,7 @@ public class GameManager : MonoBehaviour
         if (y)
         {
 
+
             if (EventSystem.current.IsPointerOverGameObject()) {OnMouseRelease(lastresult.point); return; } 
             MousePosition = lastresult.point;
 
@@ -267,7 +268,10 @@ public class GameManager : MonoBehaviour
                 OnMouseRelease(lastresult.point);
             }
 
-
+            foreach (var item in Cursor3D)
+            {
+                if (item) item.transform.position = lastresult.point;
+            }
         }
 
         if (!ctrl && BUI.Highlight) { BUI.Highlight.transform.position = MousePosition; }
@@ -275,6 +279,7 @@ public class GameManager : MonoBehaviour
 
 
     }
+
     void OnMouseClick(Vector3 pos)
     {
 
@@ -325,28 +330,34 @@ public class GameManager : MonoBehaviour
 
                     break;
                 case 2:
-                    if (tempsel && tempsel.GetOwner != owners[0])
-                        foreach (var item in selection)
-                            if (item) (item as unit).Attack(tempsel);
-                    //Need to be clean ahah
-                    CancelSelection();
-                    CancelSelection();
-                    break;
-                case 3:
-                   /* break
-                    if (tempsel && tempsel != selection[0] && (selection[0] is unit) && (selection[0].GetOwner == tempsel.GetOwner))
+                    var s = Physics.OverlapSphere(pos, 1, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
+
+                    foreach (var item in s)
                     {
-                        var x = (selection[0] as unit).Merge(tempsel as unit);
-                        CancelSelection();
-                        CancelSelection();
-                        selection[0] = x;
-                        selection[0].OnSelected();
-                    }*/
+                       var vs = item.GetComponent<entity>();
+                        if (!vs || vs.GetOwner == owners[0] ) continue;
+                        foreach (var itddem in selection)
+                            (itddem as unit).TargetToHunt.Enqueue(vs);
+
+
+                    }
+
+                     foreach (var item in selection)
+                    {
+                        (item as unit).Chill(); 
+                        (item as unit).Attack((item as unit).TargetToHunt.Dequeue());
+
+                    }
+                        
+
+
+                    CancelSelection(0);
                     break;
                 case 4:
-                    (selection[0] as unit).Chill();
-                    CancelSelection();
-                    CancelSelection();
+
+                    foreach (var item in selection)
+                       (item as unit).Chill();
+                    CancelSelection(1);
                     break;
                 default:
                     break;
@@ -359,7 +370,7 @@ public class GameManager : MonoBehaviour
 
     void OnMouseHold(Vector3 pos)
     {
-        if (TimeWithMouse > .1f)
+        if (TimeWithMouse > .05f)
         {
             MouseReleasePos = pos;
             MUI.BoxSelection(MouseClickPos, MouseReleasePos);
@@ -551,7 +562,8 @@ public class GameManager : MonoBehaviour
             item.SetActive(false);
         }
 
-        if (x > 0) Cursor3D[Mathf.Clamp(x - 1, 0, Cursor3D.Length - 1)].SetActive(true);
+        if (x == 2) Cursor3D[1].gameObject.SetActive(true);
+       // if (x > 0) Cursor3D[Mathf.Clamp(x - 1, 0, Cursor3D.Length - 1)].SetActive(true);
         //UiSelection[0].SetActive(true); // image nad name 
         //UiSelection[2].SetActive(true);
         MUI.Action_sticker.SetBool("SWBC", true);
@@ -568,9 +580,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CancelSelection()
+    public void CancelSelection(int a = 0)
     {
-
+        if (a > 0) CancelSelection(a - 1);
         foreach (var item in UiSelection)
         {
             item.SetActive(false);

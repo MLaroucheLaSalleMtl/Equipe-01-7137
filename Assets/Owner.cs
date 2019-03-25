@@ -19,6 +19,12 @@ public class Owner
     public float Gold = 100;
     int builder = 0, fighter = 0;
     public Dictionary<string, int> Relation = new Dictionary<string, int>();
+
+
+
+
+ 
+
     public void modRelation(Owner x, int z)
     {
         if (x == this) return;

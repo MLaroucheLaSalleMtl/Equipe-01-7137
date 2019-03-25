@@ -7,7 +7,7 @@ public class MainUI : MonoBehaviour
 {
 
     public Text[] Txt;
-    public GameObject Jobs, attack;
+    public GameObject Jobs, attack, cursor;
     public RectTransform BSelection;
 
     public Text Builder, Merchant, Research,Civilian;
