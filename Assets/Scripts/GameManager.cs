@@ -6,13 +6,16 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager instance;
     public MeshRenderer Fog;
     public Terrain[] terrain;
+    public GameObject radius;
     public node[] Nodes;
     public static Owner[] owners = new Owner[3] { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) }, new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) }, new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) } };
 
+
+
+    
     //Should have use a dictionary, gonna change it later, for now let's use that
     public static Owner GetOwner(string a)
     {
@@ -23,7 +26,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
     public static float SecondPerGenerations = 60;
-    public static bool DEBUG_GODMODE = false;
+    public static bool DEBUG_GODMODE = true;
     public GameObject Help;
     [Header("Assets")]
     public GameObject node;
@@ -35,8 +38,14 @@ public class GameManager : MonoBehaviour
     public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
     public GameObject NodeRendererPrefab;
+    
     Camera _main;
 
+    public void ShowBuildingDesc(int x)
+    {
+        var y = Buildings[x].GetComponent<building>();
+        MUI.showDescription(y.name,  y.GetSummary());
+    }
 
     public void HelpM(bool t)
     {
@@ -44,11 +53,8 @@ public class GameManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
     }
     [Header("Flair")]
-
-    //
-    public Text countsoldierssword;
-    public Text countsoldierspear;
-    public AudioClip error, build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic;
+    public AudioClip error;
+    public AudioClip build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic,War;
     public GameObject[] Cursor3D;
 
     [Header("Camera")]
@@ -71,6 +77,8 @@ public class GameManager : MonoBehaviour
         owners[0].OnGain += OnOwnerGain;
         owners[1].OnGain += OnOwnerGain;
 
+        owners[0].OnRelationModification += OnPlayerRelationshipChanged;
+        owners[1].OnRelationModification += OnPlayerRelationshipChanged;
         for (int i = 1; i < owners.Length - 1; i++)
         {
 
@@ -79,23 +87,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //Depreciated, was using shader before but wasn't optimized as using a for loop not clean 
-    /* public void SeeFogofWar()
-     {
-         var mat = Fog.material;
-         List<Vector4> lol= new List<Vector4>();
-         for (int i = 0; i < owners[0].Units.Count; i++)  
-         {
-             var item = owners[0].Units[i];
-             var e = new Vector4(item.transform.position.z, item.DetectionRange, item.transform.position.z, 0);
-             //   lol.Add(e);
-             mat.SetVector("_Holes" + i,e);
-         }
+  public static void ShowMessage(string f)
+    {
+        GameManager.instance._pup.SetText(f);
+    }
+     public void DeclareWar(Owner z)
+    {
+        if (AtWarWith.ContainsKey(z.Name))
+            if (AtWarWith[z.Name]) return;
 
-         mat.SetInt("arr", 0);
-       //  mat.SetVectorArray("_Holes",lol);
-         mat.SetInt("arr", lol.Count);
-     }*/
+
+        _pup.SetText("You are now peacen't with " + z.Name + "!");
+        AtWarWith.Add(z.Name, true);
+    }
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
         if (g.bit)
@@ -111,12 +115,29 @@ public class GameManager : MonoBehaviour
 
     }
 
+    Dictionary<string, bool> AtWarWith = new Dictionary<string, bool>();
+    public void OnPlayerRelationshipChanged(Owner p1, Owner p2, float val)
+    {
+         Owner own, at;
+        if (!(p1 == owners[0] || p2 == owners[0])) return;
+        if (p1 == owners[0]) { own = p1; at = p2; }
+        else { own = p2;  at = p1; } 
+
+ 
+        if(at.Relation.ContainsKey(own.Name) && at.Relation[own.Name] < -50)
+            if (own.Relation.ContainsKey(at.Name) && own.Relation[at.Name] < -50)
+                DeclareWar(at);
+
+
+        
+    }
 
     [SerializeField]
     Animator animBlack;
     [SerializeField]
     GameObject GameOverItem;
 
+ 
     bool Loser = false;
     public static void SetGameOver()
     {
@@ -187,6 +208,8 @@ public class GameManager : MonoBehaviour
         CameraFunction(_main.transform, CameraPosition);
         MouseInteraction();
     }
+    
+
     RaycastHit lastresult;
     public LayerMask Interatable, BuildingMask, Unit;
     Vector3 MousePosition;
@@ -211,7 +234,7 @@ public class GameManager : MonoBehaviour
         var y = Physics.Raycast(r, out lastresult, Mathf.Infinity, Interatable);
         if (buildmode >= 0)
         {
-
+         
             BUI.CanBePlaceThere(lastresult.point, owners[0]);
             /*  if (owners[0].Settled)
                    BUI.Highlight.transform.right = (owners[0].Cores[0].transform.position - BUI.Highlight.transform.position);
@@ -243,6 +266,7 @@ public class GameManager : MonoBehaviour
         if (y)
         {
 
+
             if (EventSystem.current.IsPointerOverGameObject()) {OnMouseRelease(lastresult.point); return; } 
             MousePosition = lastresult.point;
 
@@ -260,7 +284,10 @@ public class GameManager : MonoBehaviour
                 OnMouseRelease(lastresult.point);
             }
 
-
+            foreach (var item in Cursor3D)
+            {
+                if (item) item.transform.position = lastresult.point + Vector3.up * .3f;
+            }
         }
 
         if (!ctrl && BUI.Highlight) { BUI.Highlight.transform.position = MousePosition; }
@@ -268,6 +295,7 @@ public class GameManager : MonoBehaviour
 
 
     }
+
     void OnMouseClick(Vector3 pos)
     {
 
@@ -278,8 +306,10 @@ public class GameManager : MonoBehaviour
 
             if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, MousePosition, building_highlight.transform.rotation, owners[0]);
         }
+      
 
         if (buildmode > 0) return;
+        BUI.SetBList(false);
         if (!selection[0])
         {
             if (tempsel && !(tempsel is building) && tempsel.GetOwner == owners[0])
@@ -316,28 +346,40 @@ public class GameManager : MonoBehaviour
 
                     break;
                 case 2:
-                    if (tempsel && tempsel.GetOwner != owners[0])
-                        foreach (var item in selection)
-                            if (item) (item as unit).Attack(tempsel);
-                    //Need to be clean ahah
-                    CancelSelection();
-                    CancelSelection();
-                    break;
-                case 3:
-                   /* break
-                    if (tempsel && tempsel != selection[0] && (selection[0] is unit) && (selection[0].GetOwner == tempsel.GetOwner))
+                    var s = Physics.OverlapSphere(pos, 1, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
+                    foreach (var item in selection)
+                        if (item)
+                            (item as unit).Chill();
+
+                    foreach (var item in s)
                     {
-                        var x = (selection[0] as unit).Merge(tempsel as unit);
-                        CancelSelection();
-                        CancelSelection();
-                        selection[0] = x;
-                        selection[0].OnSelected();
-                    }*/
+                       var vs = item.GetComponent<entity>();
+                        if (!vs || vs.GetOwner == owners[0] ) continue;
+                        foreach (var itddem in selection)
+                            if (item)
+                                (itddem as unit).TargetToHunt.Enqueue(vs);
+
+
+                    }
+
+                     foreach (var item in selection)
+                    {
+                   
+                       if((item as unit).TargetToHunt.Count > 0)
+                            if (item)
+                                (item as unit).Attack((item as unit).TargetToHunt.Dequeue());
+
+                    }
+                        
+
+
+                    CancelSelection(0);
                     break;
                 case 4:
-                    (selection[0] as unit).Chill();
-                    CancelSelection();
-                    CancelSelection();
+
+                    foreach (var item in selection)
+                       (item as unit).Chill();
+                    CancelSelection(1);
                     break;
                 default:
                     break;
@@ -350,7 +392,7 @@ public class GameManager : MonoBehaviour
 
     void OnMouseHold(Vector3 pos)
     {
-        if (TimeWithMouse > .1f)
+        if (TimeWithMouse > .05f)
         {
             MouseReleasePos = pos;
             MUI.BoxSelection(MouseClickPos, MouseReleasePos);
@@ -403,13 +445,35 @@ public class GameManager : MonoBehaviour
         dragged = false;
         TimeWithMouse = 0;
     }
+    public Unit_UI[] unit_UIs;
+
+    /*int LengthOfArray(unit[][] b , int a)
+    {
+        var c = 0;
+        foreach (var x in b)
+        {
+
+        }
+  
+    }*/
     public void OnDragSelection(unit[] e)
     {
         selection = e;
+        var se = new  List<unit>[99];
+        for (int i = 0; i < e.Length; i++)
+        {
+            if (se[e[i].ID] == null /*|| se[e[i].ID].Length <= 0*/) { se[e[i].ID] = new List<unit>();  }
+            se[e[i].ID].Add(e[i]) ;
+        }
+
+        for (int i = 0; i < se.Length; i++)
+            if (se[i] != null) unit_UIs[i].General(se[i].ToArray(), i);
+
+        MUI.attack.SetActive(true);
         //countsoldierspear.text = e.ToString(); nevermind this 
-        UiSelection[0].SetActive(true);
-        UiSelection[1].SetActive(true);
-        MUI.Action_sticker.SetTrigger("open");
+        /*UiSelection[0].SetActive(true);
+        UiSelection[1].SetActive(true);*/
+        //MUI.Action_sticker.SetTrigger("open");
     }
     #endregion
     public static Vector3[] Formation(Vector3 pos, Vector3 dir, entity[] e, float dist = 2)
@@ -520,7 +584,8 @@ public class GameManager : MonoBehaviour
             item.SetActive(false);
         }
 
-        if (x > 0) Cursor3D[Mathf.Clamp(x - 1, 0, Cursor3D.Length - 1)].SetActive(true);
+        if (x == 2) Cursor3D[1].gameObject.SetActive(true);
+       // if (x > 0) Cursor3D[Mathf.Clamp(x - 1, 0, Cursor3D.Length - 1)].SetActive(true);
         //UiSelection[0].SetActive(true); // image nad name 
         //UiSelection[2].SetActive(true);
         MUI.Action_sticker.SetBool("SWBC", true);
@@ -537,8 +602,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CancelSelection()
+    public void CancelSelection(int a = 0)
     {
+        if (a > 0) CancelSelection(a - 1);
         foreach (var item in UiSelection)
         {
             item.SetActive(false);
@@ -552,7 +618,9 @@ public class GameManager : MonoBehaviour
             currentmode = 0;
             //  UiSelection[0].SetActive(true); // image nad name 
             //    UiSelection[1].SetActive(true); // main icons
-            MUI.Action_sticker.SetBool("SWCB", false);
+            //MUI.Action_sticker.SetBool("SWCB", false);
+
+            //MUI.attack.SetActive(false);
         }
         else
         {
@@ -560,10 +628,13 @@ public class GameManager : MonoBehaviour
                 foreach (var item in selection)
                     if (item != null) item.OnDeselected();
 
-            MUI.Action_sticker.SetTrigger("close");
-
+            // MUI.Action_sticker.SetTrigger("close");
+            MUI.attack.SetActive(false);
             selection = new entity[1];
-
+            foreach (var item in unit_UIs)            
+                item.Reset();
+            MUI.EndDescription();
+            BUI.SetBList(false);
         }
     }
     public void CancelBuilding()
@@ -595,13 +666,21 @@ public class GameManager : MonoBehaviour
         {
             Vector3 t = Vector3.zero;
             var pos = Input.mousePosition;
-            /*
-                  if (pos.x > Screen.width - Boundary) t += Vector3.right;
-                  if (pos.x < 0 + Boundary) t += -Vector3.right;
-                  if (pos.y > Screen.height - Boundary) t += Vector3.up;
-                  if (pos.y < 0 + Boundary) t += -Vector3.up;
+            var x = Input.GetAxis("Horizontal");
+            var y = Input.GetAxis("Vertical");
 
-          */
+
+            /*
+                   if (pos.x > Screen.width - Boundary) t += Vector3.right;
+                   if (pos.x < 0 + Boundary) t += -Vector3.right;
+                   if (pos.y > Screen.height - Boundary) t += Vector3.up;
+                   if (pos.y < 0 + Boundary) t += -Vector3.up;
+ */
+
+            if (x>0) t += Vector3.right;
+            if (x < 0) t += -Vector3.right;
+            if (y > 0) t += Vector3.up;
+            if (y < 0) t += -Vector3.up;
 
 
             return t;
@@ -626,6 +705,8 @@ public class GameManager : MonoBehaviour
     public void Build(int x)
     {
         if (Loser) return;
+        BUI.SetBList(false);
+        MUI.EndDescription();
         buildmode = -1;
         ClearHighLight();
         if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold, true))
@@ -637,10 +718,14 @@ public class GameManager : MonoBehaviour
         
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
-       
+        var yr = Instantiate(radius, building_highlight.transform);
+        yr.SetActive(true);
+        yr.transform.position = g.transform.position + Vector3.up * .1f; ;
+        yr.transform.localScale = Vector3.one * (Buildings[x].GetComponent<building>().RequiredCloseness);
         BUI.Planing(g, Buildings[x].GetComponent<building>());
-
-
+        
+      //  radius.gameObject.SetActive(true);
+        //radius.transform.localScale = new Vector3(Buildings[x].)
         var t = g.GetComponentsInChildren<Collider>();
         for (int i = 0; i < t.Length; i++)
         {
@@ -650,6 +735,7 @@ public class GameManager : MonoBehaviour
         BUI.BuildingSticker.SetBool("SWCB", true);
         building_highlight.transform.localRotation = lastrotation;
         AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
+     
     }
 
     public void PlaceBuilding(int j, Owner n)
@@ -668,39 +754,47 @@ public class GameManager : MonoBehaviour
         x.build(pos, n);
         x.Tier = 0;
         n.Pay(x.costs[0].materials);
-        buildmode = -1;
-        ClearHighLight();
-        if (n.Settled)
-        {
 
-            foreach (var item in BUI.Uis)
-                item.SetActive(false);
-            BUI.Uis[1].gameObject.SetActive(true);
-        }
-        else
-        {
-            foreach (var item in BUI.Uis)
-                item.SetActive(false);
-            BUI.Uis[0].gameObject.SetActive(true);
-        }
-
-
-        buildmode = -1;
+   
+ 
         if (_lastbuilding && _lastbuilding is Wall && x is Wall)
         {
             (_lastbuilding as Wall).boundTo = x as Wall;
 
         }
-        if(n == owners[0])
-        CancelSelection();
-      
+
+        if (n == owners[0])
+        {
+            buildmode = -1;
+            ClearHighLight();
+            if (n.Settled)
+            {
+
+                foreach (var item in BUI.Uis)
+                    item.SetActive(false);
+                BUI.Uis[1].gameObject.SetActive(true);
+            }
+            else
+            {
+                foreach (var item in BUI.Uis)
+                    item.SetActive(false);
+                BUI.Uis[0].gameObject.SetActive(true);
+            }
+            CancelSelection();
+        }
+
+
         _lastbuilding = x;
         BUI.SetStartingPoint(x.transform.position);
         if (_lastbuilding is Wall) Build(j);
-        else BUI.BuildingSticker.SetBool("SWCB", false);
-        var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness);
+        else if (n == owners[0]) BUI.BuildingSticker.SetBool("SWCB", false);
+
 
         /*
+       var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness);
+         * 
+         * 
+         * 
          *    if(x.BuildRoad)
          * foreach (var item in e)
         {        
@@ -713,6 +807,7 @@ public class GameManager : MonoBehaviour
                           
             }
         }-*/
+
         AudioSource.PlayClipAtPoint(build, x.transform.position);
         return x;
 
@@ -767,17 +862,21 @@ public class GameManager : MonoBehaviour
         {
             item.SetOwner(owners[2]);
         }
+        foreach (var item in unit_UIs)
+            item.Reset();
+
 
         owners[0].Start();
         owners[1].Start();
 
+        owners[0].modRelation(owners[1], -1);
 
     }
 
     #region Nodes
     //Nodes related - need to yeet to somewhere else 
 
-    node[] CreateNodes(Terrain a, int precision = 6)
+    node[] CreateNodes(Terrain a, int precision = 7)
     {
         var e = new List<node>();
         var t = a.terrainData;

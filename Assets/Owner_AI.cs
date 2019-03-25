@@ -6,8 +6,10 @@ using System.Reflection;
 public class Owner_AI : MonoBehaviour
 {
 
+
+    float _lifetime = 0;
     [Tooltip("Time between each command")]
-    public float TBC = 1;
+    public float TBC = 5;
 
     public Owner owner;
  
@@ -126,8 +128,8 @@ public class Owner_AI : MonoBehaviour
                     }
                 }
 
-
-            if (AvaillableUnit > 5)
+            //Give 60 sec before doing anything
+            if (AvaillableUnit > 5 && _lifetime > 60)
                 foreach (var item in owner.OnBadTerm)
                 {
 
@@ -149,7 +151,7 @@ public class Owner_AI : MonoBehaviour
           
 
            
-            yield return new WaitForSeconds(TBC);
+            yield return new WaitForSeconds(TBC / MainUI.TPSmult);
         }
       
         
@@ -324,7 +326,8 @@ public class Owner_AI : MonoBehaviour
 
     private void FixedUpdate()
     {
-       
-       
+        if (TBC > 1) TBC -= Time.deltaTime * 0.01f;
+
+        _lifetime += Time.deltaTime;
     }
 }

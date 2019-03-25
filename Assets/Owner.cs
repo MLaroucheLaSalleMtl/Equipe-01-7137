@@ -10,6 +10,8 @@ public class Owner
     public NodesLineRenderer nodeLineRenderer;
     public Color MainColor;
     public delegate void OnGainHandler(Goods g, Vector3 p);
+    public delegate void OnRelationship(Owner n, Owner z, float x);
+    public OnRelationship OnRelationModification;
     public OnGainHandler OnGain;
     public delegate void EntitiesHandler(entity e);
     public EntitiesHandler onNewEntites, onLostEntites; 
@@ -19,15 +21,23 @@ public class Owner
     public float Gold = 100;
     int builder = 0, fighter = 0;
     public Dictionary<string, int> Relation = new Dictionary<string, int>();
+
+
+
+
+ 
+
     public void modRelation(Owner x, int z)
     {
         if (x == this) return;
+
         if (  Relation.ContainsKey(x.Name))
              Relation[x.Name]+= z;
         else Relation.Add(x.Name, z);
 
         if (Relation[x.Name] <= -10 && !OnBadTerm.Contains(x)) OnBadTerm.Add(x);
         else if (Relation[x.Name] > 50 && !OnGoodTerm.Contains(x)) OnGoodTerm.Add(x);
+        OnRelationModification?.Invoke(this, x, z);
     }
     //Quick Access
     public List<Owner> OnBadTerm = new List<Owner>(), OnGoodTerm = new List<Owner>();

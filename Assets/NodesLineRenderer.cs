@@ -44,6 +44,10 @@ public class NodesLineRenderer : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-         lineRenderer.enabled = GameManager.instance.GetZoomLevel >= 15;
+        if(GameManager.instance.GetZoomLevel >= 15)
+                  gameObject.layer = LayerMask.NameToLayer("Default");
+        else      
+                  gameObject.layer = LayerMask.NameToLayer("UI");
+        // lineRenderer.enabled = 
     }
 }
