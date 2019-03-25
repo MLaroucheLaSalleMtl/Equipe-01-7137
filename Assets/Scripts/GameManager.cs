@@ -270,7 +270,7 @@ public class GameManager : MonoBehaviour
 
             foreach (var item in Cursor3D)
             {
-                if (item) item.transform.position = lastresult.point;
+                if (item) item.transform.position = lastresult.point + Vector3.up * .3f;
             }
         }
 
@@ -331,22 +331,27 @@ public class GameManager : MonoBehaviour
                     break;
                 case 2:
                     var s = Physics.OverlapSphere(pos, 1, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
+                    foreach (var item in selection)
+                        if (item)
+                            (item as unit).Chill();
 
                     foreach (var item in s)
                     {
                        var vs = item.GetComponent<entity>();
                         if (!vs || vs.GetOwner == owners[0] ) continue;
                         foreach (var itddem in selection)
-                            (itddem as unit).TargetToHunt.Enqueue(vs);
+                            if (item)
+                                (itddem as unit).TargetToHunt.Enqueue(vs);
 
 
                     }
 
                      foreach (var item in selection)
                     {
-                        (item as unit).Chill(); 
+                   
                        if((item as unit).TargetToHunt.Count > 0)
-                        (item as unit).Attack((item as unit).TargetToHunt.Dequeue());
+                            if (item)
+                                (item as unit).Attack((item as unit).TargetToHunt.Dequeue());
 
                     }
                         

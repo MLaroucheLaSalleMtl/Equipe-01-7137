@@ -42,6 +42,7 @@ public class unit : entity
         else if (Hp > maximumHp * .50) e = Color.yellow;
         else if (Hp > maximumHp * .35f) e = Color.yellow + Color.red;
         else e = Color.red;
+        lifeindicator.material.color = e;
     }
     public NavMeshAgent getAgi
     {
@@ -132,7 +133,8 @@ public class unit : entity
                 lastatk = TargetToHunt.Dequeue();
             }
             Attack(lastatk);
-   
+
+            if (!lastatk) return;
             var s = Physics.OverlapSphere(transform.position, DetectionRange, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
             for (int i = s.Length - 1; i >= 0; i--)
             {
@@ -177,7 +179,7 @@ public class unit : entity
     {
         if(!e)
         {
-            print("Nothing to attack, error!");
+
             return;
         }
         //Need to go there first and ofremost
@@ -245,7 +247,7 @@ public class unit : entity
             yield return new WaitForSeconds(.01f);
             if (e && e.gameObject) { ok = e.transform.position; agi.SetDestination(e.transform.position); } 
             else { break; }
-            print(name + " distance to target : " + minimumdistance + "m. ");
+          //  print(name + " distance to target : " + minimumdistance + "m. ");
             yield return null;
         }
 
@@ -320,13 +322,14 @@ public class unit : entity
     protected override void OnKill(entity z)
     {
         base.OnKill(z);
-        
-        Chill();
+        lastatk = null;
+     //   Chill();
     }
 
     public override void TakeDamage(float t, entity e, DamageType p = DamageType.Null)
     {
         base.TakeDamage(t, e, p);
+        updateLifeIndiactor();
         if (!Ordered && e)
             Attack(e);
    
@@ -334,10 +337,11 @@ public class unit : entity
     public override void TakeDamage(float t, DamageType p = DamageType.Null)
     {
         base.TakeDamage(t, p);
+        updateLifeIndiactor();
         anim.SetTrigger("damaged");
         if (Hurt)
             AudioSource.PlayClipAtPoint(Hurt, transform.position);
-        updateLifeIndiactor();
+    
     }
     void _attack(entity e)
     {
@@ -400,6 +404,7 @@ public class unit : entity
         last_agressor = null;
         lastatk = null;
         TargetToHunt = new Queue<entity>();
+        if(gameObject != null)
         if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);
     }
 
@@ -410,7 +415,8 @@ public class unit : entity
         if (!agi) return;
         agi.SetDestination(v);
         agi.isStopped = false;
-        if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);
+        if (gameObject != null)
+            if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);
         StartCoroutine(reachedPosition(v));
       
 
