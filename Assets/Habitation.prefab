@@ -6258,7 +6258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthToSet: 7
   Type: 3
-  GoldCost: 5
+  GoldCost: 0
   uianim: {fileID: 0}
   Inventory: []
   info: {fileID: 0}
@@ -6275,7 +6275,7 @@ MonoBehaviour:
       bit: {fileID: 0}
       amount: 5
       hardness: 0
-    Gold: 10
+    Gold: 0
     ConstructionEffort: 20
   - materials:
     - Name: Wood
@@ -6295,9 +6295,11 @@ MonoBehaviour:
   ContextMenuText: {fileID: 8633569884737152535}
   buttons: []
   Bar: {fileID: 8587553937777867970}
-  description: A habitation that can contain up to 50 person. Fairly simple can be
+  description: 'A habitation that can contain up to 50 person. Fairly simple can be
     upgrade
-  BuildRoad: 1
+
+    Generate 1 Gold per tick'
+  BuildRoad: 0
   gauge: {fileID: 0}
   graphics:
   - {fileID: 1852152405421505079}

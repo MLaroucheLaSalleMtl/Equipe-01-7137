@@ -151,7 +151,7 @@ public class Owner_AI : MonoBehaviour
           
 
            
-            yield return new WaitForSeconds(TBC);
+            yield return new WaitForSeconds(TBC / MainUI.TPSmult);
         }
       
         

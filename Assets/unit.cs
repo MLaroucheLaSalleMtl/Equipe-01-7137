@@ -61,7 +61,7 @@ public class unit : entity
     MeshRenderer[] rendies;
     protected virtual float GetMovingSpeed
     {
-        get { return Speed; }
+        get { return Speed * MainUI.SpeedMult; }
     } 
     public virtual float getAttack
     {
@@ -69,12 +69,21 @@ public class unit : entity
     }
     [SerializeField]
       float attack = 5;
-    public float defense = 5;
+     float defense = 5;
+
+    public virtual float getDefense
+    {
+        get{ return defense; }
+    }
+    public virtual float GetDetectionRange
+    {
+        get { return DetectionRange; }
+    }
     public float DetectionRange = 1;
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, DetectionRange);
+        Gizmos.DrawWireSphere(transform.position, GetDetectionRange);
     }
  
     
@@ -100,7 +109,7 @@ public class unit : entity
         if (_delay != null) StopCoroutine(_delay);
         _delay = DelayClose();
         StartCoroutine(_delay);
-        if (infotext) infotext.text = Name + " Type " + Type.ToString() + "\n" + "HP:" + Hp + " /" + maximumHp + " lvl:" + (getAttack + defense + Speed).ToString("0.0"); 
+        if (infotext) infotext.text = Name + " Type " + Type.ToString() + "\n" + "HP:" + Hp + " /" + maximumHp + " lvl:" + (getAttack + defense + GetMovingSpeed).ToString("0.0"); 
     }
    
     protected override void OnMouseExit()
@@ -135,7 +144,7 @@ public class unit : entity
             Attack(lastatk);
 
             if (!lastatk) return;
-            var s = Physics.OverlapSphere(transform.position, DetectionRange, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
+            var s = Physics.OverlapSphere(transform.position, GetDetectionRange, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
             for (int i = s.Length - 1; i >= 0; i--)
             {
 
@@ -185,7 +194,7 @@ public class unit : entity
         //Need to go there first and ofremost
         if (currentAttackRoutine == null)
         {
-            lastatk = e;
+          //  lastatk = e;
             print("Initiating Attack on " + e.name);
             currentAttackRoutine = AttackSequence(e);
             StartCoroutine(currentAttackRoutine);
@@ -328,10 +337,10 @@ public class unit : entity
 
     public override void TakeDamage(float t, entity e, DamageType p = DamageType.Null)
     {
-        base.TakeDamage(t, e, p);
+        base.TakeDamage( t - getDefense, e, p);
         updateLifeIndiactor();
-        if (!Ordered && e)
-            Attack(e);
+       /* if (!Ordered && e)
+            Attack(e);*/
    
     }
     public override void TakeDamage(float t, DamageType p = DamageType.Null)
@@ -395,16 +404,17 @@ public class unit : entity
 
     public void Chill ()
     {
+        last_agressor = null;
+        lastatk = null;
+        if (!this) return;
         if (agi)
         {
             agi.isStopped = true;
             agi.SetDestination(transform.position);
         }
-
-        last_agressor = null;
-        lastatk = null;
+ 
         TargetToHunt = new Queue<entity>();
-        if(gameObject != null)
+ 
         if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);
     }
 
@@ -433,7 +443,7 @@ public class unit : entity
     }
     public override string ToString()
     {
-        return Name + " lv." + (Speed + attack + defense).ToString();
+        return Name + " lv." + (GetMovingSpeed + attack + defense).ToString();
     }
 
     public override void OnSelected()

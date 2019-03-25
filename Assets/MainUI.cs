@@ -5,22 +5,52 @@ using UnityEngine.UI;
 
 public class MainUI : MonoBehaviour
 {
+    public static float HpMult = 1, SpeedMult = 1, TimeScaleMult =1, TPSmult = 1;
 
     public Text[] Txt;
     public GameObject Jobs, attack, cursor;
     public RectTransform BSelection;
-
+    
     public Text Builder, Merchant, Research,Civilian;
     public Text UnitInfo;
     public textBox Desc, StatsInfo;
 
     public Animator Action_sticker;
     Owner lastOwner;
+    [Header("Pause Menu")]
 
 
     public bool GameisPaused = false;
     public GameObject InGamePause;
+    public GameObject Params, Options;
 
+    public void OpenParams(bool x)
+    {
+        Params.gameObject.SetActive(true);
+        OpenParams(false);
+    }
+    public void OpenOptions(bool x)
+    {
+        Options.gameObject.SetActive(true);
+        OpenOptions(false);
+    }
+    public void SetVolume(Slider z)
+    {
+        AudioListener.volume = z.value;
+    }
+    public void SetFullscreen(Toggle x)
+    {
+        Screen.fullScreen = x;
+    }
+    public void SetMusic(Slider z)
+    {
+        var e = GetComponent<AudioSource>();
+        e.volume = z.value;
+    }
+    public void SetGodmode(Toggle x)
+    {
+        GameManager.DEBUG_GODMODE = x.isOn;
+    }
     void UpdateStatsInfo()
     {
         if (!StatsInfo) return;
@@ -99,10 +129,12 @@ public class MainUI : MonoBehaviour
     {
         if (GameManager.owners[0].Cores[0] == null) return;
         InGamePause.SetActive(false);
-        Time.timeScale = 1f;
+        Time.timeScale = TimeScaleMult;
         GameisPaused = false;
-
+        OpenOptions(false);
+        OpenParams(false);
     }
+
 
     public void Pause()
     {
@@ -112,7 +144,24 @@ public class MainUI : MonoBehaviour
 
     }
 
+    public void SetHpMult(Slider x )
+    {
+        HpMult = x.value;
+    }
 
+    public void SetSpdMult(Slider x)
+    {
+        SpeedMult = x.value;
+    }
+    public void SetTimeMult(Slider x)
+    {
+        TimeScaleMult = x.value;
+    }
+
+    public void setAi(Slider x)
+    {
+        TPSmult = x.value;
+    }
     public void Exit( )
     {
         Application.Quit();

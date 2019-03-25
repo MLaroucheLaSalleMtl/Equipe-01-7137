@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
     public node[] Nodes;
     public static Owner[] owners = new Owner[3] { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) }, new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) }, new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) } };
 
+
+
+    
     //Should have use a dictionary, gonna change it later, for now let's use that
     public static Owner GetOwner(string a)
     {
@@ -50,12 +53,8 @@ public class GameManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
     }
     [Header("Flair")]
-
-    /* //
-     public Text countsoldierssword;
-     public Text countsoldierspear;*/
     public AudioClip error;
-    public AudioClip build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic;
+    public AudioClip build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic,War;
     public GameObject[] Cursor3D;
 
     [Header("Camera")]
@@ -76,6 +75,8 @@ public class GameManager : MonoBehaviour
         owners[0].OnGain += OnOwnerGain;
         owners[1].OnGain += OnOwnerGain;
 
+        owners[0].OnRelationModification += OnPlayerRelationshipChanged;
+        owners[1].OnRelationModification += OnPlayerRelationshipChanged;
         for (int i = 1; i < owners.Length - 1; i++)
         {
 
@@ -84,23 +85,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //Depreciated, was using shader before but wasn't optimized as using a for loop not clean 
-    /* public void SeeFogofWar()
-     {
-         var mat = Fog.material;
-         List<Vector4> lol= new List<Vector4>();
-         for (int i = 0; i < owners[0].Units.Count; i++)  
-         {
-             var item = owners[0].Units[i];
-             var e = new Vector4(item.transform.position.z, item.DetectionRange, item.transform.position.z, 0);
-             //   lol.Add(e);
-             mat.SetVector("_Holes" + i,e);
-         }
+  public static void ShowMessage(string f)
+    {
+        GameManager.instance._pup.SetText(f);
+    }
+     public void DeclareWar(Owner z)
+    {
+        if (AtWarWith.ContainsKey(z.Name))
+            if (AtWarWith[z.Name]) return;
 
-         mat.SetInt("arr", 0);
-       //  mat.SetVectorArray("_Holes",lol);
-         mat.SetInt("arr", lol.Count);
-     }*/
+
+        _pup.SetText("You are now peacen't with " + z.Name + "!");
+        AtWarWith.Add(z.Name, true);
+    }
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
         if (g.bit)
@@ -116,12 +113,29 @@ public class GameManager : MonoBehaviour
 
     }
 
+    Dictionary<string, bool> AtWarWith = new Dictionary<string, bool>();
+    public void OnPlayerRelationshipChanged(Owner p1, Owner p2, float val)
+    {
+         Owner own, at;
+        if (!(p1 == owners[0] || p2 == owners[0])) return;
+        if (p1 == owners[0]) { own = p1; at = p2; }
+        else { own = p2;  at = p1; } 
+
+ 
+        if(at.Relation.ContainsKey(own.Name) && at.Relation[own.Name] < -50)
+            if (own.Relation.ContainsKey(at.Name) && own.Relation[at.Name] < -50)
+                DeclareWar(at);
+
+
+        
+    }
 
     [SerializeField]
     Animator animBlack;
     [SerializeField]
     GameObject GameOverItem;
 
+ 
     bool Loser = false;
     public static void SetGameOver()
     {
@@ -650,14 +664,21 @@ public class GameManager : MonoBehaviour
         {
             Vector3 t = Vector3.zero;
             var pos = Input.mousePosition;
-            
-            /*
-                  if (pos.x > Screen.width - Boundary) t += Vector3.right;
-                  if (pos.x < 0 + Boundary) t += -Vector3.right;
-                  if (pos.y > Screen.height - Boundary) t += Vector3.up;
-                  if (pos.y < 0 + Boundary) t += -Vector3.up;
+            var x = Input.GetAxis("Horizontal");
+            var y = Input.GetAxis("Vertical");
 
-          */
+
+            /*
+                   if (pos.x > Screen.width - Boundary) t += Vector3.right;
+                   if (pos.x < 0 + Boundary) t += -Vector3.right;
+                   if (pos.y > Screen.height - Boundary) t += Vector3.up;
+                   if (pos.y < 0 + Boundary) t += -Vector3.up;
+ */
+
+            if (x>0) t += Vector3.right;
+            if (x < 0) t += -Vector3.right;
+            if (y > 0) t += Vector3.up;
+            if (y < 0) t += -Vector3.up;
 
 
             return t;

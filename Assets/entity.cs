@@ -59,8 +59,8 @@ public class entity : MonoBehaviour
     protected Text infotext;
     private void Awake()
     {
-        Hp = HealthToSet;
-        maximumHp = HealthToSet;
+        Hp = HealthToSet * MainUI.HpMult;
+        maximumHp = HealthToSet * MainUI.HpMult;
  
     }
     private void Start()
