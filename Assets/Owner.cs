@@ -23,7 +23,10 @@ public class Owner
     public Dictionary<string, int> Relation = new Dictionary<string, int>();
 
 
-
+    public  bool IsPlayer
+    {
+        get { return this == GameManager.owners[0]; }
+    }
 
  
 
@@ -210,6 +213,10 @@ public class Owner
             Pay(item);
 
 
+    }
+    public void Pay(float x)
+    {
+        Gold -= x;
     }
     //Two similar function, we could add a function for those type of stuff
     public int AddFighter(int m)

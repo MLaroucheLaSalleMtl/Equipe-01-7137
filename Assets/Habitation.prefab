@@ -6288,7 +6288,7 @@ MonoBehaviour:
       hardness: 2
     Gold: 5
     ConstructionEffort: 50
-  SpaceNeed: {x: 0.85, y: 1, z: 0.92}
+  SpaceNeed: {x: 0.85, y: 1, z: 0.43}
   RequiredCloseness: 3.2
   type: 1
   ContextMenu: {fileID: 8470993149580362303}
@@ -6322,7 +6322,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.57, y: 0.5, z: 0.495}
+  m_Extents: {x: 0.42, y: 0.5, z: 0.215}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 0
@@ -22500,6 +22500,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1852152405189679306}
     m_Modifications:
+    - target: {fileID: 100000, guid: 2ccd6dd4f39d8764b975081e71ad95c0, type: 3}
+      propertyPath: m_Name
+      value: build_bighouse_02
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2ccd6dd4f39d8764b975081e71ad95c0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -22556,10 +22560,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.10076219
       objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 2ccd6dd4f39d8764b975081e71ad95c0, type: 3}
-      propertyPath: m_Name
-      value: build_bighouse_02
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ccd6dd4f39d8764b975081e71ad95c0, type: 3}
 --- !u!4 &1540105709217883893 stripped
@@ -22575,6 +22575,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1224127979980898269}
     m_Modifications:
+    - target: {fileID: 100000, guid: 67a47adc57ef94348bd6354ed310f779, type: 3}
+      propertyPath: m_Name
+      value: build_small_house_tall_roof_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 67a47adc57ef94348bd6354ed310f779, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 67a47adc57ef94348bd6354ed310f779, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.157
@@ -22630,14 +22638,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: 67a47adc57ef94348bd6354ed310f779, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.008110245
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 67a47adc57ef94348bd6354ed310f779, type: 3}
-      propertyPath: m_Name
-      value: build_small_house_tall_roof_01
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 67a47adc57ef94348bd6354ed310f779, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67a47adc57ef94348bd6354ed310f779, type: 3}

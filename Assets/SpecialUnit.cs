@@ -12,12 +12,14 @@ public class SpecialUnit : unit
     
     public void LevelUP()
     {
+        Experience -= BaseEXPNeed * 2 * Mathf.Exp(level);
         level++;
         Stat += stats.Rand;
-        Experience = 0;
+        if (Experience > BaseEXPNeed * 2 * Mathf.Exp(level))
+            LevelUP();
     }
     public stats Stat;
-    [SerializeField]
+    [System.Serializable]
     public struct stats
     {
         public float STR, AGI, PER, DEX, END;
@@ -96,7 +98,7 @@ public class SpecialUnit : unit
 
     public override float GetAttackSpeed  
     {
-        get { return base.GetAttackSpeed + Stat.DEX / 40; }
+        get { return base.GetAttackSpeed - Stat.DEX / 40; }
     }
     // Update is called once per frame
     void Update()

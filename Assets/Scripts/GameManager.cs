@@ -340,16 +340,15 @@ public class GameManager : MonoBehaviour
                     }
                     else
                     {
+                        print("Moving " + selection.Length + " peps to " + pos);
                         Formation(pos, _main.transform.forward, selection, .2f);
                     }
-
+                    CancelSelection(1);
 
                     break;
                 case 2:
                     var s = Physics.OverlapSphere(pos, 1, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
-                    foreach (var item in selection)
-                        if (item)
-                            (item as unit).Chill();
+                    Chillout();
 
                     foreach (var item in s)
                     {
@@ -367,7 +366,7 @@ public class GameManager : MonoBehaviour
                    
                        if((item as unit).TargetToHunt.Count > 0)
                             if (item)
-                                (item as unit).Attack((item as unit).TargetToHunt.Dequeue());
+                                (item as unit).OrderedAttack((item as unit).TargetToHunt.Dequeue());
 
                     }
                         
@@ -377,8 +376,7 @@ public class GameManager : MonoBehaviour
                     break;
                 case 4:
 
-                    foreach (var item in selection)
-                       (item as unit).Chill();
+   Chillout();
                     CancelSelection(1);
                     break;
                 default:
@@ -392,11 +390,16 @@ public class GameManager : MonoBehaviour
 
     void OnMouseHold(Vector3 pos)
     {
-        if (TimeWithMouse > .05f)
+        var h = Screen.height;
+        var w = Screen.width;
+        if (pos.x > w || pos.y < 0) return;
+        if (pos.y> h || pos.y < 0) return;
+        if (TimeWithMouse > .04f )
         {
             MouseReleasePos = pos;
             MUI.BoxSelection(MouseClickPos, MouseReleasePos);
             dragged = true;
+                
         }
 
         TimeWithMouse += Time.fixedDeltaTime;
@@ -485,7 +488,7 @@ public class GameManager : MonoBehaviour
             {
                 if (y + x * q >= e.Length) break;
                 t[y + x * q] = new Vector3(pos.x - q * dist + q * x * dist, pos.y, pos.z - q * dist + q * y * dist);
-                (e[y + x * q] as unit).MoveTo(t[y + x * q]);
+                if(e[y + x * q] && e[y + x * q] is unit ) (e[y + x * q] as unit).MoveTo(t[y + x * q]);
             }
 
         return t;
@@ -677,10 +680,8 @@ public class GameManager : MonoBehaviour
                    if (pos.y < 0 + Boundary) t += -Vector3.up;
  */
 
-            if (x>0) t += Vector3.right;
-            if (x < 0) t += -Vector3.right;
-            if (y > 0) t += Vector3.up;
-            if (y < 0) t += -Vector3.up;
+             t += Vector3.right * x;
+             t +=  Vector3.up * y;
 
 
             return t;

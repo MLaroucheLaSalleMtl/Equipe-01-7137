@@ -5302,7 +5302,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fdf66f4ebdaa7c44b5252af5424dcdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthToSet: 6
+  HealthToSet: 3
   Type: 2
   GoldCost: 7
   uianim: {fileID: 4610263556538280577}
@@ -5314,8 +5314,9 @@ MonoBehaviour:
   agi: {fileID: 8677958751998022061}
   indicator: {fileID: 6123181321750814729}
   lifeindicator: {fileID: 7787875939164891250}
+  TimeToDeploy: 1
   Name: Pikesman
-  Speed: 2.71
+  Speed: 1.24
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
   Hurt: {fileID: 8300000, guid: 145fe60071025e246974696fbfb1bfb2, type: 3}
   onCreated: {fileID: 0}
@@ -5329,8 +5330,9 @@ MonoBehaviour:
   - {fileID: 6614767904574973747}
   - {fileID: 3202047166567475217}
   - {fileID: 4403926094125044524}
-  attack: 0.35
-  defense: 0.1
+  attack: 2.09
+  defense: 0.23
+  AtkSpeed: 1.83
   DetectionRange: 3.94
 --- !u!195 &8677958751998022061
 NavMeshAgent:

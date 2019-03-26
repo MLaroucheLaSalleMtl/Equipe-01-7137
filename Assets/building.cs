@@ -195,7 +195,9 @@ public class building : entity
 bool ctxmenu = false;
     public virtual void OpenContextMenu()
     {
-        if (BeingBuild) return;
+        if (!GetOwner.IsPlayer) return;
+
+            if (BeingBuild) return;
         if (!ctxmenu) ContextMenu.SetActive(true);
         ContextMenuText.text = description;
 

@@ -3439,6 +3439,7 @@ MonoBehaviour:
   agi: {fileID: 5516078772422536298}
   indicator: {fileID: 7262807572265487372}
   lifeindicator: {fileID: 7907236293309100603}
+  TimeToDeploy: 1
   Name: Clubber
   Speed: 4.8
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
@@ -3456,6 +3457,7 @@ MonoBehaviour:
   - {fileID: 720191771834937067}
   attack: 0.75
   defense: 0
+  AtkSpeed: 0.48
   DetectionRange: 1.55
 --- !u!195 &5516078772422536298
 NavMeshAgent:

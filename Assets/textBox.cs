@@ -5,9 +5,10 @@ using UnityEngine.UI;
 public class textBox : MonoBehaviour
 {
     public UnityEngine.UI.Text[] Texts;
-    private void Start()
+    public bool catStart = true;
+    protected virtual void Start()
     {
-        gameObject.SetActive(false);
+        gameObject.SetActive(!catStart);
     }
     public Text Header
     {
