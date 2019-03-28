@@ -29,7 +29,7 @@ public class Owner
         {
             var t = 0f; foreach (var item in Labs)
                 t += item.ResearchPointsPerTick;
-            return t;
+            return t * ScienceMod * 1 + (scientist * t / 100) ;
         }
     }
     int MaximumNumberOfscientist
@@ -477,7 +477,8 @@ public class Owner
 
         //Random.Range(.6f, 1.5f);
         baseFertilityRate = randy.Next(50,150)/100;
-            
+        ScienceMod  = randy.Next(50, 150) / 100; 
+
         onLostEntites += OnEntitiesLost;
         onNewEntites += OnEntitesReceived;
     }

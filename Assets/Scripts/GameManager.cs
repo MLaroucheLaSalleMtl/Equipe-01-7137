@@ -708,7 +708,7 @@ public class GameManager : MonoBehaviour
     public void Build(int x)
     {
         if (Loser) return;
-        BUI.SetBList(false);
+        //BUI.SetBList(false);
         MUI.EndDescription();
         buildmode = -1;
         ClearHighLight();
