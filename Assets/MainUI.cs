@@ -10,7 +10,88 @@ public class MainUI : MonoBehaviour
     public Text[] Txt;
     public GameObject Jobs, attack, cursor;
     public RectTransform BSelection;
-    
+
+    public TechnologyUI[] TUIS;
+    public TechnologyUI currentTUI;
+    public Text ResearchDesc;
+    public SliderTextBox ResearchBar;
+    public GameObject ResearchButton, ResearchWindow;
+    public void OpenResearchWinodw (bool z)
+    {
+        if (!Owner.Player.ResearchCenter)
+        {
+            ResearchButton.SetActive(false);
+            ResearchWindow.SetActive(false);
+            return;
+        }
+        ResearchWindow.SetActive(z);
+        UpdateTechUI();
+
+    }
+    public void ShowResearchDESC(TechnologyUI t)
+    {
+        var I = t.Tech;
+        ResearchDesc.text = Technology.ResearchKnownToMankind[I].Description;
+        if(Technology.ResearchKnownToMankind[I].Dependencies.Length > 0)
+        {
+            ResearchDesc.text += "Prerequisites: ";
+            foreach (var item in Technology.ResearchKnownToMankind[I].Dependencies)
+            {
+                ResearchDesc.text += Technology.ResearchKnownToMankind[item].Name + "\n";
+            }
+        }
+        ResearchDesc.text +=
+        "\n\nCost: " + Technology.ResearchKnownToMankind[I].PtsNeed + " RP"
+            + "\nYour current RP/s is " + Owner.Player.GetScientificOutput + " RP/s";
+    }
+    public void SetTech(TechnologyUI T)
+    {
+        Owner.Player.SetTechnology(T.Tech);
+        UpdateTechUI();
+        ResearchBar.gameObject.SetActive(true);
+
+    }
+    public void OnResearchDone(Technology T)
+    {
+        UpdateTechUI();
+        ResearchBar.gameObject.SetActive(false);
+        ResearchBar.slider.value = 0;
+    }
+
+
+    void UpdateTechUI()
+    {
+        currentTUI.gameObject.SetActive(false);
+        if (Owner.Player.CurrentTechnology != null) {
+            currentTUI.SetTech(Owner.Player.CurrentTechnology);
+            ResearchBar.Header.text = Owner.Player.CurrentTechnology.Name;
+            ResearchBar.Texts[1].text = Owner.Player.CurrentTechnology.Name;
+            ResearchBar.slider.minValue = 0;
+            ResearchBar.slider.maxValue = Owner.Player.CurrentTechnology.PtsNeed;
+        }
+        var y = Owner.Player.GetAvaillableTech;
+        foreach (var item in TUIS)       
+           item.gameObject.SetActive(false);       
+        for (int i = 0; i < TUIS.Length && i < y.Length; i++)
+            TUIS[i].SetTech(y[i]);
+
+        
+        ResearchDesc.text = "Select a Tech to research";
+    }
+    private void Start()
+    {
+        Owner.Player.OnAccomplishResearch += OnResearchDone;
+        Owner.Player.OnEntitiesChange += OnPlayerEntitiesChanges;
+        ResearchButton.SetActive(false);
+        ResearchWindow.SetActive(false);
+    }
+
+    private void OnPlayerEntitiesChanges(entity e)
+    {
+       ResearchButton.SetActive( Owner.Player.ResearchCenter);
+     
+    }
+
     public Text Builder, Merchant, Research,Civilian;
     public Text UnitInfo;
     public textBox Desc, StatsInfo;
@@ -80,6 +161,7 @@ public class MainUI : MonoBehaviour
 
     private void Update()
     {
+        if (Owner.Player.CurrentTechnology != null) ResearchBar.slider.value = Mathf.Lerp(ResearchBar.slider.value,  Owner.Player.CurrentTechnology.GetCurrentPtsInvest, 5* Time.smoothDeltaTime);
         if (!GameisPaused) {
 
             UpdateDesc();
@@ -248,7 +330,7 @@ public class MainUI : MonoBehaviour
 
     public void AddBuilder(int x) { lastOwner.AllocateBuilder(x); }
     public void AddMerchant(int x) { }
-    public void AddResearch(int x) { }
+    public void AddResearch(int x) { lastOwner.AllocateScientist(x); }
 
 
 

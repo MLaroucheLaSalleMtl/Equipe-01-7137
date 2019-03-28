@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     
     Camera _main;
 
+    //Todo Remove
     public void ShowBuildingDesc(int x)
     {
         var y = Buildings[x].GetComponent<building>();
@@ -586,9 +587,10 @@ public class GameManager : MonoBehaviour
         {
             item.SetActive(false);
         }
-
+        //why bother doing a switch tbh
         if (x == 2) Cursor3D[1].gameObject.SetActive(true);
-       // if (x > 0) Cursor3D[Mathf.Clamp(x - 1, 0, Cursor3D.Length - 1)].SetActive(true);
+        if (x == 3) Cursor3D[2].gameObject.SetActive(true);
+        // if (x > 0) Cursor3D[Mathf.Clamp(x - 1, 0, Cursor3D.Length - 1)].SetActive(true);
         //UiSelection[0].SetActive(true); // image nad name 
         //UiSelection[2].SetActive(true);
         MUI.Action_sticker.SetBool("SWBC", true);
