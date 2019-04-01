@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public Terrain[] terrain;
     public GameObject radius;
     public node[] Nodes;
-    public static Owner[] owners = new Owner[3] { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) }, new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) }, new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) } };
+    public static Owner[] owners = new Owner[3] { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177), Culture = "civilised"  }, new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273), Culture ="barbarian" }, new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) } };
 
 
 
@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
     public GameObject NodeRendererPrefab;
+   
     
     Camera _main;
 
@@ -54,7 +55,7 @@ public class GameManager : MonoBehaviour
     }
     [Header("Flair")]
     public AudioClip error;
-    public AudioClip build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic,War;
+    public AudioClip build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic,War, pictWar, wessexWar;
     public GameObject[] Cursor3D;
 
     [Header("Camera")]
@@ -65,7 +66,11 @@ public class GameManager : MonoBehaviour
     public float EdgeScrollingSpeed = 5;
     Vector2 cursorinput;
 
+    public AudioSource audioSource;
     public grumbleAMP grumbleAMP;
+    public MusicLauncher musicLauncher;
+    
+
     private void Awake()
     {
         instance = this;
@@ -99,7 +104,16 @@ public class GameManager : MonoBehaviour
 
         _pup.SetText("You are now peacen't with " + z.Name + "!");
         AtWarWith.Add(z.Name, true);
+        if (z.Culture == "civilised")
+        {
+            audioSource.PlayOneShot(wessexWar);
+        }
+        else
+        {
+            audioSource.PlayOneShot(pictWar);
+        }
     }
+
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
         if (g.bit)
@@ -870,6 +884,9 @@ public class GameManager : MonoBehaviour
         owners[1].Start();
 
         owners[0].modRelation(owners[1], -1);
+
+        musicLauncher = GetComponent<MusicLauncher>();
+        musicLauncher.Miscellanious(owners[0]);
 
     }
 

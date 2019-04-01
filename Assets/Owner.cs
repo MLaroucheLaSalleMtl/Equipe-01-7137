@@ -7,6 +7,7 @@ public class Owner
     public string Name = "";
     public Faction faction;
     public Vector3 vector3;
+    public string Culture;
     public NodesLineRenderer nodeLineRenderer;
     public Color MainColor;
     public delegate void OnGainHandler(Goods g, Vector3 p);
