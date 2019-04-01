@@ -1940,8 +1940,8 @@ NavMeshObstacle:
   m_Shape: 1
   m_Extents: {x: 0.5, y: 0.5, z: 0.5}
   m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 1
+  m_Carve: 0
+  m_CarveOnlyStationary: 0
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
 --- !u!114 &1961366549338961213
@@ -1956,7 +1956,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d3b35064061f140beafefe63b20689, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthToSet: 1
+  HealthToSet: 12
   Type: 2
   GoldCost: 0
   uianim: {fileID: 0}
@@ -1996,7 +1996,7 @@ MonoBehaviour:
     amount: 1
     hardness: 2
   Yield: 1
-  GatheringSpeed: 0.25
+  GatheringSpeed: 0.5
 --- !u!1 &1961366549357808764
 GameObject:
   m_ObjectHideFlags: 0
@@ -15133,6 +15133,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  MinView: 0
+  View: 10
+  todis: {fileID: 0}
 --- !u!1 &8599538196889274844
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,7 +31,7 @@ public class Army : unit
 
 
     }
-    protected override float GetMovingSpeed
+  /*  public override float GetMovingSpeed
     {
         get
         {
@@ -45,7 +45,7 @@ public class Army : unit
             return x;
         }
     }
-
+    */
     private void Awake()
     {
         Name = name;

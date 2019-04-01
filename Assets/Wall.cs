@@ -37,7 +37,7 @@ public class Wall : fortification
 
         return base.ApprovedBuilding(pos, g);
     }
-    public override bool HasEnoughRessource(Dictionary<string, Goods> x, float g)
+    public override bool HasEnoughRessource(Dictionary<string, Goods> x, float g,bool t = false)
     {
         return base.HasEnoughRessource(x, g);
     }

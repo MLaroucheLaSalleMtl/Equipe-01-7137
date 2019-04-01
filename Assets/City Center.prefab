@@ -312,7 +312,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 384559986144527840}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.09549317, z: 1.24}
+  m_LocalPosition: {x: -0.3, y: -0.69, z: 1.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1577855095361851466}
@@ -332,6 +332,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  MinView: 0
+  View: 10
+  todis: {fileID: 0}
 --- !u!1 &425426045763387034
 GameObject:
   m_ObjectHideFlags: 0
@@ -1834,8 +1837,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4276872619778700049}
   m_LocalRotation: {x: -1.8189894e-12, y: -0, z: 6.9849193e-10, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5288081, y: 1.5288088, z: 5.4473047}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalScale: {x: 0.93420875, y: 0.93420917, z: 3.3286843}
   m_Children:
   - {fileID: 3737287489364959345}
   m_Father: {fileID: 1577855095361851466}
@@ -1843,7 +1846,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 578, y: -54}
+  m_AnchoredPosition: {x: 457, y: -50}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2872037674925910111
@@ -3764,7 +3767,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6093030851530800098}
   m_LocalRotation: {x: 0.004153545, y: 0.9993604, z: -0.035281517, w: -0.0041124085}
-  m_LocalPosition: {x: 0, y: 0, z: 1.105}
+  m_LocalPosition: {x: 0, y: 0, z: -0.02}
   m_LocalScale: {x: 0.007411, y: 0.007411, z: 0.007411}
   m_Children:
   - {fileID: 7300314535527725369}
@@ -3777,7 +3780,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 4.0420003, y: 180.489, z: 0.49400002}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 1.4081156}
+  m_AnchoredPosition: {x: 0, y: 0.25}
   m_SizeDelta: {x: 626.184, y: 841.075}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &7413859078847777882
@@ -3983,7 +3986,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9d130a469f6c4c42bc35e0267a5434a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthToSet: 100
+  HealthToSet: 200
   Type: 3
   GoldCost: 25
   uianim: {fileID: 0}
@@ -3997,13 +4000,14 @@ MonoBehaviour:
     Gold: 0
     ConstructionEffort: 0
   SpaceNeed: {x: 1.75, y: 1, z: 1.01}
-  RequiredCloseness: 5
+  RequiredCloseness: 1.7
   type: 0
   ContextMenu: {fileID: 384559986144527840}
   ContextMenuText: {fileID: 507114791039181256}
   buttons: []
   Bar: {fileID: 0}
   description: City Center. Destroy This and you destroy a faction
+  BuildRoad: 0
   gauge: {fileID: 0}
   graphics:
   - {fileID: 7596748946105482728}
@@ -4136,7 +4140,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7596748946338176790}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.149, z: 0}
+  m_LocalPosition: {x: 0, y: 0.094, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2664830305965717341}
@@ -4168,7 +4172,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1020837096297097811
 RectTransform:
   m_ObjectHideFlags: 0

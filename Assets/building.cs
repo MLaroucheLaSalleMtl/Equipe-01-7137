@@ -65,11 +65,12 @@ public class building : entity
  
 
 
-    public virtual bool HasEnoughRessource(Dictionary<string ,Goods> x, float g)
+    public virtual bool HasEnoughRessource(Dictionary<string ,Goods> x, float g,bool t = false)
     {
         if (GameManager.DEBUG_GODMODE) return true;
         if(g < costs[Tier].Gold + GoldCost  )
         {
+            if (t) GameManager.instance._pup.SetText("Missing " + ((int)((costs[Tier].Gold + GoldCost) -g)).ToString()  + " Gold!");
             print("Not enough gold!");
             return false;
         }
@@ -78,16 +79,43 @@ public class building : entity
         foreach (var item in costs[Tier].materials)
         {
             bool ok = false;
+            float a = item.getAmount;
             if (x.ContainsKey(item.Name)){
                 ok = x[item.Name].getAmount >= item.getAmount;
-
-                print(ok);
+                a = item.getAmount - x[item.Name].getAmount;
+                //if(!ok)
+               // print(GetOwner + ":" + x[item.Name].getAmount + " vs " + item.getAmount);
+ 
             }
 
-            if (!ok) return false;
+            if (!ok) {
+
+                if (t) GameManager.instance._pup.SetText("Not Enough Material! Missing " + (int)a + "x " + item.Name);
+                return false;
+            }
+           
 
         }
         return true;
+    }
+    public string GetSummary()
+    {
+        var e = this;
+        string text;
+        text =  e.description;
+        if (e.costs[0].materials.Length > 0) text += "\nCOST:";
+        foreach (var item in e.costs[0].materials)
+        {
+            text += "\n" + item.getAmount + "x " + item.Name;
+            if (item.getAmount > 1) text += "s";
+        }
+       text += "\nGold: " + (e.GoldCost + e.costs[0].Gold).ToString("0");
+        return text;
+    }
+
+    public bool CanUpgrade
+    {
+        get { return (Tier >= costs.Length); }
     }
     public void Upgrade()
     {
@@ -125,7 +153,7 @@ public class building : entity
     private GameObject gauge;
     public GameObject[] graphics;
 
-
+  
     public virtual bool ApprovedBuilding(Vector3 pos, Owner g)
     {
         bool z = false;
@@ -167,7 +195,9 @@ public class building : entity
 bool ctxmenu = false;
     public virtual void OpenContextMenu()
     {
-        if (BeingBuild) return;
+        if (!GetOwner.IsPlayer) return;
+
+            if (BeingBuild) return;
         if (!ctxmenu) ContextMenu.SetActive(true);
         ContextMenuText.text = description;
 
@@ -230,6 +260,7 @@ bool ctxmenu = false;
                 }
             }
             BeingBuild = false;
+            AudioSource.PlayClipAtPoint(GameManager.instance.completeBuild,transform.position);
             if (Bar) Bar.transform.parent.gameObject.SetActive(false);
         }
     }

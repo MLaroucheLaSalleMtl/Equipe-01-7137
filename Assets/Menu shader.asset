@@ -121,8 +121,8 @@ MonoBehaviour:
         neutralWhiteLevel: 5.3
         neutralWhiteClip: 10
       basic:
-        postExposure: 0.4
-        temperature: 7
+        postExposure: -0.23
+        temperature: 62
         tint: 10
         hueShift: 0
         saturation: 0.69
@@ -135,7 +135,7 @@ MonoBehaviour:
       colorWheels:
         mode: 1
         log:
-          slope: {r: 1, g: 1, b: 1, a: 0}
+          slope: {r: 1, g: 0, b: 0.027579308, a: 0}
           power: {r: 1, g: 1, b: 1, a: 0}
           offset: {r: 1, g: 1, b: 1, a: 0}
         linear:

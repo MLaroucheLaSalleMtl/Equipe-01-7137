@@ -2,17 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public MeshRenderer Fog;
     public Terrain[] terrain;
+    public GameObject radius;
     public node[] Nodes;
-    public static Owner[] owners = new Owner[2] { new Owner() { Name = "Nana", MainColor = Color.blue }, new Owner() { Name = "David", MainColor = Color.green } };
+    public static Owner[] owners = new Owner[3] { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) }, new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) }, new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) } };
+
+
+
+    
+    //Should have use a dictionary, gonna change it later, for now let's use that
+    public static Owner GetOwner(string a)
+    {
+        foreach (var item in owners)
+        {
+            if (item.Name == a) return item;
+        }
+        return null;
+    }
     public static float SecondPerGenerations = 60;
     public static bool DEBUG_GODMODE = true;
+    public GameObject Help;
     [Header("Assets")]
     public GameObject node;
     public GameObject node_bound;
@@ -22,9 +37,25 @@ public class GameManager : MonoBehaviour
     public GameObject _army;
     public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
+    public GameObject NodeRendererPrefab;
+    
     Camera _main;
-    [Header("Flair")]
 
+    //Todo Remove
+    public void ShowBuildingDesc(int x)
+    {
+        var y = Buildings[x].GetComponent<building>();
+        MUI.showDescription(y.name,  y.GetSummary());
+    }
+
+    public void HelpM(bool t)
+    {
+        Help.gameObject.SetActive(t);
+        AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
+    }
+    [Header("Flair")]
+    public AudioClip error;
+    public AudioClip build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic,War;
     public GameObject[] Cursor3D;
 
     [Header("Camera")]
@@ -34,6 +65,8 @@ public class GameManager : MonoBehaviour
     public float cameraSmoothness = 6;
     public float EdgeScrollingSpeed = 5;
     Vector2 cursorinput;
+
+    public grumbleAMP grumbleAMP;
     private void Awake()
     {
         instance = this;
@@ -43,31 +76,31 @@ public class GameManager : MonoBehaviour
         _main = UnityEngine.Camera.main;
 
         owners[0].OnGain += OnOwnerGain;
-        owners[1].Gold += 100;
-        for (int i = 1; i < owners.Length; i++)
+        owners[1].OnGain += OnOwnerGain;
+
+        owners[0].OnRelationModification += OnPlayerRelationshipChanged;
+        owners[1].OnRelationModification += OnPlayerRelationshipChanged;
+        for (int i = 1; i < owners.Length - 1; i++)
         {
-          var t =  gameObject.AddComponent<Owner_AI>();
+
+            var t = gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
         }
     }
 
-    //Depreciated, was using shader before but wasn't optimized as using a for loop not clean 
-   /* public void SeeFogofWar()
+  public static void ShowMessage(string f)
     {
-        var mat = Fog.material;
-        List<Vector4> lol= new List<Vector4>();
-        for (int i = 0; i < owners[0].Units.Count; i++)  
-        {
-            var item = owners[0].Units[i];
-            var e = new Vector4(item.transform.position.z, item.DetectionRange, item.transform.position.z, 0);
-            //   lol.Add(e);
-            mat.SetVector("_Holes" + i,e);
-        }
-       
-        mat.SetInt("arr", 0);
-      //  mat.SetVectorArray("_Holes",lol);
-        mat.SetInt("arr", lol.Count);
-    }*/
+        GameManager.instance._pup.SetText(f);
+    }
+     public void DeclareWar(Owner z)
+    {
+        if (AtWarWith.ContainsKey(z.Name))
+            if (AtWarWith[z.Name]) return;
+
+
+        _pup.SetText("You are now peacen't with " + z.Name + "!");
+        AtWarWith.Add(z.Name, true);
+    }
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
         if (g.bit)
@@ -82,8 +115,70 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+    Dictionary<string, bool> AtWarWith = new Dictionary<string, bool>();
+    public void OnPlayerRelationshipChanged(Owner p1, Owner p2, float val)
+    {
+         Owner own, at;
+        if (!(p1 == owners[0] || p2 == owners[0])) return;
+        if (p1 == owners[0]) { own = p1; at = p2; }
+        else { own = p2;  at = p1; } 
+
+ 
+        if(at.Relation.ContainsKey(own.Name) && at.Relation[own.Name] < -50)
+            if (own.Relation.ContainsKey(at.Name) && own.Relation[at.Name] < -50)
+                DeclareWar(at);
+
+
+        
+    }
+
+    [SerializeField]
+    Animator animBlack;
+    [SerializeField]
+    GameObject GameOverItem;
+
+ 
+    bool Loser = false;
+    public static void SetGameOver()
+    {
+        instance.Loser = true;
+        instance.StartCoroutine(instance.GameOver());
+        
+    }
+    IEnumerator GameOver()
+    {
+        foreach (var item in GetComponents<Owner_AI>())
+            item.enabled = false;
+        
+
+        var audioSource = GetComponent<AudioSource>();
+        audioSource.Stop();
+       
+        AudioSource.PlayClipAtPoint(GameManager.instance.endaudio, Camera.main.gameObject.transform.position);
+       
+        yield return new WaitForSecondsRealtime(2f);
+        audioSource.clip = GameOverMusic;
+        audioSource.Play();
+        animBlack.SetTrigger("fade");
+        yield return new WaitForSecondsRealtime(3f);
+        GameOverItem.SetActive(true);
+        yield return new WaitForSecondsRealtime(2f);
+        GameOverItem.SetActive(false);
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(3f);
+        Time.timeScale = 1;
+        instance = null;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+      
+
+        yield break;
+    }
+
+
     IEnumerator popup(GameObject c)
     {
+        AudioSource.PlayClipAtPoint(GameManager.instance.GainItem, c.transform.position);
         var t = 1.5f;
         while (t > 0)
         {
@@ -98,13 +193,14 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+        if (Loser) return;
         foreach (var item in owners)
             item.Routine();
 
-        MUI.ShowUI(owners[0], selection[0]);
+        if (owners.Length > 0)
+            MUI.ShowUI(owners[0], selection[0]);
         //Useless SeeFogofWar();
-      //  BUI.CancelUI.SetActive(buildmode >= 0);
+        //  BUI.CancelUI.SetActive(buildmode >= 0);
     }
 
 
@@ -113,15 +209,94 @@ public class GameManager : MonoBehaviour
         CameraFunction(_main.transform, CameraPosition);
         MouseInteraction();
     }
+    
+
     RaycastHit lastresult;
-    public LayerMask Interatable, BuildingMask, Unit    ;
+    public LayerMask Interatable, BuildingMask, Unit;
     Vector3 MousePosition;
     [SerializeField]
     MainUI MUI;
     [SerializeField]
     BuildingUI BUI;
 
+
+
+    bool dragged = false;
     Vector3 MouseClickPos, MouseReleasePos;
+
+    #region Mouse Interaction and the such
+    void MouseInteraction()
+    {
+        if (Loser) return;
+        var ctrl = Input.GetKey(KeyCode.LeftControl);
+
+
+        var r = Camera.main.ScreenPointToRay(Input.mousePosition);
+        var y = Physics.Raycast(r, out lastresult, Mathf.Infinity, Interatable);
+        if (buildmode >= 0)
+        {
+         
+            BUI.CanBePlaceThere(lastresult.point, owners[0]);
+            /*  if (owners[0].Settled)
+                   BUI.Highlight.transform.right = (owners[0].Cores[0].transform.position - BUI.Highlight.transform.position);
+              */
+            if (building_highlight)
+            {
+                rotationQE += Time.fixedDeltaTime;
+
+
+
+                var lolrot = 0;
+                if (rotationQE > .1f)
+                {
+                    if (Input.GetKey(KeyCode.E)) { lolrot = -30; rotationQE = 0; }
+                    else if (Input.GetKey(KeyCode.Q)) { lolrot = 30; rotationQE = 0; }
+
+                }
+
+
+                building_highlight.transform.rotation =
+                    Quaternion.Euler(building_highlight.transform.eulerAngles +
+                    Vector3.up * lolrot);
+
+
+            }
+            y = Physics.Raycast(r, out lastresult, Mathf.Infinity, BuildingMask);
+        }
+
+        if (y)
+        {
+
+
+            if (EventSystem.current.IsPointerOverGameObject()) {OnMouseRelease(lastresult.point); return; } 
+            MousePosition = lastresult.point;
+
+            if (Input.GetMouseButton(0))
+            {
+                OnMouseHold(lastresult.point);
+            }
+            if (Input.GetMouseButtonDown(0))
+            {
+                OnMouseClick(lastresult.point);
+
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                OnMouseRelease(lastresult.point);
+            }
+
+            foreach (var item in Cursor3D)
+            {
+                if (item) item.transform.position = lastresult.point + Vector3.up * .3f;
+            }
+        }
+
+        if (!ctrl && BUI.Highlight) { BUI.Highlight.transform.position = MousePosition; }
+
+
+
+    }
+
     void OnMouseClick(Vector3 pos)
     {
 
@@ -130,10 +305,12 @@ public class GameManager : MonoBehaviour
         if (buildmode >= 0)
         {
 
-            if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, MousePosition,building_highlight.transform.rotation,owners[0]);
+            if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, MousePosition, building_highlight.transform.rotation, owners[0]);
         }
+      
 
         if (buildmode > 0) return;
+        BUI.SetBList(false);
         if (!selection[0])
         {
             if (tempsel && !(tempsel is building) && tempsel.GetOwner == owners[0])
@@ -156,40 +333,52 @@ public class GameManager : MonoBehaviour
             switch (currentmode)
             {
 
-                case 1: 
-                    if(selection.Length <= 1)
+                case 1:
+                    if (selection.Length <= 1)
                     {
                         foreach (var item in selection)
                             if (item) (item as unit).MoveTo(pos);
                     }
                     else
                     {
+                        print("Moving " + selection.Length + " peps to " + pos);
                         Formation(pos, _main.transform.forward, selection, .2f);
                     }
-                 
-               
+                    CancelSelection(1);
+
                     break;
-                case 2: if (tempsel && tempsel.GetOwner != owners[0])
-                        foreach (var item in selection)
-                            if (item) (item as unit).Attack(tempsel);
-                    //Need to be clean ahah
-                    CancelSelection();
-                    CancelSelection();
-                    break;
-                case 3:
-                    if (tempsel && tempsel != selection[0] && (selection[0] is unit) && (selection[0].GetOwner == tempsel.GetOwner))
+                case 2:
+                    var s = Physics.OverlapSphere(pos, 1, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
+                    Chillout();
+
+                    foreach (var item in s)
                     {
-                        var x = (selection[0] as unit).Merge(tempsel as unit);
-                        CancelSelection();
-                        CancelSelection();
-                        selection[0] = x;
-                        selection[0].OnSelected();
+                       var vs = item.GetComponent<entity>();
+                        if (!vs || vs.GetOwner == owners[0] ) continue;
+                        foreach (var itddem in selection)
+                            if (item)
+                                (itddem as unit).TargetToHunt.Enqueue(vs);
+
+
                     }
+
+                     foreach (var item in selection)
+                    {
+                   
+                       if((item as unit).TargetToHunt.Count > 0)
+                            if (item)
+                                (item as unit).OrderedAttack((item as unit).TargetToHunt.Dequeue());
+
+                    }
+                        
+
+
+                    CancelSelection(0);
                     break;
                 case 4:
-                    (selection[0] as unit).Chill();
-                    CancelSelection();
-                    CancelSelection();
+
+   Chillout();
+                    CancelSelection(1);
                     break;
                 default:
                     break;
@@ -200,45 +389,119 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public Vector3[] Formation(Vector3 pos, Vector3 dir, entity[] e,float dist =2)
+    void OnMouseHold(Vector3 pos)
+    {
+        var h = Screen.height;
+        var w = Screen.width;
+        if (pos.x > w || pos.y < 0) return;
+        if (pos.y> h || pos.y < 0) return;
+        if (TimeWithMouse > .04f )
+        {
+            MouseReleasePos = pos;
+            MUI.BoxSelection(MouseClickPos, MouseReleasePos);
+            dragged = true;
+                
+        }
+
+        TimeWithMouse += Time.fixedDeltaTime;
+    }
+
+    void OnMouseRelease(Vector3 pos)
+    {
+
+        if (dragged)
+        {
+
+            var s = new List<unit>();
+            if (FrustrumSelection())
+            {
+                //Costly but played once by frame so...
+
+                foreach (var item in FindObjectsOfType<entity>())
+                {
+                    if (item.GetOwner == owners[0])
+                        if (item is unit)
+                        {
+                            if (IsWithinPolygon(item.transform.position))
+                            {
+
+                                item.OnSelected();
+                                s.Add(item as unit);
+                            }
+                        }
+
+                }
+            }
+            if (s.Count > 0)
+            {
+
+                //  countsoldierspear.text = s.Count.ToString("D4"); this also 
+
+                OnDragSelection(s.ToArray());
+            }
+
+
+        }
+
+
+        MUI.BSelection.gameObject.SetActive(false);
+
+        dragged = false;
+        TimeWithMouse = 0;
+    }
+    public Unit_UI[] unit_UIs;
+
+    /*int LengthOfArray(unit[][] b , int a)
+    {
+        var c = 0;
+        foreach (var x in b)
+        {
+
+        }
+  
+    }*/
+    public void OnDragSelection(unit[] e)
+    {
+        selection = e;
+        var se = new  List<unit>[99];
+        for (int i = 0; i < e.Length; i++)
+        {
+            if (se[e[i].ID] == null /*|| se[e[i].ID].Length <= 0*/) { se[e[i].ID] = new List<unit>();  }
+            se[e[i].ID].Add(e[i]) ;
+        }
+
+        for (int i = 0; i < se.Length; i++)
+            if (se[i] != null) unit_UIs[i].General(se[i].ToArray(), i);
+
+        MUI.attack.SetActive(true);
+        //countsoldierspear.text = e.ToString(); nevermind this 
+        /*UiSelection[0].SetActive(true);
+        UiSelection[1].SetActive(true);*/
+        //MUI.Action_sticker.SetTrigger("open");
+    }
+    #endregion
+    public static Vector3[] Formation(Vector3 pos, Vector3 dir, entity[] e, float dist = 2)
     {
         var t = new Vector3[e.Length];
         var q = (int)Mathf.Sqrt(t.Length) + 1;
-        for (int x = 0; x <q; x++)
+        for (int x = 0; x < q; x++)
             for (int y = 0; y < q; y++)
             {
                 if (y + x * q >= e.Length) break;
                 t[y + x * q] = new Vector3(pos.x - q * dist + q * x * dist, pos.y, pos.z - q * dist + q * y * dist);
-                (e[y + x * q] as unit).MoveTo(t[y + x * q]);
+                if(e[y + x * q] && e[y + x * q] is unit ) (e[y + x * q] as unit).MoveTo(t[y + x * q]);
             }
-              
+
         return t;
     }
-    
-    void OnMouseHold(Vector3 pos)
-    {
-        if (TimeWithMouse > .1f)
-        {
-            MouseReleasePos = pos;
-            MUI.BoxSelection(MouseClickPos,MouseReleasePos);
-            dragged = true;
-        }
-      
-        TimeWithMouse += Time.fixedDeltaTime;
-    }
-
-
     private void OnDrawGizmos()
     {
-        Gizmos.DrawCube(TL, Vector3.one / 3f);        Gizmos.DrawCube(TR, Vector3.one / 3f);
-        Gizmos.DrawCube(BL, Vector3.one / 3f);        Gizmos.DrawCube(BR, Vector3.one / 3f);
+        Gizmos.DrawCube(TL, Vector3.one / 3f); Gizmos.DrawCube(TR, Vector3.one / 3f);
+        Gizmos.DrawCube(BL, Vector3.one / 3f); Gizmos.DrawCube(BR, Vector3.one / 3f);
     }
-    bool dragged = false;
-
-
+    #region Frustrum Detection
     //From https://www.habrador.com/tutorials/select-units-within-rectangle/
     //Thing is ,a square on the UI is a parallelograme in 3D space ,because camre have frustrum
-
     bool IsWithinPolygon(Vector3 unitPos)
     {
 
@@ -251,20 +514,20 @@ public class GameManager : MonoBehaviour
     Vector3 TL, TR, BL, BR;
     bool FrustrumSelection()
     {
-        var mstart  = _main.WorldToScreenPoint(MouseClickPos);
+        var mstart = _main.WorldToScreenPoint(MouseClickPos);
         var mend = _main.WorldToScreenPoint(MouseReleasePos);
         mstart.z = 0;
-       var m = (mstart + mend )/ 2f ;
+        var m = (mstart + mend) / 2f;
 
         var x = Mathf.Abs(mend.x - mstart.x);
         var y = Mathf.Abs(mend.y - mstart.y);
         RaycastHit hit;
         int i = 0;
         TL = new Vector3(m.x - x / 2f, m.y + y / 2f, 0f);
-        TR = new Vector3(m.x + x/ 2f, m.y +y / 2f, 0f);
+        TR = new Vector3(m.x + x / 2f, m.y + y / 2f, 0f);
         BL = new Vector3(m.x - x / 2f, m.y - y / 2f, 0f);
-        BR = new Vector3(m.x + x / 2f,m.y - y / 2f, 0f);
-        if (Physics.Raycast(_main.ScreenPointToRay(TL), out hit, 200f,BuildingMask))
+        BR = new Vector3(m.x + x / 2f, m.y - y / 2f, 0f);
+        if (Physics.Raycast(_main.ScreenPointToRay(TL), out hit, 200f, BuildingMask))
         {
             TL = hit.point;
             i++;
@@ -305,57 +568,15 @@ public class GameManager : MonoBehaviour
 
         return isWithinTriangle;
     }
-    void OnMouseRelease(Vector3 pos)
-    {
-
-        if (dragged)
-        {
-
-            var s = new List<unit>();
-            if (FrustrumSelection())
-            {
-                //Costly but played once by frame so...
-
-                foreach (var item in FindObjectsOfType<entity>())
-                {
-                    if(item.GetOwner == owners[0])
-                    if(item is unit)
-                    {
-                        if (IsWithinPolygon(item.transform.position))
-                        {
-
-                            item.OnSelected();
-                            s.Add(item as unit);
-                        }
-                    }
-               
-                }
-            }
-            if (s.Count > 0) OnDragSelection(s.ToArray());
-
-
-        }
-     
-
-        MUI.BSelection.gameObject.SetActive(false);
-
-        dragged = false;
-        TimeWithMouse = 0;
-    } 
-
-    public void OnDragSelection(unit[] e)
-    {
-        selection = e;
-        UiSelection[0].SetActive(true);
-        UiSelection[1].SetActive(true);
-        MUI.Action_sticker.SetTrigger("open");
-    }
+    #endregion
     public GameObject[] UiSelection;
     int currentmode = 0;
     entity target;
- 
-    public void SetUIMode(int x )
+
+   
+    public void SetUIMode(int x)
     {
+        if (Loser) return;
         if (x == 0) return;
         foreach (var item in UiSelection)
         {
@@ -366,22 +587,29 @@ public class GameManager : MonoBehaviour
         {
             item.SetActive(false);
         }
-
-       if(x > 0) Cursor3D[ Mathf.Clamp(x-1, 0, Cursor3D.Length-1)].SetActive(true);
+        //why bother doing a switch tbh
+        if (x == 2) Cursor3D[1].gameObject.SetActive(true);
+        if (x == 3) Cursor3D[2].gameObject.SetActive(true);
+        // if (x > 0) Cursor3D[Mathf.Clamp(x - 1, 0, Cursor3D.Length - 1)].SetActive(true);
         //UiSelection[0].SetActive(true); // image nad name 
-                                        //UiSelection[2].SetActive(true);
-        MUI.Action_sticker.SetBool("SWBC",true);
-
+        //UiSelection[2].SetActive(true);
+        MUI.Action_sticker.SetBool("SWBC", true);
+        AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
         currentmode = x;
     }
     public void Chillout()
     {
-        if (selection[0])
-            (selection[0] as unit).Chill();
+        /*  if (selection[0])
+              (selection[0] as unit).Chill();*/
+        foreach (var item in selection)
+        {
+            (item as unit).Chill();
+        }
     }
-    
-    public void CancelSelection()
+
+    public void CancelSelection(int a = 0)
     {
+        if (a > 0) CancelSelection(a - 1);
         foreach (var item in UiSelection)
         {
             item.SetActive(false);
@@ -390,125 +618,72 @@ public class GameManager : MonoBehaviour
         {
             item.SetActive(false);
         }
-        if(currentmode > 0)
+        if (currentmode > 0)
         {
             currentmode = 0;
             //  UiSelection[0].SetActive(true); // image nad name 
             //    UiSelection[1].SetActive(true); // main icons
-            MUI.Action_sticker.SetBool("SWCB", false);
+            //MUI.Action_sticker.SetBool("SWCB", false);
+
+            //MUI.attack.SetActive(false);
         }
         else
         {
             if (selection.Length > 0)
                 foreach (var item in selection)
-                    if(item!=null)item.OnDeselected();
-          
-            MUI.Action_sticker.SetTrigger("close");
-         
-            selection = new entity[1];
+                    if (item != null) item.OnDeselected();
 
+            // MUI.Action_sticker.SetTrigger("close");
+            MUI.attack.SetActive(false);
+            selection = new entity[1];
+            foreach (var item in unit_UIs)            
+                item.Reset();
+            MUI.EndDescription();
+            BUI.SetBList(false);
         }
     }
     public void CancelBuilding()
     {
-        if(!BUI.BuildingSticker.GetBool("SWCB")) BUI.BuildingSticker.SetTrigger("close");
+        if (!BUI.BuildingSticker.GetBool("SWCB")) BUI.BuildingSticker.SetTrigger("close");
         if (buildmode == -1)
             BUI.BuildingSticker.SetBool("SWCB", false);
 
 
         buildmode = -1;
-       
+
         ClearHighLight();
         _lastbuilding = null;
 
     }
 
 
-    
+
     float TimeWithMouse = 0, rotationQE;
-    void MouseInteraction()
-    {
-        var ctrl = Input.GetKey(KeyCode.LeftControl);
 
-
-        var r = Camera.main.ScreenPointToRay(Input.mousePosition);
-        var y = Physics.Raycast(r, out lastresult, Mathf.Infinity, Interatable);
-        if (buildmode >= 0)
-        {
-         
-            BUI.CanBePlaceThere(lastresult.point,owners[0]);
-            /*  if (owners[0].Settled)
-                   BUI.Highlight.transform.right = (owners[0].Cores[0].transform.position - BUI.Highlight.transform.position);
-              */
-            if (building_highlight)
-            {
-                rotationQE += Time.fixedDeltaTime;
-               
-
-
-                    var lolrot = 0;
-                    if(rotationQE > .1f)
-                    {
-                        if (Input.GetKey(KeyCode.E)) { lolrot = -30; rotationQE = 0; }
-                        else if (Input.GetKey(KeyCode.Q)) { lolrot = 30; rotationQE = 0; }
-
-                    }
-                   
-
-                    building_highlight.transform.rotation =
-                        Quaternion.Euler(building_highlight.transform.eulerAngles +
-                        Vector3.up * lolrot);
-                 
-             
-            }
-            y = Physics.Raycast(r, out lastresult, Mathf.Infinity, BuildingMask);
-        }
-        
-        if (y)
-        {
-
-            if (EventSystem.current.IsPointerOverGameObject()) return;
-            MousePosition = lastresult.point;
-
-            if (Input.GetMouseButton(0))
-            {
-                OnMouseHold(lastresult.point);
-            }
-            if (Input.GetMouseButtonDown(0))
-            {
-                OnMouseClick(lastresult.point);
-               
-            }
-            else if (Input.GetMouseButtonUp(0))
-            {
-                OnMouseRelease(lastresult.point);
-            }
-
-
-        }
-
-        if (!ctrl) { BUI.Highlight.transform.position = MousePosition; }
-       
-
-
-    }
     [SerializeField]
     public static entity[] selection = new entity[1];
+
 
     //Relate to camera
     Vector3 EdgeScrolling
     {
         get
         {
-            Vector3 t =Vector3.zero;
+            Vector3 t = Vector3.zero;
             var pos = Input.mousePosition;
-      /*
-            if (pos.x > Screen.width - Boundary) t += Vector3.right;
-            if (pos.x < 0 + Boundary) t += -Vector3.right;
-            if (pos.y > Screen.height - Boundary) t += Vector3.up;
-            if (pos.y < 0 + Boundary) t += -Vector3.up;
+            var x = Input.GetAxis("Horizontal");
+            var y = Input.GetAxis("Vertical");
 
-    */
+
+            /*
+                   if (pos.x > Screen.width - Boundary) t += Vector3.right;
+                   if (pos.x < 0 + Boundary) t += -Vector3.right;
+                   if (pos.y > Screen.height - Boundary) t += Vector3.up;
+                   if (pos.y < 0 + Boundary) t += -Vector3.up;
+ */
+
+             t += Vector3.right * x;
+             t +=  Vector3.up * y;
 
 
             return t;
@@ -520,21 +695,40 @@ public class GameManager : MonoBehaviour
     }
     Vector2 cam;
     private float camzoom;
+    public float GetZoomLevel
+    {
+        get { return camzoom; }
+    }
     [SerializeField]
     int buildmode = -1;
+
+    public PopMessage _pup, _buildpup;
 
     building _lastbuilding;
     public void Build(int x)
     {
+        if (Loser) return;
+        //BUI.SetBList(false);
+        MUI.EndDescription();
         buildmode = -1;
         ClearHighLight();
-        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold)  ) { print("Not enough ressource or Gold"); _lastbuilding = null; return; } 
+        if (!Buildings[x].GetComponent<building>().HasEnoughRessource(owners[0].Inventory, owners[0].Gold, true))
+        {
+            print(owners[0] + " :Not enough ressource or Gold");
+            _lastbuilding = null;
+            return;
+        }
+        
         var g = Instantiate(Buildings[x].GetComponent<building>().graphics[1], BUI.Highlight.transform);
         building_highlight = g;
-        
+        var yr = Instantiate(radius, building_highlight.transform);
+        yr.SetActive(true);
+        yr.transform.position = g.transform.position + Vector3.up * .1f; ;
+        yr.transform.localScale = Vector3.one * (Buildings[x].GetComponent<building>().RequiredCloseness);
         BUI.Planing(g, Buildings[x].GetComponent<building>());
-      
-       
+        
+      //  radius.gameObject.SetActive(true);
+        //radius.transform.localScale = new Vector3(Buildings[x].)
         var t = g.GetComponentsInChildren<Collider>();
         for (int i = 0; i < t.Length; i++)
         {
@@ -543,56 +737,67 @@ public class GameManager : MonoBehaviour
         buildmode = x;
         BUI.BuildingSticker.SetBool("SWCB", true);
         building_highlight.transform.localRotation = lastrotation;
+        AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
+     
     }
- 
-    public void PlaceBuilding(int j , Owner n)
+
+    public void PlaceBuilding(int j, Owner n)
     {
         PlaceBuilding(j, MousePosition, building_highlight.transform.rotation, n);
     }
 
-    
-   public building PlaceBuilding(int j,Vector3 pos,Quaternion rot,Owner n)
+
+    public building PlaceBuilding(int j, Vector3 pos, Quaternion rot, Owner n)
     {
-        var x = Instantiate(Buildings[j],pos, Quaternion.identity).GetComponent<building>();
+     
+        var x = Instantiate(Buildings[j], pos, Quaternion.identity).GetComponent<building>();
         x.transform.rotation = rot; //building_highlight.transform.rotation;
         lastrotation = rot;//building_highlight.transform.rotation;
         x.TransferOwner(n);
         x.build(pos, n);
         x.Tier = 0;
-        owners[0].Pay(x.costs[0].materials);
-        buildmode = -1;
-        ClearHighLight();
-        if (owners[0].Settled)
-        {
+        n.Pay(x.costs[0].materials);
+
+   
  
-            foreach (var item in BUI.Uis)
-                item.SetActive(false);
-            BUI.Uis[1].gameObject.SetActive(true);
-        }
-        else
-        {
-            foreach (var item in BUI.Uis)
-                item.SetActive(false);
-            BUI.Uis[0].gameObject.SetActive(true);
-        }
-
-
-        buildmode = -1;
-        if(_lastbuilding  && _lastbuilding is Wall && x is Wall)
+        if (_lastbuilding && _lastbuilding is Wall && x is Wall)
         {
             (_lastbuilding as Wall).boundTo = x as Wall;
-            
+
         }
 
-        CancelSelection();
+        if (n == owners[0])
+        {
+            buildmode = -1;
+            ClearHighLight();
+            if (n.Settled)
+            {
+
+                foreach (var item in BUI.Uis)
+                    item.SetActive(false);
+                BUI.Uis[1].gameObject.SetActive(true);
+            }
+            else
+            {
+                foreach (var item in BUI.Uis)
+                    item.SetActive(false);
+                BUI.Uis[0].gameObject.SetActive(true);
+            }
+            CancelSelection();
+        }
+
 
         _lastbuilding = x;
         BUI.SetStartingPoint(x.transform.position);
-        if (_lastbuilding is Wall)Build(j);
-        else BUI.BuildingSticker.SetBool("SWCB", false);
-        var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness );
+        if (_lastbuilding is Wall) Build(j);
+        else if (n == owners[0]) BUI.BuildingSticker.SetBool("SWCB", false);
+
 
         /*
+       var e = Physics.OverlapSphere(x.transform.position, x.RequiredCloseness);
+         * 
+         * 
+         * 
          *    if(x.BuildRoad)
          * foreach (var item in e)
         {        
@@ -605,6 +810,8 @@ public class GameManager : MonoBehaviour
                           
             }
         }-*/
+
+        AudioSource.PlayClipAtPoint(build, x.transform.position);
         return x;
 
     }
@@ -613,35 +820,35 @@ public class GameManager : MonoBehaviour
     public GameObject building_highlight;
     void ClearHighLight()
     {
-        if(building_highlight)Destroy(building_highlight.gameObject);
- 
+        if (building_highlight) Destroy(building_highlight.gameObject);
+
     }
     public void CameraFunction(Transform camera, Vector3 position)
     {
-
+        if (Loser) return;
         Cursor.lockState = CursorLockMode.Confined;
         var ctrl = Input.GetKey(KeyCode.LeftControl);
         if (Input.GetKey(KeyCode.Mouse1) && !ctrl)
-        cursorinput += new Vector2(Input.GetAxis("Mouse X"),
-                  Input.GetAxis("Mouse Y")); 
+            cursorinput += new Vector2(Input.GetAxis("Mouse X"),
+                      Input.GetAxis("Mouse Y"));
 
         cursorinput.y = Mathf.Clamp(cursorinput.y, -70, -20);
         var zoooooom = Input.GetAxis("Mouse ScrollWheel");
-        if (EventSystem.current.IsPointerOverGameObject()) zoooooom = 0 ;
-        camzoom = Mathf.Clamp(camzoom + zoooooom * -350 * Time.smoothDeltaTime, 1, 350);
+        if (EventSystem.current.IsPointerOverGameObject()) zoooooom = 0;
+        camzoom = Mathf.Clamp(camzoom + zoooooom * -350 * Time.smoothDeltaTime, 1, 250);
 
         camera.transform.position = Vector3.Lerp(camera.transform.position, position + Vector3.forward * camzoom, 125 * Time.fixedDeltaTime);
         camera.transform.LookAt(position + CameraOffset + -Vector3.up * cameraSmoothness / 2 * Time.fixedDeltaTime);
-        camera.transform.RotateAround(position, Vector3.up, cursorinput.x * cameraSmoothness *8* Time.fixedDeltaTime);
+        camera.transform.RotateAround(position, Vector3.up, cursorinput.x * cameraSmoothness * 8 * Time.fixedDeltaTime);
         camera.transform.RotateAround(position, camera.transform.right, (-cursorinput.y) * 8 * cameraSmoothness * Time.fixedDeltaTime);
 
 
-        var es = _main.gameObject.transform.TransformDirection(-EdgeScrolling *(1 + Mathf.Abs(camzoom)/20) * EdgeScrollingSpeed * cameraSmoothness * Time.smoothDeltaTime);
-     
-      
+        var es = _main.gameObject.transform.TransformDirection(-EdgeScrolling * (1 + Mathf.Abs(camzoom) / 20) * EdgeScrollingSpeed * cameraSmoothness * Time.smoothDeltaTime);
 
-        if(Input.GetMouseButton(2))es = _main.gameObject.transform.TransformDirection((new Vector2(Input.GetAxis("Mouse X"),
-                  Input.GetAxis("Mouse Y"))) * (1 + Mathf.Abs(camzoom) / 20) * EdgeScrollingSpeed * cameraSmoothness * Time.smoothDeltaTime);
+
+
+        if (Input.GetMouseButton(2)) es = _main.gameObject.transform.TransformDirection((new Vector2(Input.GetAxis("Mouse X"),
+                    Input.GetAxis("Mouse Y"))) * (1 + Mathf.Abs(camzoom) / 20) * EdgeScrollingSpeed * cameraSmoothness * Time.smoothDeltaTime);
 
 
         //if(camera.transform.eulerAngles.x > (90 -30) && camera.transform.eulerAngles.x <(90 +1))
@@ -651,32 +858,44 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
+ 
         Nodes = CreateNodes(terrain[0]);
+
+        foreach (var item in GameManager.instance.Nodes)
+        {
+            item.SetOwner(owners[2]);
+        }
+        foreach (var item in unit_UIs)
+            item.Reset();
+
+
+        owners[0].Start();
+        owners[1].Start();
+
+        owners[0].modRelation(owners[1], -1);
+
     }
 
-
-
-
-
+    #region Nodes
     //Nodes related - need to yeet to somewhere else 
 
-    node[] CreateNodes(Terrain a, int precision = 6)
+    node[] CreateNodes(Terrain a, int precision = 7)
     {
         var e = new List<node>();
         var t = a.terrainData;
-        for (int x = 0; x < t.size.x; x+=precision)
+        for (int x = 0; x < t.size.x; x += precision)
         {
             for (int y = 0; y < t.size.z; y += precision)
             {
                 var pos = new Vector3(x, t.GetHeight(x/* + precision*/ , y /*+ precision*/), y);
                 var n = Instantiate(node, a.transform.position + new Vector3(x + precision / 2, t.GetHeight(x + 5, y + 5), y + precision / 2), Quaternion.identity).GetComponent<node>();
                 n.SetSize(precision);
-                n.Initialize(x,y); 
+                n.Initialize(x, y);
                 n.terrain = a;
                 n.Value = n.GetValue(x, y);
 
 
-               
+
                 if (x > t.size.x / 2) n.SetOwner(owners[1]);
                 else n.SetOwner(owners[0]);
 
@@ -693,7 +912,12 @@ public class GameManager : MonoBehaviour
                     n.GetComponent<MeshRenderer>().material.color = Color.red;
                     n.type = global::node.NodeType.montain;
 
-                } 
+                }
+                if (n.AverageHeight > 43 && n.AverageHeight < 55 && Random.Range(0, 1f) > .3f)
+                {
+
+                    n.type = global::node.NodeType.plain;
+                }
 
                 if (n.transform.position.y < 0) //It's Water or there is a small hole
                 {
@@ -707,54 +931,69 @@ public class GameManager : MonoBehaviour
                     var b = n.transform.position;
                     b.y = 0;
                     n.transform.position = b;
-                  
+
                 }
-             
+                RaycastHit harambe;
+                var extraPrecision = Physics.Raycast(pos + Vector3.up, Vector3.down, out harambe, 9);
+                n.transform.position = morePrecision(n.transform.position);
                 n.transform.parent = a.transform;
                 SpawnRessource(n, x, y);
                 e.Add(n);
             }
         }
-        
+
 
         return e.ToArray();
     }
-
-
-    void SpawnRessource(node n,int x, int y)
+    //Costly
+    Vector3 morePrecision(Vector3 pos)
+    {
+        RaycastHit harambe;
+        var extraPrecision = Physics.Raycast(pos + Vector3.up, Vector3.down, out harambe, 9, Precison, QueryTriggerInteraction.Ignore);
+        if (extraPrecision)
+            pos = harambe.point;
+        return pos;
+    }
+    [SerializeField]
+    LayerMask Precison;
+    void SpawnRessource(node n, int x, int y)
     {
 
         //tree for now
         var seed = Random.Range(0, 1f);
-   //Sparse Ressources, so it is not easy
-        if (n.AverageHeight > 28.5f && n.AverageHeight < 32 && n.type == global::node.NodeType.plain)
+        //Sparse Ressources, so it is not easy
+        if (n.AverageHeight > 49 && n.AverageHeight < 55 && n.type == global::node.NodeType.plain)
         {
             if (seed < .6f) return;
             //tree
-            var q = new Goods() ;
-           
+
+            var q = new Goods();
+
             q.setRessource(Resources[0], 100 * Random.Range(1, 10));
-          //  q.transform.parent = n.transform;
+            //  q.transform.parent = n.transform;
             n.resource = q;
-           
-            n.Value += n.resource.getAmount* n.Value;
-           
-            for (int i = 0; i <n.resource.getAmount/50; i++)
+
+            n.Value += n.resource.getAmount * n.Value;
+
+            for (int i = 0; i < n.resource.getAmount / 50; i++)
             {
                 if (Random.Range(0, 1f) > .3f) continue;
-                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize/1.4f) , .45f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f));
-               
-                var e = Instantiate(n.resource.model, n.transform.position,Quaternion.identity).GetComponent<GetRessourceInfo>();
+                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f), .45f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f));
+
+
+
+                var e = Instantiate(n.resource.model, n.transform.position, Quaternion.identity).GetComponent<GetRessourceInfo>();
                 e.SetNode(n);
 
                 e.transform.position = n.transform.position + t;
                 e.transform.parent = n.transform;
+                e.transform.position = morePrecision(e.transform.position) + Vector3.up * .5f;
             }
 
             return;
         }
 
-        if (  n.AverageHeight > 28 && n.AverageHeight < 35)
+        if (n.AverageHeight > 28 && n.AverageHeight < 35)
         {
 
             if (seed < .93f) return;
@@ -767,9 +1006,9 @@ public class GameManager : MonoBehaviour
             n.Value += n.resource.getAmount * n.Value;
 
             for (int i = 0; i < n.resource.getAmount / 80; i++)
-            {   
+            {
                 if (Random.Range(0, 1f) > .3f) continue;
-                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)  ,-.1f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f)  );
+                var t = new Vector3(Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f), -.1f, Random.Range(-n.getSize / 1.4f, n.getSize / 1.4f));
 
                 var e = Instantiate(n.resource.model, n.transform.position, Quaternion.identity).GetComponent<GetRessourceInfo>();
                 e.SetNode(n);
@@ -779,4 +1018,6 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    #endregion
 }

@@ -22,20 +22,28 @@ public class entity : MonoBehaviour
     [SerializeField]
     Owner owner;
 
+ 
     public void SetOwner(Owner s)
     {
         owner = s;
         owner = s;
     }
+ 
     public DamageType Type = DamageType.Null;
     public virtual void TransferOwner(Owner n)
     {
         if (owner != null) owner.onLostEntites(this);
+ 
+        
         owner = n;
         n.onNewEntites(this);
     }
     public float GoldCost = 5;
     protected node currentNode;
+    public float GetMaxmimumHP
+    {
+        get { return maximumHp; }
+    }
     protected float maximumHp = 1;
     [SerializeField]
     protected Animator uianim;
@@ -49,6 +57,12 @@ public class entity : MonoBehaviour
     public GameObject info;
     [SerializeField]
     protected Text infotext;
+    private void Awake()
+    {
+        Hp = HealthToSet * MainUI.HpMult;
+        maximumHp = HealthToSet * MainUI.HpMult;
+ 
+    }
     private void Start()
     {
         Hp = HealthToSet;
@@ -140,11 +154,15 @@ public class entity : MonoBehaviour
 
     protected virtual void OnKill(entity z)
     {
+       z.owner.modRelation(owner, -10);
         killcount++;
     }
     public virtual void TakeDamage(float t,entity e, DamageType p = DamageType.Null)
     {
         last_agressor = e;
+
+        owner.modRelation(e.owner, -1);
+
         TakeDamage(t,p);
     }
     public virtual void Death()
