@@ -29,7 +29,7 @@ public class CityCore : building
         base.TakeDamage(t, e, p);
         GetOwner.modRelation(e.GetOwner, -100);
     }
-    public override void Death()
+    public override void Death(bool t = true)
     {
         base.Death();
         GameManager.SetGameOver();

@@ -27,12 +27,19 @@ public class unit : entity
         get { return Ordered; }
     }
     bool Ordered = false;
-    public override void Death()
+    public override void Death(bool f = false)
     {
         if(Oof)
         AudioSource.PlayClipAtPoint(Oof, transform.position);
         StopAllCoroutines();
-        base.Death();
+        base.Death(false);
+        Destroy(agi);
+        var r = GetComponent<Rigidbody>();
+        lifeindicator.gameObject.SetActive(false);
+        r.isKinematic = false;
+        r.useGravity = true;
+        r.AddExplosionForce(400,(Random.insideUnitSphere + transform.position),20);
+        Destroy(gameObject,3);
     }
     void updateLifeIndiactor()
     {
@@ -59,7 +66,7 @@ public class unit : entity
     public AudioClip onCreated;
    protected Animator anim;
     [SerializeField]
-    MeshRenderer[] rendies;
+    protected MeshRenderer[] rendies;
     public virtual float GetMovingSpeed
     {
         get { return Speed * MainUI.SpeedMult; }
@@ -438,10 +445,13 @@ public virtual void AI()
     }
 
     float attackTimer = 0;
-    private void FixedUpdate()
-    {
 
-        agi.speed = GetMovingSpeed;
+    public virtual void FixedUpdate()
+    {
+        if(Hp >= 0)
+            agi.speed = GetMovingSpeed;
+
+      
         attackTimer += Time.fixedDeltaTime;
     }
 

@@ -33,8 +33,15 @@ public class entity : MonoBehaviour
     public virtual void TransferOwner(Owner n)
     {
         if (owner != null) owner.onLostEntites(this);
- 
-        
+
+        if(GetComponent<Renderer>())GetComponent<Renderer>().material.color = n.MainColor;
+        foreach (var item in  GetComponentsInChildren<Renderer>())
+        {
+            foreach (var it in item.materials)
+            {
+                it.color = n.MainColor;
+            }
+        }
         owner = n;
         n.onNewEntites(this);
     }
@@ -165,7 +172,7 @@ public class entity : MonoBehaviour
 
         TakeDamage(t,p);
     }
-    public virtual void Death()
+    public virtual void Death(bool destroy=  true)
     {
 
         if(GetOwner != null)
@@ -174,7 +181,8 @@ public class entity : MonoBehaviour
             item.Drop(transform.position);
 
         if (last_agressor) last_agressor.OnKill(this);
-        Destroy(this.gameObject);
+
+      if(destroy)  Destroy(this.gameObject);
 
     }
 }

@@ -144,6 +144,7 @@ public class MainUI : MonoBehaviour
         txt += "Housing Space : " + own.getHousingSpace + "\n";
         txt += "Production Efficiency : " + own.ProductionEfficiency + "\n";
         txt += "Total Population : " + own.totalPopulation + "\n";
+        txt += "Science Rate : " + own.ScienceMod;
 
 
         StatsInfo.Texts[1].text = txt; 

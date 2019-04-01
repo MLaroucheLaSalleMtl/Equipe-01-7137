@@ -29,7 +29,7 @@ public class Owner
         {
             var t = 0f; foreach (var item in Labs)
                 t += item.ResearchPointsPerTick;
-            return t * ScienceMod * 1 + (scientist * t / 100) ;
+            return t * ScienceMod * (1 + (scientist * t / 100) );
         }
     }
     int MaximumNumberOfscientist
@@ -131,7 +131,7 @@ public class Owner
     public Owner_AI ai;
     //Some population initiated coitus more often than other
     float baseFertilityRate = 1.00f;
-    float fertilityMod = 1f, EconomyMod = 1f, ScienceMod = 1f;
+   public float fertilityMod = 1f, EconomyMod = 1f, ScienceMod = 1f, RelationMod = 1f;
     public float FertilityRate { get { return baseFertilityRate * fertilityMod; } }
 
     // instantiate factions
@@ -142,7 +142,7 @@ public class Owner
     
      public void Start()
     {
-        Gold += 100;
+       GainGold(100);
         GenFactions();
         foreach (var item in Technology.ResearchKnownToMankind)
             item.Value.OnFinish += OnResearchDone;
@@ -477,8 +477,12 @@ public class Owner
 
         //Random.Range(.6f, 1.5f);
         baseFertilityRate = randy.Next(50,150)/100;
-        ScienceMod  = randy.Next(50, 150) / 100; 
+        ScienceMod  = randy.Next(50, 150) / 100;
+        fertilityMod = randy.Next(50, 150) / 100;
+        EconomyMod = randy.Next(50, 150) / 100; 
+        RelationMod = randy.Next(50, 250) / 100;
 
+        if (ScienceMod < 0) { ScienceMod = .5f; System.Console.WriteLine("What the fuck!"); }
         onLostEntites += OnEntitiesLost;
         onNewEntites += OnEntitesReceived;
     }

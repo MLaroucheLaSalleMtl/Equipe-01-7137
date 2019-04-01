@@ -11,7 +11,15 @@ public class GameManager : MonoBehaviour
     public Terrain[] terrain;
     public GameObject radius;
     public node[] Nodes;
-    public static Owner[] owners = new Owner[3] { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) }, new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) }, new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) } };
+    public static Owner[] owners = new Owner[5] 
+    { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) },
+        new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) },
+         new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) },
+         new Owner() { Name = "Wels", MainColor = Color.yellow, vector3 = new Vector3( 259, 0, 200) },
+          new Owner() { Name = "Dimitri", MainColor = Color.magenta, vector3 = new Vector3(200, 0, 193) },
+       
+
+    };
 
 
 
@@ -75,14 +83,15 @@ public class GameManager : MonoBehaviour
         CancelSelection();
         _main = UnityEngine.Camera.main;
 
-        owners[0].OnGain += OnOwnerGain;
-        owners[1].OnGain += OnOwnerGain;
-
-        owners[0].OnRelationModification += OnPlayerRelationshipChanged;
-        owners[1].OnRelationModification += OnPlayerRelationshipChanged;
-        for (int i = 1; i < owners.Length - 1; i++)
+        foreach (var item in owners)
         {
-
+            item.OnGain += OnOwnerGain;
+            item.OnRelationModification += OnPlayerRelationshipChanged;
+        }
+ 
+        for (int i = 1; i < owners.Length; i++)
+        {
+            if (owners[i].Name == "Neutral") continue;
             var t = gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
         }
@@ -97,7 +106,7 @@ public class GameManager : MonoBehaviour
         if (AtWarWith.ContainsKey(z.Name))
             if (AtWarWith[z.Name]) return;
 
-
+        
         _pup.SetText("You are now peacen't with " + z.Name + "!");
         AtWarWith.Add(z.Name, true);
     }
@@ -754,6 +763,7 @@ public class GameManager : MonoBehaviour
         x.transform.rotation = rot; //building_highlight.transform.rotation;
         lastrotation = rot;//building_highlight.transform.rotation;
         x.TransferOwner(n);
+   
         x.build(pos, n);
         x.Tier = 0;
         n.Pay(x.costs[0].materials);
@@ -868,11 +878,23 @@ public class GameManager : MonoBehaviour
         foreach (var item in unit_UIs)
             item.Reset();
 
+        foreach (var item in owners)
+        {
+            if (item.Name == "Neutral") continue;
+            item.Start();
+            for (int i = 0; i < owners.Length; i++)
+            {
+                if (i == 3) continue;
+                item.modRelation(owners[i], Random.Range(-10, 10));
+            }
+               
 
-        owners[0].Start();
-        owners[1].Start();
 
-        owners[0].modRelation(owners[1], -1);
+
+        }
+
+
+
 
     }
 
@@ -987,7 +1009,8 @@ public class GameManager : MonoBehaviour
 
                 e.transform.position = n.transform.position + t;
                 e.transform.parent = n.transform;
-                e.transform.position = morePrecision(e.transform.position) + Vector3.up * .5f;
+                e.transform.localScale *= 2;
+                e.transform.position = morePrecision(e.transform.position) + Vector3.up * 1f;
             }
 
             return;
