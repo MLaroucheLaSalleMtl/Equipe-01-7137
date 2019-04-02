@@ -16,6 +16,38 @@ public class MainUI : MonoBehaviour
     public Text ResearchDesc;
     public SliderTextBox ResearchBar;
     public GameObject ResearchButton, ResearchWindow;
+    public textBox RelationshipWindow;
+    public Owner Selected;
+
+    public void OpenRelationshipWindow( int x)
+    {
+        OpenRelationshipWindow(GameManager.owners[x]);
+    }
+
+
+    public void OpenRelationshipWindow(Owner x)
+    {
+        Selected = x;
+        RelationshipWindow.gameObject.SetActive(true);
+        RelationshipWindow.Header.text = "Relationship with " + Selected.Name + " at " + GameManager.owners[0].Relation[GameManager.owners[0].Name];
+        RelationshipWindow.Texts[1].text = "Your current relation with " + Selected.Name + " is " + GameManager.owners[0].Relation[GameManager.owners[0].Name]
+            + ". You can trade ressource or lands to augments your relationship. There is the possibility to start a war or stop it depending on your score. ";
+    }
+    public void MakeWar()
+    {
+        //TODO add your logic here
+        Selected.modRelation(GameManager.owners[0], -100);
+    }
+    public void MakePeace()
+    {
+        //TODO add your logic here
+        Selected.modRelation(GameManager.owners[0], 100);
+    }
+    public void CloseRelationWindow()
+    {
+        Selected = null;
+        RelationshipWindow.gameObject.SetActive(false);
+    }
     public void OpenResearchWinodw (bool z)
     {
         if (!Owner.Player.ResearchCenter)
@@ -84,6 +116,7 @@ public class MainUI : MonoBehaviour
         Owner.Player.OnEntitiesChange += OnPlayerEntitiesChanges;
         ResearchButton.SetActive(false);
         ResearchWindow.SetActive(false);
+        RelationshipWindow?.gameObject.SetActive(false);
     }
 
     private void OnPlayerEntitiesChanges(entity e)

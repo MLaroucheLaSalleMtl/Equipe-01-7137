@@ -7,23 +7,24 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    public static entity LastClick;
     public MeshRenderer Fog;
     public Terrain[] terrain;
     public GameObject radius;
     public node[] Nodes;
-    public static Owner[] owners = new Owner[5] 
+    public static Owner[] owners = new Owner[5]
     { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) },
         new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) },
          new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) },
          new Owner() { Name = "Wels", MainColor = Color.yellow, vector3 = new Vector3( 259, 0, 200) },
           new Owner() { Name = "Dimitri", MainColor = Color.magenta, vector3 = new Vector3(200, 0, 193) },
-       
+
 
     };
 
 
 
-    
+
     //Should have use a dictionary, gonna change it later, for now let's use that
     public static Owner GetOwner(string a)
     {
@@ -46,14 +47,15 @@ public class GameManager : MonoBehaviour
     public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
     public GameObject NodeRendererPrefab;
-    
+    public GameObject healingPrefab;
+
     Camera _main;
 
     //Todo Remove
     public void ShowBuildingDesc(int x)
     {
         var y = Buildings[x].GetComponent<building>();
-        MUI.showDescription(y.name,  y.GetSummary());
+        MUI.showDescription(y.name, y.GetSummary());
     }
 
     public void HelpM(bool t)
@@ -63,7 +65,7 @@ public class GameManager : MonoBehaviour
     }
     [Header("Flair")]
     public AudioClip error;
-    public AudioClip build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic,War;
+    public AudioClip build, completeBuild, menuClick, GainItem, endaudio, GameOverMusic, War;
     public GameObject[] Cursor3D;
 
     [Header("Camera")]
@@ -88,7 +90,7 @@ public class GameManager : MonoBehaviour
             item.OnGain += OnOwnerGain;
             item.OnRelationModification += OnPlayerRelationshipChanged;
         }
- 
+
         for (int i = 1; i < owners.Length; i++)
         {
             if (owners[i].Name == "Neutral") continue;
@@ -97,16 +99,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-  public static void ShowMessage(string f)
+    public static void ShowMessage(string f)
     {
         GameManager.instance._pup.SetText(f);
     }
-     public void DeclareWar(Owner z)
+    public void DeclareWar(Owner z)
     {
         if (AtWarWith.ContainsKey(z.Name))
             if (AtWarWith[z.Name]) return;
 
-        
+
         _pup.SetText("You are now peacen't with " + z.Name + "!");
         AtWarWith.Add(z.Name, true);
     }
@@ -123,6 +125,12 @@ public class GameManager : MonoBehaviour
             print(g.Name + " has no bits!");
         }
 
+    }
+    public void OnHeal(Vector3 pos)
+    {
+        var e = Instantiate(healingPrefab, pos, Quaternion.identity);
+        if (e)
+            StartCoroutine(popup(e));
     }
 
     Dictionary<string, bool> AtWarWith = new Dictionary<string, bool>();
@@ -326,6 +334,7 @@ public class GameManager : MonoBehaviour
             {
                 selection[0] = tempsel;
                 selection[0].OnSelected();
+                LastClick = selection[0];
                 //UiSelection[0].SetActive(true);
                 // UiSelection[1].SetActive(true);
                 MUI.Action_sticker.SetTrigger("open");
@@ -417,7 +426,7 @@ public class GameManager : MonoBehaviour
 
     void OnMouseRelease(Vector3 pos)
     {
-
+        LastClick = null;
         if (dragged)
         {
 
@@ -769,12 +778,12 @@ public class GameManager : MonoBehaviour
         n.Pay(x.costs[0].materials);
 
    
- 
+ /*
         if (_lastbuilding && _lastbuilding is Wall && x is Wall)
         {
             (_lastbuilding as Wall).boundTo = x as Wall;
 
-        }
+        }*/
 
         if (n == owners[0])
         {
@@ -799,8 +808,7 @@ public class GameManager : MonoBehaviour
 
         _lastbuilding = x;
         BUI.SetStartingPoint(x.transform.position);
-        if (_lastbuilding is Wall) Build(j);
-        else if (n == owners[0]) BUI.BuildingSticker.SetBool("SWCB", false);
+        if (n == owners[0]) BUI.BuildingSticker.SetBool("SWCB", false);
 
 
         /*

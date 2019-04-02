@@ -198,14 +198,14 @@ bool ctxmenu = false;
         if (!GetOwner.IsPlayer) return;
 
             if (BeingBuild) return;
-        if (!ctxmenu) ContextMenu.SetActive(true);
-        ContextMenuText.text = description;
+        if (!ctxmenu) ContextMenu?.SetActive(true);
+       if(ContextMenuText) ContextMenuText.text = description;
 
     }
-    public void CloseContextMenu()
+    public virtual void CloseContextMenu()
     {
         ctxmenu = false;
-        ContextMenu.SetActive(false);
+        ContextMenu?.SetActive(false);
     }
 
     private void OnMouseDown()

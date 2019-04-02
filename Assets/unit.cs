@@ -9,7 +9,7 @@ public class unit : entity
     [Header("DEBUG")]
     public int DEBUG_OWNER = -1;
     [SerializeField]
-     NavMeshAgent agi;
+     protected NavMeshAgent agi;
     [SerializeField]
     GameObject indicator;
     [SerializeField]
@@ -21,12 +21,14 @@ public class unit : entity
         if(onCreated)
                 AudioSource.PlayClipAtPoint(onCreated, transform.position);
         updateLifeIndiactor();
+
+        minimumdistance = AdditionalDist + .35f + agi.radius + agi.stoppingDistance;
     }
     public bool HasIssuesCommand
     {
         get { return Ordered; }
     }
-    bool Ordered = false;
+    protected bool Ordered = false;
     public override void Death(bool f = false)
     {
         if(Oof)
@@ -238,7 +240,7 @@ public virtual void AI()
     }
 
     Army _army;
-    entity target;
+    protected entity target;
     public void OrderedAttack(entity e)
     {
         if(!e)
@@ -270,6 +272,7 @@ public virtual void AI()
         yield break;
     }
     float minimumdistance = 0;
+    public float AdditionalDist = 0;
     IEnumerator GoThere(Vector3 pos)
     {
         if(!agi || !agi.isOnNavMesh)
@@ -282,7 +285,7 @@ public virtual void AI()
 
         agi.SetDestination(pos);
         agi.isStopped = false;
-        minimumdistance = .35f + agi.radius + agi.stoppingDistance;
+        minimumdistance = AdditionalDist +  .35f + agi.radius + agi.stoppingDistance;
         yield return new WaitForFixedUpdate();
         while (agi.remainingDistance > (minimumdistance + .1f))
         {
@@ -405,7 +408,7 @@ public virtual void AI()
             AudioSource.PlayClipAtPoint(Hurt, transform.position);
     
     }
-    void _attack(entity e)
+    protected virtual void _attack(entity e)
     {
 
 

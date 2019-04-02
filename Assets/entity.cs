@@ -33,7 +33,7 @@ public class entity : MonoBehaviour
     public virtual void TransferOwner(Owner n)
     {
         if (owner != null) owner.onLostEntites(this);
-
+     
         if(GetComponent<Renderer>())GetComponent<Renderer>().material.color = n.MainColor;
         foreach (var item in  GetComponentsInChildren<Renderer>())
         {
@@ -116,6 +116,7 @@ public class entity : MonoBehaviour
     {
         Hp = maximumHp;
         Hp = Mathf.Clamp(Hp, 0, maximumHp);
+        
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -150,6 +151,10 @@ public class entity : MonoBehaviour
     {
    
         Hp -= t * GetTypeEfficiency(Type,p);
+        if(t < 0)
+        {
+            GameManager.instance.OnHeal(transform.position);
+        }
         if (Hp < 0) Death();
     }
     protected entity last_agressor;

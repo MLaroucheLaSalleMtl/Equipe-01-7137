@@ -7,6 +7,10 @@ public class RelationshipUI : textBox
 {
     Owner lastowner;
     string lastkey;
+    public void RelationshipWindow()
+    {
+        GameManager.instance.GetComponent<MainUI>().OpenRelationshipWindow(lastowner);
+    }
     public void ShowRelationship(Owner x,string y)
     {
       
