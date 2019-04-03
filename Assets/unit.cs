@@ -157,7 +157,7 @@ public class unit : entity
         if (!this) return;
         agi.isStopped = false;
         agi.SetDestination(z.transform.position);
-        _attack(z);
+        _attack(z); 
     }
 public virtual void AI()
     {
