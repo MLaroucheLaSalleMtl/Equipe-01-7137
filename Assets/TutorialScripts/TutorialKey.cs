@@ -13,16 +13,18 @@ public class TutorialKey : Tutorial
             if (Input.inputString.Contains(Keys[i]))
             {
                 Keys.RemoveAt(i);
-                break;
+                if (Keys.Count == 0)
+                {
+                    TutorialManager.instance2.CompletedTutorial();
+                }
+            }
+
+            break;
 
             }
 
 
-            if (Keys.Count == 0)
-            {
-                TutorialManager.instance2.CompletedTutorial();
-            }
-        }
+         
     }
 
 
