@@ -58,7 +58,7 @@ public class TutorialManager : MonoBehaviour
     public void CompletedTutorial()
     {
         SetNextTutorial(CurrentTutorial.Order + 1);
-    
+
     }
         
     public void SetNextTutorial(int currentOrder)

@@ -18,8 +18,9 @@ public class PopMessage : MonoBehaviour
 
     public void SetText(string t)
     {
+        gameObject.SetActive(true);
         txt.text = t;
-        AudioSource.PlayClipAtPoint(GameManager.instance.error, cam.gameObject.transform.position);
+      if(cam != null)  AudioSource.PlayClipAtPoint(GameManager.instance.error, cam.gameObject.transform.position);
         StartCoroutine(_popup());
     }
     public void PopTrueBuilding(int o)

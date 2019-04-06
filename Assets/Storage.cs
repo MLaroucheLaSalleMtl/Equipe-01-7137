@@ -51,7 +51,7 @@ public class Storage : building
     [SerializeField]
     Animator anim;
     
-    public override void Death()
+    public override void Death(bool f = false)
     {
         base.Death();
         if (GetOwner!=null) GetOwner.Pay(new Goods(StorageType, currentstorage));

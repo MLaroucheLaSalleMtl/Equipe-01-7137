@@ -71,8 +71,8 @@ public class Garison : building
         }
     }
     public Queue<DeployementOrder> UnitsToDeploy = new Queue<DeployementOrder>();
-    
-    
+
+ 
     private void Awake()
     {
         tbox = GetComponentInChildren<DraggableTbox>();
@@ -186,7 +186,7 @@ public class Garison : building
         tbox.Texts[1].text = description;
         CustomizeButton.gameObject.SetActive(CanCreateCustomizable);
         OpenCustomization(false);
-        
+        TakeDamage(5);
 
     }
     public override void interact(entity e, float efficiency = 0)

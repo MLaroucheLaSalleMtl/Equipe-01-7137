@@ -9,7 +9,7 @@ public class unit : entity
     [Header("DEBUG")]
     public int DEBUG_OWNER = -1;
     [SerializeField]
-     NavMeshAgent agi;
+     protected NavMeshAgent agi;
     [SerializeField]
     GameObject indicator;
     [SerializeField]
@@ -21,18 +21,27 @@ public class unit : entity
         if(onCreated)
                 AudioSource.PlayClipAtPoint(onCreated, transform.position);
         updateLifeIndiactor();
+
+        minimumdistance = AdditionalDist + .35f + agi.radius + agi.stoppingDistance;
     }
     public bool HasIssuesCommand
     {
         get { return Ordered; }
     }
-    bool Ordered = false;
-    public override void Death()
+    protected bool Ordered = false;
+    public override void Death(bool f = false)
     {
         if(Oof)
         AudioSource.PlayClipAtPoint(Oof, transform.position);
         StopAllCoroutines();
-        base.Death();
+        base.Death(false);
+        Destroy(agi);
+        var r = GetComponent<Rigidbody>();
+        lifeindicator.gameObject.SetActive(false);
+        r.isKinematic = false;
+        r.useGravity = true;
+        r.AddExplosionForce(400,(Random.insideUnitSphere + transform.position),20);
+        Destroy(gameObject,3);
     }
     void updateLifeIndiactor()
     {
@@ -59,7 +68,7 @@ public class unit : entity
     public AudioClip onCreated;
    protected Animator anim;
     [SerializeField]
-    MeshRenderer[] rendies;
+    protected MeshRenderer[] rendies;
     public virtual float GetMovingSpeed
     {
         get { return Speed * MainUI.SpeedMult; }
@@ -231,7 +240,7 @@ public virtual void AI()
     }
 
     Army _army;
-    entity target;
+    protected entity target;
     public void OrderedAttack(entity e)
     {
         if(!e)
@@ -263,6 +272,7 @@ public virtual void AI()
         yield break;
     }
     float minimumdistance = 0;
+    public float AdditionalDist = 0;
     IEnumerator GoThere(Vector3 pos)
     {
         if(!agi || !agi.isOnNavMesh)
@@ -275,7 +285,7 @@ public virtual void AI()
 
         agi.SetDestination(pos);
         agi.isStopped = false;
-        minimumdistance = .35f + agi.radius + agi.stoppingDistance;
+        minimumdistance = AdditionalDist +  .35f + agi.radius + agi.stoppingDistance;
         yield return new WaitForFixedUpdate();
         while (agi.remainingDistance > (minimumdistance + .1f))
         {
@@ -398,7 +408,7 @@ public virtual void AI()
             AudioSource.PlayClipAtPoint(Hurt, transform.position);
     
     }
-    void _attack(entity e)
+    protected virtual void _attack(entity e)
     {
 
 
@@ -438,10 +448,13 @@ public virtual void AI()
     }
 
     float attackTimer = 0;
-    private void FixedUpdate()
-    {
 
-        agi.speed = GetMovingSpeed;
+    public virtual void FixedUpdate()
+    {
+        if(Hp >= 0)
+            agi.speed = GetMovingSpeed;
+
+      
         attackTimer += Time.fixedDeltaTime;
     }
 
