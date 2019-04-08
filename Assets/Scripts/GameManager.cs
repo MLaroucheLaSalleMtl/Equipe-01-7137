@@ -893,7 +893,7 @@ public class GameManager : MonoBehaviour
             for (int i = 0; i < owners.Length; i++)
             {
                 if (i == 3) continue;
-                item.modRelation(owners[i], Random.Range(-10, 10));
+                item.modRelation(owners[i], Random.Range(-10, 30));
             }
                
 
