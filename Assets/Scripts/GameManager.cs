@@ -7,15 +7,24 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    public static entity LastClick;
     public MeshRenderer Fog;
     public Terrain[] terrain;
     public GameObject radius;
     public node[] Nodes;
-    public static Owner[] owners = new Owner[3] { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177), Culture = "civilised"  }, new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273), Culture ="barbarian" }, new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) } };
+    public static Owner[] owners = new Owner[5]
+    { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) },
+        new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) },
+         new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) },
+         new Owner() { Name = "Wels", MainColor = Color.yellow, vector3 = new Vector3( 259, 0, 200) },
+          new Owner() { Name = "Dimitri", MainColor = Color.magenta, vector3 = new Vector3(200, 0, 193) },
+
+
+    };
 
 
 
-    
+
     //Should have use a dictionary, gonna change it later, for now let's use that
     public static Owner GetOwner(string a)
     {
@@ -38,14 +47,15 @@ public class GameManager : MonoBehaviour
     public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
     public GameObject NodeRendererPrefab;
-   
-    
+    public GameObject healingPrefab;
+
     Camera _main;
 
+    //Todo Remove
     public void ShowBuildingDesc(int x)
     {
         var y = Buildings[x].GetComponent<building>();
-        MUI.showDescription(y.name,  y.GetSummary());
+        MUI.showDescription(y.name, y.GetSummary());
     }
 
     public void HelpM(bool t)
@@ -55,7 +65,7 @@ public class GameManager : MonoBehaviour
     }
     [Header("Flair")]
     public AudioClip error;
-    public AudioClip build, completeBuild, menuClick, GainItem,endaudio, GameOverMusic,War, pictWar, wessexWar;
+    public AudioClip build, completeBuild, menuClick, GainItem, endaudio, GameOverMusic, War;
     public GameObject[] Cursor3D;
 
     [Header("Camera")]
@@ -79,24 +89,25 @@ public class GameManager : MonoBehaviour
         CancelSelection();
         _main = UnityEngine.Camera.main;
 
-        owners[0].OnGain += OnOwnerGain;
-        owners[1].OnGain += OnOwnerGain;
-
-        owners[0].OnRelationModification += OnPlayerRelationshipChanged;
-        owners[1].OnRelationModification += OnPlayerRelationshipChanged;
-        for (int i = 1; i < owners.Length - 1; i++)
+        foreach (var item in owners)
         {
+            item.OnGain += OnOwnerGain;
+            item.OnRelationModification += OnPlayerRelationshipChanged;
+        }
 
+        for (int i = 1; i < owners.Length; i++)
+        {
+            if (owners[i].Name == "Neutral") continue;
             var t = gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
         }
     }
 
-  public static void ShowMessage(string f)
+    public static void ShowMessage(string f)
     {
         GameManager.instance._pup.SetText(f);
     }
-     public void DeclareWar(Owner z)
+    public void DeclareWar(Owner z)
     {
         if (AtWarWith.ContainsKey(z.Name))
             if (AtWarWith[z.Name]) return;
@@ -127,6 +138,12 @@ public class GameManager : MonoBehaviour
             print(g.Name + " has no bits!");
         }
 
+    }
+    public void OnHeal(Vector3 pos)
+    {
+        var e = Instantiate(healingPrefab, pos, Quaternion.identity);
+        if (e)
+            StartCoroutine(popup(e));
     }
 
     Dictionary<string, bool> AtWarWith = new Dictionary<string, bool>();
@@ -330,6 +347,7 @@ public class GameManager : MonoBehaviour
             {
                 selection[0] = tempsel;
                 selection[0].OnSelected();
+                LastClick = selection[0];
                 //UiSelection[0].SetActive(true);
                 // UiSelection[1].SetActive(true);
                 MUI.Action_sticker.SetTrigger("open");
@@ -354,16 +372,15 @@ public class GameManager : MonoBehaviour
                     }
                     else
                     {
+                        print("Moving " + selection.Length + " peps to " + pos);
                         Formation(pos, _main.transform.forward, selection, .2f);
                     }
-
+                    CancelSelection(1);
 
                     break;
                 case 2:
                     var s = Physics.OverlapSphere(pos, 1, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
-                    foreach (var item in selection)
-                        if (item)
-                            (item as unit).Chill();
+                    Chillout();
 
                     foreach (var item in s)
                     {
@@ -381,7 +398,7 @@ public class GameManager : MonoBehaviour
                    
                        if((item as unit).TargetToHunt.Count > 0)
                             if (item)
-                                (item as unit).Attack((item as unit).TargetToHunt.Dequeue());
+                                (item as unit).OrderedAttack((item as unit).TargetToHunt.Dequeue());
 
                     }
                         
@@ -391,8 +408,7 @@ public class GameManager : MonoBehaviour
                     break;
                 case 4:
 
-                    foreach (var item in selection)
-                       (item as unit).Chill();
+   Chillout();
                     CancelSelection(1);
                     break;
                 default:
@@ -406,11 +422,16 @@ public class GameManager : MonoBehaviour
 
     void OnMouseHold(Vector3 pos)
     {
-        if (TimeWithMouse > .05f)
+        var h = Screen.height;
+        var w = Screen.width;
+        if (pos.x > w || pos.y < 0) return;
+        if (pos.y> h || pos.y < 0) return;
+        if (TimeWithMouse > .04f )
         {
             MouseReleasePos = pos;
             MUI.BoxSelection(MouseClickPos, MouseReleasePos);
             dragged = true;
+                
         }
 
         TimeWithMouse += Time.fixedDeltaTime;
@@ -418,7 +439,7 @@ public class GameManager : MonoBehaviour
 
     void OnMouseRelease(Vector3 pos)
     {
-
+        LastClick = null;
         if (dragged)
         {
 
@@ -499,7 +520,7 @@ public class GameManager : MonoBehaviour
             {
                 if (y + x * q >= e.Length) break;
                 t[y + x * q] = new Vector3(pos.x - q * dist + q * x * dist, pos.y, pos.z - q * dist + q * y * dist);
-                (e[y + x * q] as unit).MoveTo(t[y + x * q]);
+                if(e[y + x * q] && e[y + x * q] is unit ) (e[y + x * q] as unit).MoveTo(t[y + x * q]);
             }
 
         return t;
@@ -597,9 +618,10 @@ public class GameManager : MonoBehaviour
         {
             item.SetActive(false);
         }
-
+        //why bother doing a switch tbh
         if (x == 2) Cursor3D[1].gameObject.SetActive(true);
-       // if (x > 0) Cursor3D[Mathf.Clamp(x - 1, 0, Cursor3D.Length - 1)].SetActive(true);
+        if (x == 3) Cursor3D[2].gameObject.SetActive(true);
+        // if (x > 0) Cursor3D[Mathf.Clamp(x - 1, 0, Cursor3D.Length - 1)].SetActive(true);
         //UiSelection[0].SetActive(true); // image nad name 
         //UiSelection[2].SetActive(true);
         MUI.Action_sticker.SetBool("SWBC", true);
@@ -691,10 +713,8 @@ public class GameManager : MonoBehaviour
                    if (pos.y < 0 + Boundary) t += -Vector3.up;
  */
 
-            if (x>0) t += Vector3.right;
-            if (x < 0) t += -Vector3.right;
-            if (y > 0) t += Vector3.up;
-            if (y < 0) t += -Vector3.up;
+             t += Vector3.right * x;
+             t +=  Vector3.up * y;
 
 
             return t;
@@ -719,7 +739,7 @@ public class GameManager : MonoBehaviour
     public void Build(int x)
     {
         if (Loser) return;
-        BUI.SetBList(false);
+        //BUI.SetBList(false);
         MUI.EndDescription();
         buildmode = -1;
         ClearHighLight();
@@ -765,17 +785,18 @@ public class GameManager : MonoBehaviour
         x.transform.rotation = rot; //building_highlight.transform.rotation;
         lastrotation = rot;//building_highlight.transform.rotation;
         x.TransferOwner(n);
+   
         x.build(pos, n);
         x.Tier = 0;
         n.Pay(x.costs[0].materials);
 
    
- 
+ /*
         if (_lastbuilding && _lastbuilding is Wall && x is Wall)
         {
             (_lastbuilding as Wall).boundTo = x as Wall;
 
-        }
+        }*/
 
         if (n == owners[0])
         {
@@ -800,8 +821,7 @@ public class GameManager : MonoBehaviour
 
         _lastbuilding = x;
         BUI.SetStartingPoint(x.transform.position);
-        if (_lastbuilding is Wall) Build(j);
-        else if (n == owners[0]) BUI.BuildingSticker.SetBool("SWCB", false);
+        if (n == owners[0]) BUI.BuildingSticker.SetBool("SWCB", false);
 
 
         /*
@@ -879,14 +899,23 @@ public class GameManager : MonoBehaviour
         foreach (var item in unit_UIs)
             item.Reset();
 
+        foreach (var item in owners)
+        {
+            if (item.Name == "Neutral") continue;
+            item.Start();
+            for (int i = 0; i < owners.Length; i++)
+            {
+                if (i == 3) continue;
+                item.modRelation(owners[i], Random.Range(-10, 10));
+            }
+               
 
-        owners[0].Start();
-        owners[1].Start();
 
-        owners[0].modRelation(owners[1], -1);
 
-        musicLauncher = GetComponent<MusicLauncher>();
-        musicLauncher.Miscellanious(owners[0]);
+        }
+
+
+
 
     }
 
@@ -1001,7 +1030,8 @@ public class GameManager : MonoBehaviour
 
                 e.transform.position = n.transform.position + t;
                 e.transform.parent = n.transform;
-                e.transform.position = morePrecision(e.transform.position) + Vector3.up * .5f;
+                e.transform.localScale *= 2;
+                e.transform.position = morePrecision(e.transform.position) + Vector3.up * 1f;
             }
 
             return;

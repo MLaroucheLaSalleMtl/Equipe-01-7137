@@ -136,8 +136,8 @@ public class Owner_AI : MonoBehaviour
                     foreach (var x in owner.Units)
                     {
                         if (item.Building.Count > 0)
-                            x.Attack(item.Building[Random.Range(0, item.Building.Count)]);
-                        else x.Attack(item.Cores[0]);
+                            x.OrderedAttack(item.Building[Random.Range(0, item.Building.Count)]);
+                        else x.OrderedAttack(item.Cores[0]);
                     }
 
                 }

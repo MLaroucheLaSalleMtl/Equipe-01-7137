@@ -1698,6 +1698,7 @@ MonoBehaviour:
   agi: {fileID: 3598109090698866673}
   indicator: {fileID: 1613417756687635507}
   lifeindicator: {fileID: 890450833655109498}
+  TimeToDeploy: 1
   Name: Swordsman
   Speed: 3.26
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
@@ -1714,7 +1715,8 @@ MonoBehaviour:
   - {fileID: 7345006266289018445}
   - {fileID: 8402771141248527728}
   attack: 0.5
-  defense: 0
+  defense: 0.1
+  AtkSpeed: 1
   DetectionRange: 2.36
 --- !u!195 &3598109090698866673
 NavMeshAgent:
@@ -1747,7 +1749,7 @@ SphereCollider:
   m_GameObject: {fileID: 3598109090698866636}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}

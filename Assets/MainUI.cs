@@ -10,7 +10,121 @@ public class MainUI : MonoBehaviour
     public Text[] Txt;
     public GameObject Jobs, attack, cursor;
     public RectTransform BSelection;
-    
+
+    public TechnologyUI[] TUIS;
+    public TechnologyUI currentTUI;
+    public Text ResearchDesc;
+    public SliderTextBox ResearchBar;
+    public GameObject ResearchButton, ResearchWindow;
+    public textBox RelationshipWindow;
+    public Owner Selected;
+
+    public void OpenRelationshipWindow( int x)
+    {
+        OpenRelationshipWindow(GameManager.owners[x]);
+    }
+
+
+    public void OpenRelationshipWindow(Owner x)
+    {
+        Selected = x;
+        RelationshipWindow.gameObject.SetActive(true);
+        RelationshipWindow.Header.text = "Relationship with " + Selected.Name + " at " + GameManager.owners[0].Relation[GameManager.owners[0].Name];
+        RelationshipWindow.Texts[1].text = "Your current relation with " + Selected.Name + " is " + GameManager.owners[0].Relation[GameManager.owners[0].Name]
+            + ". You can trade ressource or lands to augments your relationship. There is the possibility to start a war or stop it depending on your score. ";
+    }
+    public void MakeWar()
+    {
+        //TODO add your logic here
+        Selected.modRelation(GameManager.owners[0], -100);
+    }
+    public void MakePeace()
+    {
+        //TODO add your logic here
+        Selected.modRelation(GameManager.owners[0], 100);
+    }
+    public void CloseRelationWindow()
+    {
+        Selected = null;
+        RelationshipWindow.gameObject.SetActive(false);
+    }
+    public void OpenResearchWinodw (bool z)
+    {
+        if (!Owner.Player.ResearchCenter)
+        {
+            ResearchButton.SetActive(false);
+            ResearchWindow.SetActive(false);
+            return;
+        }
+        ResearchWindow.SetActive(z);
+        UpdateTechUI();
+
+    }
+    public void ShowResearchDESC(TechnologyUI t)
+    {
+        var I = t.Tech;
+        ResearchDesc.text = Technology.ResearchKnownToMankind[I].Description;
+        if(Technology.ResearchKnownToMankind[I].Dependencies.Length > 0)
+        {
+            ResearchDesc.text += "Prerequisites: ";
+            foreach (var item in Technology.ResearchKnownToMankind[I].Dependencies)
+            {
+                ResearchDesc.text += Technology.ResearchKnownToMankind[item].Name + "\n";
+            }
+        }
+        ResearchDesc.text +=
+        "\n\nCost: " + Technology.ResearchKnownToMankind[I].PtsNeed + " RP"
+            + "\nYour current RP/s is " + Owner.Player.GetScientificOutput + " RP/s";
+    }
+    public void SetTech(TechnologyUI T)
+    {
+        Owner.Player.SetTechnology(T.Tech);
+        UpdateTechUI();
+        ResearchBar.gameObject.SetActive(true);
+
+    }
+    public void OnResearchDone(Technology T)
+    {
+        UpdateTechUI();
+        ResearchBar.gameObject.SetActive(false);
+        ResearchBar.slider.value = 0;
+    }
+
+
+    void UpdateTechUI()
+    {
+        currentTUI.gameObject.SetActive(false);
+        if (Owner.Player.CurrentTechnology != null) {
+            currentTUI.SetTech(Owner.Player.CurrentTechnology);
+            ResearchBar.Header.text = Owner.Player.CurrentTechnology.Name;
+            ResearchBar.Texts[1].text = Owner.Player.CurrentTechnology.Name;
+            ResearchBar.slider.minValue = 0;
+            ResearchBar.slider.maxValue = Owner.Player.CurrentTechnology.PtsNeed;
+        }
+        var y = Owner.Player.GetAvaillableTech;
+        foreach (var item in TUIS)       
+           item.gameObject.SetActive(false);       
+        for (int i = 0; i < TUIS.Length && i < y.Length; i++)
+            TUIS[i].SetTech(y[i]);
+
+        
+        ResearchDesc.text = "Select a Tech to research";
+    }
+    private void Start()
+    {
+        Owner.Player.OnAccomplishResearch += OnResearchDone;
+        Owner.Player.OnEntitiesChange += OnPlayerEntitiesChanges;
+        ResearchButton.SetActive(false);
+        ResearchWindow.SetActive(false);
+        RelationshipWindow?.gameObject.SetActive(false);
+    }
+
+    private void OnPlayerEntitiesChanges(entity e)
+    {
+       ResearchButton.SetActive( Owner.Player.ResearchCenter);
+     
+    }
+
     public Text Builder, Merchant, Research,Civilian;
     public Text UnitInfo;
     public textBox Desc, StatsInfo;
@@ -26,13 +140,13 @@ public class MainUI : MonoBehaviour
 
     public void OpenParams(bool x)
     {
-        Params.gameObject.SetActive(true);
-        OpenParams(false);
+        Params.gameObject.SetActive(x);
+        Options.gameObject.SetActive(false);
     }
     public void OpenOptions(bool x)
     {
-        Options.gameObject.SetActive(true);
-        OpenOptions(false);
+        Options.gameObject.SetActive(x);
+        Params.gameObject.SetActive(false);
     }
     public void SetVolume(Slider z)
     {
@@ -63,6 +177,7 @@ public class MainUI : MonoBehaviour
         txt += "Housing Space : " + own.getHousingSpace + "\n";
         txt += "Production Efficiency : " + own.ProductionEfficiency + "\n";
         txt += "Total Population : " + own.totalPopulation + "\n";
+        txt += "Science Rate : " + own.ScienceMod;
 
 
         StatsInfo.Texts[1].text = txt; 
@@ -80,6 +195,7 @@ public class MainUI : MonoBehaviour
 
     private void Update()
     {
+        if (Owner.Player.CurrentTechnology != null) ResearchBar.slider.value = Mathf.Lerp(ResearchBar.slider.value,  Owner.Player.CurrentTechnology.GetCurrentPtsInvest, 5* Time.smoothDeltaTime);
         if (!GameisPaused) {
 
             UpdateDesc();
@@ -248,7 +364,7 @@ public class MainUI : MonoBehaviour
 
     public void AddBuilder(int x) { lastOwner.AllocateBuilder(x); }
     public void AddMerchant(int x) { }
-    public void AddResearch(int x) { }
+    public void AddResearch(int x) { lastOwner.AllocateScientist(x); }
 
 
 

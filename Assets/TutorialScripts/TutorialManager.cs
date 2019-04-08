@@ -11,7 +11,8 @@ public class TutorialManager : MonoBehaviour
 
     public Text Instructions;
 
-    public static TutorialManager instance1;
+
+    private static TutorialManager instance1;
     public static TutorialManager instance2
     {
         get
@@ -48,6 +49,7 @@ public class TutorialManager : MonoBehaviour
         if (CurrentTutorial)
         {
             CurrentTutorial.CheckIfItsHappening();
+            
         }
         
     }
@@ -56,12 +58,13 @@ public class TutorialManager : MonoBehaviour
     public void CompletedTutorial()
     {
         SetNextTutorial(CurrentTutorial.Order + 1);
-    }
 
+    }
+        
     public void SetNextTutorial(int currentOrder)
     {
         CurrentTutorial = GetTutorialByOrder(currentOrder);
-
+        
         if (!CurrentTutorial)
         {
             CompletedAllTutorials();

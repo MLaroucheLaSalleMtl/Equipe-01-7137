@@ -12,19 +12,106 @@ public class Owner
     public Color MainColor;
     public delegate void OnGainHandler(Goods g, Vector3 p);
     public delegate void OnRelationship(Owner n, Owner z, float x);
+    public event Technology.OnResearchHandler OnAccomplishResearch;
     public OnRelationship OnRelationModification;
     public OnGainHandler OnGain;
     public delegate void EntitiesHandler(entity e);
-    public EntitiesHandler onNewEntites, onLostEntites; 
+    public EntitiesHandler onNewEntites, onLostEntites;
+    public event EntitiesHandler OnEntitiesChange; 
     int population = 10;
     public bool BuilderCenter = false, ResearchCenter = false, MerchantCenter = false;
     public int totalPopulation { get { return population + builder + fighter; } }
     public float Gold = 100;
-    int builder = 0, fighter = 0;
+    int builder = 0, fighter = 0,scientist;
+ 
+    public float GetScientificOutput
+    {
+        get
+        {
+            var t = 0f; foreach (var item in Labs)
+                t += item.ResearchPointsPerTick;
+            return t * ScienceMod * (1 + (scientist * t / 100) );
+        }
+    }
+    int MaximumNumberOfscientist
+    {
+        get
+        {
+            var t = 0; foreach (var item in Labs)
+                t += item.MaximumScientist;
+            return t;
+        }
+    }
+    public void OnResearchDone(Technology T)
+    {   
+        Researched.Add(T.ID, T);
+        CurrentTechnology = null;
+        OnAccomplishResearch?.Invoke(T);
+
+    }
+    public Technology[] GetAvaillableTech
+    {
+        get
+        {
+            var e = new List<Technology>();
+
+            foreach (var item in Technology.ResearchKnownToMankind)
+            {
+                if (Researched.ContainsValue(item.Value)) continue;
+                if (CurrentTechnology == item.Value) continue;
+                bool addit = true;               
+                if(item.Value.Dependencies.Length> 0)
+                    foreach (var c in item.Value.Dependencies )
+                        if (!Researched.ContainsKey(c)) addit = false;
+
+                if (addit) e.Add(item.Value);
+
+
+            }
+            return e.ToArray(); ;
+        }
+    }
+    public bool HasResearch(int x)
+    {
+        return Researched.ContainsKey(x);
+    }
+    public void AdvancedResearch(float x)
+    {
+        if (CurrentTechnology == null) return;
+
+        if(Gold > 0)
+        {
+            //each scientist give one extra percent on the yield, but cost 1 gold per tick
+            x += scientist * x / 100;
+            Pay(scientist);
+        }
+     
+        
+        CurrentTechnology.Research(x * ScienceMod);
+    }
+ 
+
+    public void SetTechnology(int T)
+    {
+        foreach (var item in Technology.ResearchKnownToMankind[T].Dependencies)
+        {
+            if (!Researched.ContainsKey(item))
+            {
+                if (IsPlayer) GameManager.ShowMessage("You can't research This yet");
+                return;
+            } 
+        }
+        CurrentTechnology = Technology.ResearchKnownToMankind[T];
+    }
+    public Technology CurrentTechnology;
     public Dictionary<string, int> Relation = new Dictionary<string, int>();
+  
+    public Dictionary<int, Technology> Researched = new Dictionary<int, Technology>();
 
-
-
+    public  bool IsPlayer
+    {
+        get { return this == GameManager.owners[0]; }
+    }
 
  
 
@@ -45,7 +132,7 @@ public class Owner
     public Owner_AI ai;
     //Some population initiated coitus more often than other
     float baseFertilityRate = 1.00f;
-    float fertilityMod = 1f, EconomyMod = 1f;
+   public float fertilityMod = 1f, EconomyMod = 1f, ScienceMod = 1f, RelationMod = 1f;
     public float FertilityRate { get { return baseFertilityRate * fertilityMod; } }
 
     // instantiate factions
@@ -56,8 +143,10 @@ public class Owner
     
      public void Start()
     {
-        Gold += 100;
+       GainGold(100);
         GenFactions();
+        foreach (var item in Technology.ResearchKnownToMankind)
+            item.Value.OnFinish += OnResearchDone;
     }
 
     public void GenBorder()
@@ -121,10 +210,6 @@ public class Owner
  public struct multiplier
     {
         public float fertility, economy, storageEfficiency;
-    //    public Dictionary<entity.DamageType, SoliderMultiplier> DamageTypesMod = new Dictionary<entity.DamageType, SoliderMultiplier>();
-
-        
-      
 
         //One For Each type A B C, There will also be one for each unit
         public struct SoliderMultiplier
@@ -212,6 +297,10 @@ public class Owner
 
 
     }
+    public void Pay(float x)
+    {
+        Gold -= x;
+    }
     //Two similar function, we could add a function for those type of stuff
     public int AddFighter(int m)
     {
@@ -257,6 +346,39 @@ public class Owner
         
         return builder;
     }
+
+    public int AllocateScientist(int m)
+    {
+        if (m == 0) return scientist;
+        if (m >= population)
+        {
+     
+                scientist += population;
+                population = 0;
+ 
+        }
+        else if (m < 0 && Mathf.Abs(m) >= scientist)
+        {
+            population += scientist;
+            scientist = 0;
+        }
+        else
+        {
+            if(scientist + m <= MaximumNumberOfscientist)
+            {
+                population -= m;
+                scientist += m;
+            }
+            else
+            {
+                scientist = MaximumNumberOfscientist;
+                population -= (MaximumNumberOfscientist - scientist);
+
+            }
+      
+        }
+        return scientist;
+    }
     public int getHousingSpace { get
         {
             var x = 0f;
@@ -298,6 +420,7 @@ public class Owner
     public List<building> Building = new List<building>();
     public List<CityCore> Cores = new List<CityCore>();
     public List<Storage> Storages = new List<Storage>();
+    public List<Laboratory> Labs = new List<Laboratory>();
     public bool Settled = false;
     public List<entity> GetEntities
     {
@@ -325,11 +448,15 @@ public class Owner
         }
         else if (e is Storage)
             Storages.Add(e as Storage);
+        else if (e is Laboratory)    
+            Labs.Add((e as Laboratory));       
         else if (e is building)
             Building.Add(e as building);
-        else if (e is unit) {(e as unit).ChangeColor(MainColor); Units.Add(e as unit); } 
+        else if (e is unit) {(e as unit).ChangeColor(MainColor); Units.Add(e as unit); }
+    
 
         _getbuildings = GetBuildings();
+        OnEntitiesChange?.Invoke(e);
     }
     void OnEntitiesLost(entity e)
     {
@@ -337,7 +464,13 @@ public class Owner
         else if (e is Storage) Storages.Remove(e as Storage);
         else if (e is building) Building.Remove(e as building);
         else if (e is unit) Units.Remove(e as unit);
+        else if (e is Laboratory)
+            Labs.Remove((e as Laboratory));
+
+
+
         _getbuildings = GetBuildings();
+        OnEntitiesChange?.Invoke(e);
     }
     System.Random randy = new System.Random();
     public Owner()
@@ -345,7 +478,12 @@ public class Owner
 
         //Random.Range(.6f, 1.5f);
         baseFertilityRate = randy.Next(50,150)/100;
-            
+        ScienceMod  = randy.Next(50, 150) / 100;
+        fertilityMod = randy.Next(50, 150) / 100;
+        EconomyMod = randy.Next(50, 150) / 100; 
+        RelationMod = randy.Next(50, 250) / 100;
+
+        if (ScienceMod < 0) { ScienceMod = .5f; System.Console.WriteLine("What the fuck!"); }
         onLostEntites += OnEntitiesLost;
         onNewEntites += OnEntitesReceived;
     }
@@ -393,14 +531,18 @@ public class Owner
  
         foreach (var item in Cores)
             item.interact(item);
- 
+        foreach (var item in Labs)
+            item.interact(item);
     }
     private int populationChange;
     public int getPopulationGrowth
     {
         get { return populationChange; }
     }
-    
+    public static Owner Player
+    {
+        get { return GameManager.owners[0]; }
+    }
 
     public void GainGold(float g)
     {
@@ -413,12 +555,20 @@ public class Owner
     {
 
         var x = new List<building>();
+        BuilderCenter = false;
+        ResearchCenter = Labs.Count > 0;
         for (int i = 0; i < Building.Count; i++)
+        {
             x.Add(Building[i]);
+            if (Building[i] is BuilderHouse) BuilderCenter = true; 
+        }
+     
 
         for (int i = 0; i < Storages.Count; i++)
             x.Add(Storages[i]);
-
+        for (int i = 0; i < Labs.Count; i++)
+            x.Add(Labs[i]);
+    
         return x;
     }
     float KidPerPerson

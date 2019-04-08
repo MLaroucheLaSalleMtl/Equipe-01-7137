@@ -9,29 +9,39 @@ public class unit : entity
     [Header("DEBUG")]
     public int DEBUG_OWNER = -1;
     [SerializeField]
-     NavMeshAgent agi;
+     protected NavMeshAgent agi;
     [SerializeField]
     GameObject indicator;
     [SerializeField]
     Renderer lifeindicator;
 
+    public float TimeToDeploy = 1;
     private void Start()
     {
         if(onCreated)
                 AudioSource.PlayClipAtPoint(onCreated, transform.position);
         updateLifeIndiactor();
+
+        minimumdistance = AdditionalDist + .35f + agi.radius + agi.stoppingDistance;
     }
     public bool HasIssuesCommand
     {
         get { return Ordered; }
     }
-    bool Ordered = false;
-    public override void Death()
+    protected bool Ordered = false;
+    public override void Death(bool f = false)
     {
         if(Oof)
         AudioSource.PlayClipAtPoint(Oof, transform.position);
         StopAllCoroutines();
-        base.Death();
+        base.Death(false);
+        Destroy(agi);
+        var r = GetComponent<Rigidbody>();
+        lifeindicator.gameObject.SetActive(false);
+        r.isKinematic = false;
+        r.useGravity = true;
+        r.AddExplosionForce(400,(Random.insideUnitSphere + transform.position),20);
+        Destroy(gameObject,3);
     }
     void updateLifeIndiactor()
     {
@@ -58,8 +68,8 @@ public class unit : entity
     public AudioClip onCreated;
    protected Animator anim;
     [SerializeField]
-    MeshRenderer[] rendies;
-    protected virtual float GetMovingSpeed
+    protected MeshRenderer[] rendies;
+    public virtual float GetMovingSpeed
     {
         get { return Speed * MainUI.SpeedMult; }
     } 
@@ -69,7 +79,8 @@ public class unit : entity
     }
     [SerializeField]
       float attack = 5;
-     float defense = 5;
+    [SerializeField]
+    float defense = 5;
 
     public virtual float getDefense
     {
@@ -79,6 +90,11 @@ public class unit : entity
     {
         get { return DetectionRange; }
     }
+    public virtual float GetAttackSpeed
+    {
+        get { return AtkSpeed; }
+    }
+    public float AtkSpeed = 1;
     public float DetectionRange = 1;
     private void OnDrawGizmosSelected()
     {
@@ -109,7 +125,7 @@ public class unit : entity
         if (_delay != null) StopCoroutine(_delay);
         _delay = DelayClose();
         StartCoroutine(_delay);
-        if (infotext) infotext.text = Name + " Type " + Type.ToString() + "\n" + "HP:" + Hp + " /" + maximumHp + " lvl:" + (getAttack + defense + GetMovingSpeed).ToString("0.0"); 
+        if (infotext) infotext.text = Name + " Type " + Type.ToString() + "\n" + "HP:" + Hp + " /" + maximumHp + " lvl:" + (getAttack + getDefense + GetMovingSpeed).ToString("0.0"); 
     }
    
     protected override void OnMouseExit()
@@ -128,47 +144,82 @@ public class unit : entity
     public Queue<entity> TargetToHunt = new Queue<entity>();
 
     protected float aitimer = 0;
-    public virtual void AI()
+    public static entity[] GetAlliesAtPosition(Vector3 pos, float size, Owner x)
+    {
+        var ee = new List<entity>();
+        var s = Physics.OverlapSphere(pos, size, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
+
+        foreach (var item in s)
+        {
+            if (item.GetComponent<entity>())
+            {
+                var y = item.GetComponent<entity>();
+                if (y.GetOwner == x) ee.Add(y);
+            }
+        }
+
+        return ee.ToArray();
+        }
+
+    public void Attack(entity z)
+    {
+        if (!this) return;
+        agi.isStopped = false;
+        agi.SetDestination(z.transform.position);
+        _attack(z); 
+    }
+public virtual void AI()
     {
         aitimer += Time.fixedDeltaTime;
-
      
- 
         if (aitimer > .3f)
         {
-            if (last_agressor) { lastatk = last_agressor; last_agressor = null; return; }
-            if (!lastatk && TargetToHunt.Count > 0)
+            if (last_agressor)
+            { target = last_agressor; last_agressor = null; OrderedAttack(target); aitimer = 0; return; }
+            if (!target && TargetToHunt.Count > 0)
             {
-                lastatk = TargetToHunt.Dequeue();
+           
+                target = TargetToHunt.Dequeue();
+                Attack(target);
+                aitimer = 0;
+                return;
             }
-            Attack(lastatk);
-
-            if (!lastatk) return;
+           
+            if (Ordered) { aitimer = 0; return; }
+            float dist = GetDetectionRange;
             var s = Physics.OverlapSphere(transform.position, GetDetectionRange, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
             for (int i = s.Length - 1; i >= 0; i--)
             {
 
                 if (s[i].gameObject.GetComponent<entity>())
                 {
-
-                   
-
-                        var sauce = s[i].gameObject.GetComponent<entity>();
+                    var sauce = s[i].gameObject.GetComponent<entity>();
 
                     //ShortCut
-                    if (GetOwner.Relation.ContainsKey(sauce.GetOwner.Name) && GetOwner.Relation[sauce.GetOwner.Name] <= -10)
-                    {
-                        Attack(sauce);
-                        return;
-                    }
-
+ 
                     if (!sauce) continue;      
                     if (GetOwner == null && sauce.GetOwner == null) continue;
                     if (sauce.GetOwner == GetOwner) continue;
                     if ((sauce.gameObject == this.gameObject))
                         continue;
                     if (GetOwner.Relation.ContainsKey(sauce.GetOwner.Name) && GetOwner.Relation[sauce.GetOwner.Name] > -10) continue;
-                    Attack(sauce);
+
+                    if (Vector3.Distance(transform.position, sauce.transform.position) < dist)
+                    {
+                        dist = Vector3.Distance(transform.position, sauce.transform.position);
+                        agi.SetDestination(sauce.transform.position);
+                        agi.isStopped = false;
+                        _attack(sauce);
+
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+
+
+                    aitimer = 0;
                     //Returning right now will improve performance
                     return;
 
@@ -181,10 +232,16 @@ public class unit : entity
         //Default Defense Mode
   
     }
- 
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(target)
+        if (other.gameObject == target.gameObject) _attack(target);
+    }
+
     Army _army;
-    entity lastatk;
-    public void Attack(entity e)
+    protected entity target;
+    public void OrderedAttack(entity e)
     {
         if(!e)
         {
@@ -215,6 +272,7 @@ public class unit : entity
         yield break;
     }
     float minimumdistance = 0;
+    public float AdditionalDist = 0;
     IEnumerator GoThere(Vector3 pos)
     {
         if(!agi || !agi.isOnNavMesh)
@@ -227,7 +285,7 @@ public class unit : entity
 
         agi.SetDestination(pos);
         agi.isStopped = false;
-        minimumdistance = .35f + agi.radius + agi.stoppingDistance;
+        minimumdistance = AdditionalDist +  .35f + agi.radius + agi.stoppingDistance;
         yield return new WaitForFixedUpdate();
         while (agi.remainingDistance > (minimumdistance + .1f))
         {
@@ -303,36 +361,34 @@ public class unit : entity
         Ordered = true;
         yield return StartCoroutine(GoThere(x.transform.position));
 
-        while (x && x.Hp > 0  )
-        {    
-            if(Vector3.Distance(transform.position,x.transform.position)> (minimumdistance  ))
-            { 
-                yield return StartCoroutine(GoThere(x ));
-                yield return null;
-            }
-            else
-            {
-               
-                
-                agi.isStopped = true;
-                yield return new WaitForSeconds(1);
-                //_attack(x);
-            }
-          
-        }
-        agi.isStopped = true;
-        currentAttackRoutine = null;
+         while (x && x.Hp > 0  )
+         {    
+             if(Vector3.Distance(transform.position,x.transform.position)> (minimumdistance  ))
+             { 
+                 yield return StartCoroutine(GoThere(x ));
+                 yield return null;
+             }
+             else
+             {
+                 agi.isStopped = true;
+                 _attack(x);
+             }
+            yield return null;
+         }
+         agi.isStopped = true;
+         currentAttackRoutine = null;
 
-        MoveTo(previousTarget);
+         MoveTo(previousTarget);
         Ordered = false;
+        currentAttackRoutine = null;
         yield  break;
     }
 
     protected override void OnKill(entity z)
     {
         base.OnKill(z);
-        lastatk = null;
-     //   Chill();
+        if (z == target) target = null;
+    Chill();
     }
 
     public override void TakeDamage(float t, entity e, DamageType p = DamageType.Null)
@@ -345,28 +401,34 @@ public class unit : entity
     }
     public override void TakeDamage(float t, DamageType p = DamageType.Null)
     {
-        base.TakeDamage(t, p);
+        base.TakeDamage(t - getDefense, p);
         updateLifeIndiactor();
         anim.SetTrigger("damaged");
         if (Hurt)
             AudioSource.PlayClipAtPoint(Hurt, transform.position);
     
     }
-    void _attack(entity e)
+    protected virtual void _attack(entity e)
     {
+
+
+        if (attackTimer < GetAttackSpeed) return;
+        if (Vector3.Distance(transform.position, e.transform.position) > minimumdistance) return;
+
         if (e)
         {
             if (anim) anim.SetTrigger(Type.ToString());
-            print(this.ToString() + " attacks " + e.name + " for " + getAttack + " damages");
+            print(this.ToString() + " attacks " + e.name + " for " + getAttack  + " damages");
             transform.LookAt(e.gameObject.transform.position, Vector3.up);
             e.TakeDamage(getAttack,this);
 
         }
-        else
-        {
-            MoveTo(previousTarget);
-        }
-
+        else  MoveTo(previousTarget);
+           
+    
+        
+       
+        attackTimer = 0;
     }
     private void Awake()
     {
@@ -385,27 +447,24 @@ public class unit : entity
         previousTarget = transform.position;
     }
 
-    float timer = 0;
-    private void FixedUpdate()
-    {
+    float attackTimer = 0;
 
-        agi.speed = GetMovingSpeed;
-        timer += Time.fixedDeltaTime;
-        if(timer > 1f)
-        {
-            //Let separate attack from motion
-            Attack(lastatk);
-            if (lastatk && Vector3.Distance(transform.position,lastatk.transform.position)<= minimumdistance)
-                _attack(lastatk);
-            timer = 0;
-        }
+    public virtual void FixedUpdate()
+    {
+        if(Hp >= 0)
+            agi.speed = GetMovingSpeed;
+
+      
+        attackTimer += Time.fixedDeltaTime;
     }
+
 
 
     public void Chill ()
     {
+        Ordered = false;
         last_agressor = null;
-        lastatk = null;
+        target = null;
         if (!this) return;
         if (agi)
         {
@@ -420,12 +479,12 @@ public class unit : entity
 
     public void MoveTo(Vector3 v)
     {
+        agi.isStopped = true;
         Ordered = true;
         previousTarget = v;
         if (!agi) return;
         agi.SetDestination(v);
         agi.isStopped = false;
-        if (gameObject != null)
             if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);
         StartCoroutine(reachedPosition(v));
       

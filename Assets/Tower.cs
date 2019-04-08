@@ -54,7 +54,7 @@ public class Tower : fortification
         Destroy(e.gameObject);
         yield break;
     }
-    Collider[] _col = new Collider[500];
+    Collider[] _col = new Collider[5000];
     float aitimer = 0;
 
  
