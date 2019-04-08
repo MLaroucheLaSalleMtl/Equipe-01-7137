@@ -220,6 +220,11 @@ public class BorderCalculation
                     smallest = dist;
                     index = i;
                 }
+                else if(dist == smallest)
+                {
+                    node.
+                    float furtherFromRoot = Vector3.Distance(speculation, node.transform.position);
+                }
             }
 
         }

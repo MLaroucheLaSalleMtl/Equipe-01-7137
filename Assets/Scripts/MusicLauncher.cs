@@ -6,64 +6,81 @@ using UnityEngine;
 public class MusicLauncher:MonoBehaviour
 {
     public AudioSource audioSource;
+    public AudioSource AudioSource2;
     public grumbleAMP grumbleAMP;
     public AudioClip losingW, losingB, lost, warW, warW2, warB, warB2, misc, miscNegotiations, mainMenu, pictMainTheme;
 
     public void Losing(Owner owner)
     {
         if (owner.Culture == "civilised")
-            audioSource.PlayOneShot(losingW);
+            InterSectionCheck(losingW);
         else
-            audioSource.PlayOneShot(losingB);
+            InterSectionCheck(losingB);
     }
     public void Lost()
     {
-            
-        audioSource.PlayOneShot(lost);
+
+        InterSectionCheck(lost);
             
     }
     public void war(Owner owner)
     {
         if (owner.Culture == "civilised")
-            audioSource.PlayOneShot(warW);
+            InterSectionCheck(warW);
         else
-            audioSource.PlayOneShot(warB);
+            InterSectionCheck(warB);
     }
     public void warContinuation(Owner owner)
     {
         if (owner.Culture == "civilised")
-            audioSource.PlayOneShot(warW2);
+            InterSectionCheck(warW2);
         else
-            audioSource.PlayOneShot(warB2);
+            InterSectionCheck(warB2);
     }
     public void Negotiations()
     {
-            
-        audioSource.PlayOneShot(miscNegotiations);
+
+        InterSectionCheck(miscNegotiations);
           
     }
     public void Miscellanious(Owner owner)
     {
-           
-        audioSource.PlayOneShot(misc);
+
+        InterSectionCheck(misc);
         if (owner.Culture == "barbarian")
         {
-            audioSource.PlayOneShot(pictMainTheme);
+            InterSectionCheck(pictMainTheme);
 
         }
            
     }
+         
 
-
-    private void Update()
+   private void InterSectionCheck (AudioClip audioClip)
     {
-        if (!audioSource.isPlaying)
+        if (audioSource.isPlaying)
         {
-            //need logic to know player owner
-            //if (Owner == isAtWar)
-            //{
-            //    warContinuation(owner)
-            //}
+            AudioSource2.volume = 0;
+            AudioSource2.PlayOneShot(audioClip);
+            while (AudioSource2.volume < .6f)
+            {
+                AudioSource2.volume += 0.1f;
+                audioSource.volume -= 0.1f;
+                System.Threading.Thread.Sleep(1000);
+            }
+            audioSource.Stop();
+        }
+        else
+        {
+            audioSource.volume = 0;
+            audioSource.PlayOneShot(audioClip);
+            while (audioSource.volume < .6f)
+            {
+                audioSource.volume += 0.1f;
+                AudioSource2.volume -= 0.1f;
+                System.Threading.Thread.Sleep(1000);
+            }
+            AudioSource2.Stop();
         }
     }
 
