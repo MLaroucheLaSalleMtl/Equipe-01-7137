@@ -115,14 +115,9 @@ public class GameManager : MonoBehaviour
 
         _pup.SetText("You are now peacen't with " + z.Name + "!");
         AtWarWith.Add(z.Name, true);
-        if (z.Culture == "civilised")
-        {
-            audioSource.PlayOneShot(wessexWar);
-        }
-        else
-        {
-            audioSource.PlayOneShot(pictWar);
-        }
+       
+        musicLauncher.war(z);
+        
     }
 
     public void OnOwnerGain(Goods g, Vector3 pos)
