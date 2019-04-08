@@ -20,8 +20,6 @@ public class Owner_AI : MonoBehaviour
         StartCoroutine(Act());
         owner.ai = this;
 
-        owner.modRelation(GameManager.owners[0], -100);
-        owner.modRelation(GameManager.owners[0], -100);
     }
 
     int garisson = 0;
