@@ -29,6 +29,7 @@ public class Owner
         {
             var t = 0f; foreach (var item in Labs)
                 t += item.ResearchPointsPerTick;
+            if (HasResearch(2)) t *= 1.25f;
             return t * ScienceMod * (1 + (scientist * t / 100) );
         }
     }
@@ -84,9 +85,9 @@ public class Owner
             x += scientist * x / 100;
             Pay(scientist);
         }
-     
-        
-        CurrentTechnology.Research(x * ScienceMod);
+
+        if (HasResearch(2)) x *= 1.25f;
+            CurrentTechnology.Research(x * ScienceMod);
     }
  
 
@@ -122,7 +123,7 @@ public class Owner
              Relation[x.Name]+= z;
         else Relation.Add(x.Name, z);
 
-        if (Relation[x.Name] <= -10 && !OnBadTerm.Contains(x)) OnBadTerm.Add(x);
+        if (Relation[x.Name] <= -50 && !OnBadTerm.Contains(x)) OnBadTerm.Add(x);
         else if (Relation[x.Name] > 50 && !OnGoodTerm.Contains(x)) OnGoodTerm.Add(x);
         OnRelationModification?.Invoke(this, x, z);
     }

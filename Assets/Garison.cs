@@ -186,8 +186,18 @@ public class Garison : building
         tbox.Texts[1].text = description;
         CustomizeButton.gameObject.SetActive(CanCreateCustomizable);
         OpenCustomization(false);
-        TakeDamage(5);
+        SetButtons();
+      
 
+    }
+    public virtual void SetButtons()
+    {
+        foreach (var item in buttons)
+            item?.SetActive(true);
+
+
+        if (!GetOwner.HasResearch(5)) buttons[1].gameObject.SetActive(false);
+        if (!GetOwner.HasResearch(8)) buttons[3].gameObject.SetActive(false);
     }
     public override void interact(entity e, float efficiency = 0)
     {
@@ -200,6 +210,7 @@ public class Garison : building
         if(UnitsToDeploy.Count > 0)
         {
             timer += Time.fixedDeltaTime;
+            if (GetOwner.HasResearch(3)) timer += Time.fixedDeltaTime * .15f;
             if (timer > UnitsToDeploy.Peek().GetTimeToDeploy)
             {
 

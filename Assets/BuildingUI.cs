@@ -19,7 +19,14 @@ public class BuildingUI : MonoBehaviour
     public void SetBList(bool x)
     {
         BList.SetActive(x);
+        foreach (var item in BlistButton)
+            item?.SetActive(true);
+
+        if (!Owner.Player.HasResearch(11)) BlistButton[8].SetActive(false);
+      
+
     }
+    public GameObject[] BlistButton;
     [HideInInspector]
     public static LayerMask _blayer;
 

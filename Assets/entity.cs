@@ -49,7 +49,11 @@ public class entity : MonoBehaviour
     protected node currentNode;
     public float GetMaxmimumHP
     {
-        get { return maximumHp; }
+        get {
+            var bonus = 1f;
+            if (GetOwner.HasResearch(10))
+                bonus += .25f;
+            return maximumHp * bonus; }
     }
     protected float maximumHp = 1;
     [SerializeField]

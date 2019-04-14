@@ -14,6 +14,7 @@ public class unit : entity
     GameObject indicator;
     [SerializeField]
     Renderer lifeindicator;
+    public bool Barbarian = false;
 
     public float TimeToDeploy = 1;
     private void Start()
@@ -75,7 +76,12 @@ public class unit : entity
     } 
     public virtual float getAttack
     {
-        get { return attack; }
+        get {
+
+            float bonus = 1;
+            if (GetOwner.HasResearch(7))
+                bonus += .25f;
+            return attack * bonus; }
     }
     [SerializeField]
       float attack = 5;
@@ -92,7 +98,14 @@ public class unit : entity
     }
     public virtual float GetAttackSpeed
     {
-        get { return AtkSpeed; }
+        get {
+            if (Barbarian && Hp > 0)
+            {
+                var t = Mathf.Clamp((GetMaxmimumHP / Hp) * AtkSpeed, .05f, AtkSpeed);
+                return t;
+            }
+
+            return AtkSpeed; }
     }
     public float AtkSpeed = 1;
     public float DetectionRange = 1;
