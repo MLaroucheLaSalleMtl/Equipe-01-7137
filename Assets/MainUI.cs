@@ -68,7 +68,7 @@ public class MainUI : MonoBehaviour
         ResearchDesc.text = Technology.ResearchKnownToMankind[I].Description;
         if(Technology.ResearchKnownToMankind[I].Dependencies.Length > 0)
         {
-            ResearchDesc.text += "Prerequisites: ";
+            ResearchDesc.text += "\nPrerequisites: ";
             foreach (var item in Technology.ResearchKnownToMankind[I].Dependencies)
             {
                 ResearchDesc.text += Technology.ResearchKnownToMankind[item].Name + "\n";
@@ -85,9 +85,7 @@ public class MainUI : MonoBehaviour
        
         UpdateTechUI();
         ResearchBar?.gameObject.SetActive(true);
-
-   
-
+         
     }
     public void OnResearchDone(Technology T)
     {
@@ -191,8 +189,8 @@ public class MainUI : MonoBehaviour
         txt += "Housing Space : " + own.getHousingSpace + "\n";
         txt += "Production Efficiency : " + own.ProductionEfficiency + "\n";
         txt += "Total Population : " + own.totalPopulation + "\n";
-        txt += "Science Rate : " + own.ScienceMod;
-
+        txt += "Science Rate : " + own.ScienceMod + "\n"; ;
+        txt += "Economics Rate : " + own.EconomyMod + "\n"; ;
 
         StatsInfo.Texts[1].text = txt; 
     }
@@ -206,16 +204,17 @@ public class MainUI : MonoBehaviour
 
 
     }
+ 
     private void LateUpdate()
     {
-        if (ResearchWindow.activeSelf)
-        {
-            UpdateTechUI();
-        }
+ 
+ 
     }
     private void Update()
     {
-        if (Owner.Player.CurrentTechnology != null && ResearchBar) ResearchBar.slider.value = Mathf.Lerp(ResearchBar.slider.value,  Owner.Player.CurrentTechnology.GetCurrentPtsInvest, 5* Time.smoothDeltaTime);
+        if (Owner.Player.CurrentTechnology != null  )
+     
+            ResearchBar.slider.value = Mathf.Lerp(ResearchBar.slider.value, Owner.Player.CurrentTechnology.GetCurrentPtsInvest, 5 * Time.smoothDeltaTime); 
         if (!GameisPaused) {
 
             UpdateDesc();

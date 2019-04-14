@@ -30538,7 +30538,7 @@ PrefabInstance:
     - target: {fileID: 3551305223512650620, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
       propertyPath: Tech
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3551305223512650611, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
@@ -30578,9 +30578,9 @@ PrefabInstance:
     - target: {fileID: 3551305225488448653, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
       propertyPath: m_Text
-      value: 'How To Read
+      value: 'How To count
 
-        Take Infinitys to research.'
+        Take 176.0347s to research.'
       objectReference: {fileID: 0}
     - target: {fileID: 3551305223788208226, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
@@ -34626,7 +34626,7 @@ PrefabInstance:
       propertyPath: m_Text
       value: 'Stone work
 
-        Take Infinitys to research.'
+        Take 176.0347s to research.'
       objectReference: {fileID: 0}
     - target: {fileID: 3551305223788208226, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
@@ -35743,7 +35743,7 @@ PrefabInstance:
       propertyPath: m_Text
       value: 'Stone work
 
-        Take 30s to research.'
+        Take 39.7712s to research.'
       objectReference: {fileID: 0}
     - target: {fileID: 3551305223788208226, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
@@ -40125,7 +40125,7 @@ PrefabInstance:
     - target: {fileID: 3551305223512650620, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
       propertyPath: Tech
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3551305223512650611, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
@@ -40135,9 +40135,9 @@ PrefabInstance:
     - target: {fileID: 3551305225488448653, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
       propertyPath: m_Text
-      value: 'How To count
+      value: 'How To Read
 
-        Take Infinitys to research.'
+        Take 1173.565s to research.'
       objectReference: {fileID: 0}
     - target: {fileID: 3551305223788208226, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
@@ -41973,6 +41973,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3551305223512650620, guid: a9b3529499b82544793455e06620b6c8,
+        type: 3}
+      propertyPath: Tech
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 3551305223512650611, guid: a9b3529499b82544793455e06620b6c8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -42008,6 +42013,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
       objectReference: {fileID: 391721169216685436}
+    - target: {fileID: 3551305225488448653, guid: a9b3529499b82544793455e06620b6c8,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Nature
+
+        Take 78.77394s to research.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 3551305223788208226, guid: a9b3529499b82544793455e06620b6c8,
+        type: 3}
+      propertyPath: m_Text
+      value: N
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9b3529499b82544793455e06620b6c8, type: 3}
 --- !u!224 &391721169216685439 stripped

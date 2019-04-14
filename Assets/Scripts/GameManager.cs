@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
     public GameObject NodeRendererPrefab;
-    public GameObject healingPrefab;
+    public GameObject healingPrefab,DivnityPrefab;
 
     Camera _main;
 
@@ -132,7 +132,12 @@ public class GameManager : MonoBehaviour
         if (e)
             StartCoroutine(popup(e));
     }
-
+    public void OnBoost(Vector3 pos)
+    {
+        var e = Instantiate(DivnityPrefab, pos, Quaternion.identity);
+        if (e)
+            StartCoroutine(popup(e));
+    }
     Dictionary<string, bool> AtWarWith = new Dictionary<string, bool>();
     public void OnPlayerRelationshipChanged(Owner p1, Owner p2, float val)
     {

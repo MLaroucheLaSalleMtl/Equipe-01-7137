@@ -3461,7 +3461,7 @@ MonoBehaviour:
   defense: 0
   AtkSpeed: 0.48
   DetectionRange: 1.55
-  AdditionalDist: 0
+  AdditionalDist: 0.2
 --- !u!195 &5516078772422536298
 NavMeshAgent:
   m_ObjectHideFlags: 0

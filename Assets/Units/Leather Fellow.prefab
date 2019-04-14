@@ -926,8 +926,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1917185760396600633}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.00017792, y: 0.10477002, z: 0.02409}
+  m_LocalScale: {x: 1.19, y: 1.19, z: 1.19}
   m_Children:
   - {fileID: 5516078774436349652}
   - {fileID: 5516078772675661454}
@@ -3668,15 +3668,15 @@ MonoBehaviour:
   Inventory: []
   info: {fileID: 8978350081012460925}
   infotext: {fileID: 0}
-  ID: 0
+  ID: 5
   DEBUG_OWNER: 0
   agi: {fileID: 5516078772422536298}
   indicator: {fileID: 7262807572265487372}
   lifeindicator: {fileID: 7907236293309100603}
   Barbarian: 1
   TimeToDeploy: 5
-  Name: Clubber
-  Speed: 4.8
+  Name: Barbarian
+  Speed: 4.41
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
   Hurt: {fileID: 8300000, guid: 145fe60071025e246974696fbfb1bfb2, type: 3}
   onCreated: {fileID: 0}
@@ -3694,7 +3694,7 @@ MonoBehaviour:
   defense: 0
   AtkSpeed: 0.45
   DetectionRange: 1.55
-  AdditionalDist: 0
+  AdditionalDist: 0.2
 --- !u!195 &5516078772422536298
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -4420,8 +4420,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6741321907623166399}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.161, y: 0.217, z: -0.03491211}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.19178, y: 0.363, z: -0.017476}
+  m_LocalScale: {x: 1.19, y: 1.19, z: 1.19}
   m_Children:
   - {fileID: 4102005392407984840}
   - {fileID: 8713929169063830795}

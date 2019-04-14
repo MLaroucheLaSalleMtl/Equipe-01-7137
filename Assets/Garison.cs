@@ -180,6 +180,7 @@ public class Garison : building
     
     public override void OpenContextMenu()
     {
+        CanCreateCustomizable = GetOwner.HasResearch(18);
         base.OpenContextMenu();
         tbox.gameObject.SetActive(true);
         tbox.Header.text = "Garisson at" + transform.position.ToString();

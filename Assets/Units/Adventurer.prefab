@@ -218,6 +218,7 @@ MonoBehaviour:
   agi: {fileID: 163038239304315459}
   indicator: {fileID: 2722484985198070145}
   lifeindicator: {fileID: 4609349680928312008}
+  Barbarian: 0
   TimeToDeploy: 1
   Name: Aventurer
   Speed: 2
@@ -238,6 +239,7 @@ MonoBehaviour:
   defense: 0
   AtkSpeed: 1
   DetectionRange: 1
+  AdditionalDist: 0.4
   Experience: 1
   level: 0
   BaseEXPNeed: 5

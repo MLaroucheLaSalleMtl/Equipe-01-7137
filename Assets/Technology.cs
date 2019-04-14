@@ -11,21 +11,21 @@ public class Technology
           {numb,new Technology(200,new int[1]{ 0},"Arithmetic","Advanced Math, so you can barter. +20% Gold production" ) },//c
            { numb,new Technology(200,new int[0],"How To Read","Knowing how to read is vital for any civilization. Science Production +25%" ) },//c
             { numb,new Technology(300,new int[2]{1,2 },"Laws","A set of rules is crucial for any civilization. Units are produced 15% faster" ) },//c
-        { numb,new Technology(30,new int[]{},"Stone work","There is suddenly more use for our sharp rocks." ) }, 
+        { numb,new Technology(30,new int[]{},"Stone work","There is suddenly more use for our sharp rocks." ) }, //c
                { numb,new Technology(80,new int[]{4},"Lancer","An defensive Units , slower than most but make an exellent guard" ) }, //c
              { numb,new Technology(80,new int[]{2,4},"Sun Dials","The knowledge of Time is in your hands! Gatherers are 20% faster" ) },//c
   { numb,new Technology(290,new int[]{5},"Grinder","Augments the damage dealt by 25%." ) },//c
     { numb,new Technology(190,new int[]{17},"Barbarian","Unlocks the barbarian. A unit that deals more damage the less health it has." ) }, //c
-    { numb,new Technology(110,new int[]{2},"Nature","Why we shouldn't eat those herb 101" ) },//9
+    { numb,new Technology(110,new int[]{2},"Nature","Why we shouldn't eat those herb 101" ) },//9 //c
      { numb,new Technology(40,new int[]{9},"Biology","Gain insight on how the human body works. +25% HP" ) },//c
         { numb,new Technology(200,new int[]{1,4},"Engineering","How to build efficiently. Unlock Engie House" ) },//c
                 { numb,new Technology(70,new int[]{1,2},"Economics","How to make more money. + 50% Gold Production" ) },//c
-                { numb,new Technology(600,new int[]{3,9,6},"Religion","Give prayers to the lost. Unlocks the Church" ) },
-                { numb,new Technology(200,new int[]{11,10},"Medecine","Unlocks the Doctor. Unit that heals other nearby units" ) },//14
+                { numb,new Technology(600,new int[]{3,9,6},"Religion","Give prayers to the lost. Unlocks the Church" ) },//c
+                { numb,new Technology(200,new int[]{11,10},"Medecine","Unlocks the Doctor. Unit that heals other nearby units" ) },//14 //c
                 { numb,new Technology(300,new int[]{9,1},"Physics","Learn about the laws of nature. Unlocks the Archer" ) },
                 { numb,new Technology(900,new int[]{12,6},"Longinus","A powerful Unit that can soak up a lot of damage." ) },
-                  { numb,new Technology(70,new int[]{5,2},"Leather Work","Leather provide Good protection. + 1 Defense for each unit" ) },//17
-            
+                  { numb,new Technology(70,new int[]{5,2},"Leather Work","Leather provide Good protection. + 1 Defense for each unit" ) },//17 //c
+                { numb,new Technology(70,new int[]{7},"Academy","Ability to create Unit that evolve after each battle and cuztomize their stats!" ) },//18 //c
     }
 
     ;
@@ -59,6 +59,7 @@ public class Technology
     private Technology( float RPneed, int[] c, string Nam, string Des)
     {
         ID =  numb++;
+
         PtsNeed = RPneed;
         Dependencies = c;
         rspts = 0;
