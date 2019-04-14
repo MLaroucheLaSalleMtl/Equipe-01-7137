@@ -170,66 +170,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9fc9b1901c6b38045b5105c753a9db5e, type: 3}
---- !u!1 &19715809
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+--- !u!224 &16006671 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5103697264530317900, guid: 9fc9b1901c6b38045b5105c753a9db5e,
+    type: 3}
+  m_PrefabInstance: {fileID: 16006670}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 19715810}
-  - component: {fileID: 19715812}
-  - component: {fileID: 19715811}
-  m_Layer: 0
-  m_Name: '[10]'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &19715810
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 19715809}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1389284903}
-  m_RootOrder: 10
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &19715811
+--- !u!114 &16006672 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 5103697264530317897, guid: 9fc9b1901c6b38045b5105c753a9db5e,
+    type: 3}
+  m_PrefabInstance: {fileID: 16006670}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 19715809}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
+  m_Script: {fileID: 11500000, guid: ab630cc831dcf204490622620a5ed2af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &19715812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 19715809}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Order: 10
-  Explanation: "try building \n"
-  Keys:
-  - f
 --- !u!1 &19886421
 GameObject:
   m_ObjectHideFlags: 0
@@ -2244,7 +2202,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &176350958
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4335,7 +4293,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1389284903}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &348517391
 MonoBehaviour:
@@ -4349,6 +4307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
 --- !u!114 &348517392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4361,14 +4320,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 4
-  Explanation: 'try building storage press f to pass to the nest tutorial
+  Order: 6
+  Explanation: 'first try building a house to gather money from the population
 
+    Press N for to move on.
 
 
 '
   Keys:
-  - f
+  - n
 --- !u!1 &349442117
 GameObject:
   m_ObjectHideFlags: 0
@@ -6074,7 +6034,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1389284903}
-  m_RootOrder: 7
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &426141640
 MonoBehaviour:
@@ -6088,6 +6048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
 --- !u!114 &426141641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6100,10 +6061,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 7
-  Explanation: "try building \n"
+  Order: 9
+  Explanation: 'try building the Garrsion each soldiers has a special ability
+
+'
   Keys:
-  - f
+  - n
 --- !u!1001 &426257945
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6830,7 +6793,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1389284903}
-  m_RootOrder: 8
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &448230803
 MonoBehaviour:
@@ -6844,6 +6807,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
 --- !u!114 &448230804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6856,10 +6820,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 8
-  Explanation: "try building \n"
+  Order: 10
+  Explanation: Defend yourself and expand your empire Good Luck player
   Keys:
-  - f
+  - n
 --- !u!1 &452547234
 GameObject:
   m_ObjectHideFlags: 0
@@ -7090,7 +7054,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1389284903}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &483111210
 MonoBehaviour:
@@ -7104,6 +7068,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
 --- !u!114 &483111211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7116,10 +7081,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 6
-  Explanation: "try building \n"
+  Order: 8
+  Explanation: try building towers to attack the Enemies
   Keys:
-  - f
+  - n
 --- !u!1001 &484718719
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10710,7 +10675,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &699029092
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10772,6 +10737,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 699029091}
   m_CullTransparentMesh: 0
+--- !u!1 &702011540 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6207615153950193022, guid: 862bcb7e8efa58442b5a5bbba0afa720,
+    type: 3}
+  m_PrefabInstance: {fileID: 134945596}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &706758061
 GameObject:
   m_ObjectHideFlags: 0
@@ -11911,7 +11882,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1389284903}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &783929425
 MonoBehaviour:
@@ -11925,6 +11896,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
 --- !u!114 &783929426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11937,13 +11909,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 3
-  Explanation: 'try building a house press f to pass to the nest tutorial
+  Order: 5
+  Explanation: 'Each bulding has its unique function,you can see them by overshadowing
+    the icons
+
+    Press N for to move on.
 
 
 '
   Keys:
-  - f
+  - n
 --- !u!1001 &794443193
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12258,13 +12233,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Order: 0
-  Explanation: try moving the camera using the keys AWSD and move the angle of the
-    camera with the right button of the mouse
+  Explanation: 'Hello There Player you represents the lue faction which is wessex
+
+    Press N for the next tutorial  '
   Keys:
-  - a
-  - w
-  - s
-  - d
+  - n
 --- !u!114 &809701971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12277,6 +12250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
 --- !u!1 &813138491
 GameObject:
   m_ObjectHideFlags: 0
@@ -13250,8 +13224,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 74c510a3dc09ec442bbdb8e62c31649d, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -13648,8 +13622,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: eec0ae8dcbf28a842b40bb2d6e245c69, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -15240,7 +15214,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &983485989
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15894,66 +15868,6 @@ RectTransform:
   m_AnchoredPosition: {x: 253.3869, y: -147.49933}
   m_SizeDelta: {x: 714.6, y: 35.75}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1060681819
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1060681820}
-  - component: {fileID: 1060681822}
-  - component: {fileID: 1060681821}
-  m_Layer: 0
-  m_Name: '[9]'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1060681820
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060681819}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1389284903}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1060681821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060681819}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1060681822
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060681819}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Order: 9
-  Explanation: "try building \n"
-  Keys:
-  - f
 --- !u!1 &1061711766
 GameObject:
   m_ObjectHideFlags: 0
@@ -16724,8 +16638,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: bd252c3cf4d420c4e803d1be348f73b2, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -20248,6 +20162,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365189473}
   m_CullTransparentMesh: 0
+--- !u!1 &1365294821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1365294822}
+  - component: {fileID: 1365294824}
+  - component: {fileID: 1365294823}
+  m_Layer: 0
+  m_Name: '[2.5] '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1365294822
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365294821}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1389284903}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1365294823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365294821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
+--- !u!114 &1365294824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365294821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Order: 3
+  Explanation: "Click on the button stat bellow each country has an affinity with
+    you \nas long as you don't attack that affinity won't change \nPress N for next
+    Tutorial. \n\n"
+  Keys:
+  - n
 --- !u!1001 &1370838244
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20577,6 +20554,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BunchOfTutorials: []
   Instructions: {fileID: 385433037}
+  window: {fileID: 702011540}
 --- !u!4 &1389284903
 Transform:
   m_ObjectHideFlags: 0
@@ -20591,14 +20569,14 @@ Transform:
   - {fileID: 809701969}
   - {fileID: 1432763359}
   - {fileID: 1923949943}
+  - {fileID: 1365294822}
+  - {fileID: 2015408446}
   - {fileID: 783929424}
   - {fileID: 348517390}
   - {fileID: 1644668759}
   - {fileID: 483111209}
   - {fileID: 426141639}
   - {fileID: 448230802}
-  - {fileID: 1060681820}
-  - {fileID: 19715810}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -21458,11 +21436,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Order: 1
-  Explanation: 'try building a garriosn good press f to pass to the nest tutorial
+  Explanation: 'try moving the Camera With AWSD, use your mouse to change the angle
+    of the camera
 
 '
   Keys:
-  - f
+  - a
+  - w
+  - s
+  - d
 --- !u!114 &1432763361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21475,24 +21457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &1438393973 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 434234302643626391, guid: bbc8a4fc87b576f46bf76507429b73b0,
-    type: 3}
-  m_PrefabInstance: {fileID: 434234303257401323}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1438393976 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 434234302643626388, guid: bbc8a4fc87b576f46bf76507429b73b0,
-    type: 3}
-  m_PrefabInstance: {fileID: 434234303257401323}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcf95c77e3e2aef40a2554ecc47874c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
 --- !u!1001 &1439268532
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23835,7 +23800,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1389284903}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1644668760
 MonoBehaviour:
@@ -23849,6 +23814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
 --- !u!114 &1644668761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23861,10 +23827,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 5
-  Explanation: "try building \n"
+  Order: 7
+  Explanation: 'Now a Gathering house for more Wood
+
+    Press N for to move on.
+
+'
   Keys:
-  - f
+  - n
 --- !u!1 &1645629250
 GameObject:
   m_ObjectHideFlags: 0
@@ -28333,6 +28303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
 --- !u!114 &1923949945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28346,12 +28317,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Order: 2
-  Explanation: 'try building a house press f to pass to the nest tutorial
-
-
-'
+  Explanation: "Nice Job !,you can see the minimap on the bottom right that shows
+    you the other scountries\nPress N for next Tutorial. \n\n"
   Keys:
-  - f
+  - n
 --- !u!1 &1930245283
 GameObject:
   m_ObjectHideFlags: 0
@@ -28637,8 +28606,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: a4129a76935793b4596ba45c436fa80d, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -29623,7 +29592,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2013426562}
   m_CullTransparentMesh: 0
---- !u!224 &2024242344 stripped
+--- !u!1 &2015408445
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2015408446}
+  - component: {fileID: 2015408448}
+  - component: {fileID: 2015408447}
+  m_Layer: 0
+  m_Name: '[2.5] (1)'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2015408446
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015408445}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1389284903}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2015408447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015408445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
+--- !u!114 &2015408448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015408445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Order: 4
+  Explanation: "Click on button create building to expand your empire\nPress N for
+    next Tutorial. \n\n"
+  Keys:
+  - n
+--- !u!224 &2031546819 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 434234302643626391, guid: bbc8a4fc87b576f46bf76507429b73b0,
     type: 3}
@@ -30898,7 +30929,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2134867162
 RectTransform:
   m_ObjectHideFlags: 0
