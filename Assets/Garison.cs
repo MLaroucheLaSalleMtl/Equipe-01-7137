@@ -13,6 +13,7 @@ public class Garison : building
         public float goldCost;
         public int civilianCost;
         public GameObject unit;
+        public float timeToDeploy;
       
         [TextArea]
         public string DESC;
@@ -36,6 +37,7 @@ public class Garison : building
             get
             {
                 var t = stat.AGI + stat.DEX + stat.END + stat.PER + stat.STR;
+                t += Unit.timeToDeploy;
                 return 1 + ExtraExperience / 20 + t;
             }
         }
@@ -199,6 +201,7 @@ public class Garison : building
 
         if (!GetOwner.HasResearch(5)) buttons[1].gameObject.SetActive(false);
         if (!GetOwner.HasResearch(8)) buttons[3].gameObject.SetActive(false);
+        if (!GetOwner.HasResearch(17)) buttons[9].gameObject.SetActive(false);
     }
     public override void interact(entity e, float efficiency = 0)
     {

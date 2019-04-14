@@ -4666,6 +4666,7 @@ MonoBehaviour:
     goldCost: 10
     civilianCost: 1
     unit: {fileID: 3598109090698866636, guid: c4df2d0b215ee9444b31b9139e8416c5, type: 3}
+    timeToDeploy: 6
     DESC: The swordsman is the elite fighter of medieval times, he is an expert in
       the art of killing.
   - Costs:
@@ -4680,6 +4681,7 @@ MonoBehaviour:
     goldCost: 7
     civilianCost: 1
     unit: {fileID: 8677958751998022032, guid: 2d3f1aaab9d58f044aa3d17d0785eb33, type: 3}
+    timeToDeploy: 3
     DESC: The lancer is the backbone of any medieval force, masterfull at holding
       a frontal attack at bay
   - Costs:
@@ -4694,6 +4696,7 @@ MonoBehaviour:
     goldCost: 13
     civilianCost: 1
     unit: {fileID: 5516078772422536279, guid: 38605d7b7ec7c864ca2e95704cf1424d, type: 3}
+    timeToDeploy: 8
     DESC: The clubber is a shock trooper, poor in defense but very effictive when
       charging in enemy flanks.
   - Costs:
@@ -4708,6 +4711,7 @@ MonoBehaviour:
     goldCost: 50
     civilianCost: 1
     unit: {fileID: 163038239304315518, guid: ccb5e9f9fe1f0744296e2574db2e0065, type: 3}
+    timeToDeploy: 7
     DESC: A special type of unit that can gain experience by defeating enemy. Can
       also take equipement from corpse or building. Come with no weapon nor armor.
   - Costs:
@@ -4722,6 +4726,7 @@ MonoBehaviour:
     goldCost: 36
     civilianCost: 1
     unit: {fileID: 5516078772422536279, guid: b9b6471653c69364295744e780acc476, type: 3}
+    timeToDeploy: 15
     DESC: A barbarian, the more damage he substain, the highiest his attack speed
   - Costs:
     - Name: Wood
@@ -4735,6 +4740,7 @@ MonoBehaviour:
     goldCost: 100
     civilianCost: 1
     unit: {fileID: 5516078772422536279, guid: 76670b23ce8bff9419884101d19591cd, type: 3}
+    timeToDeploy: 16
     DESC: Unit specilized in healing other. Expensive!
   tbox: {fileID: 7985341871828577274}
   CanCreateCustomizable: 0
@@ -4745,6 +4751,7 @@ MonoBehaviour:
       goldCost: 0
       civilianCost: 0
       unit: {fileID: 0}
+      timeToDeploy: 0
       DESC: 
     stat:
       STR: 0

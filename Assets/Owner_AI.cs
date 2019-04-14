@@ -340,7 +340,7 @@ public class Owner_AI : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (TBC > 1) TBC -= Time.deltaTime * 0.01f;
+        
 
         _lifetime += Time.deltaTime;
     }

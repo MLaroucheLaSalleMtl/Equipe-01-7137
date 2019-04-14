@@ -72,7 +72,12 @@ public class unit : entity
     protected MeshRenderer[] rendies;
     public virtual float GetMovingSpeed
     {
-        get { return Speed * MainUI.SpeedMult; }
+        get {
+            var bonus = 1f;
+            if (GetOwner.HasResearch(15))
+                bonus += .25f;
+
+            return Speed * MainUI.SpeedMult * bonus;  }
     } 
     public virtual float getAttack
     {

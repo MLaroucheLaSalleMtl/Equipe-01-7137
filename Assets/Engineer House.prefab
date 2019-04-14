@@ -4666,6 +4666,7 @@ MonoBehaviour:
     goldCost: 50
     civilianCost: 1
     unit: {fileID: 5516078772422536279, guid: a4e1c220ba170ae40a08c9e7ba9281ee, type: 3}
+    timeToDeploy: 12
     DESC: The engineer repair nearby building!
   tbox: {fileID: 7985341871828577274}
   CanCreateCustomizable: 0
@@ -4676,6 +4677,7 @@ MonoBehaviour:
       goldCost: 0
       civilianCost: 0
       unit: {fileID: 0}
+      timeToDeploy: 0
       DESC: 
     stat:
       STR: 0

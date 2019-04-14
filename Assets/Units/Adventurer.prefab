@@ -219,7 +219,7 @@ MonoBehaviour:
   indicator: {fileID: 2722484985198070145}
   lifeindicator: {fileID: 4609349680928312008}
   Barbarian: 0
-  TimeToDeploy: 1
+  TimeToDeploy: 12
   Name: Aventurer
   Speed: 2
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}

@@ -22,8 +22,8 @@ public class Technology
                 { numb,new Technology(70,new int[]{1,2},"Economics","How to make more money. + 50% Gold Production" ) },//c
                 { numb,new Technology(600,new int[]{3,9,6},"Religion","Give prayers to the lost. Unlocks the Church" ) },//c
                 { numb,new Technology(200,new int[]{11,10},"Medecine","Unlocks the Doctor. Unit that heals other nearby units" ) },//14 //c
-                { numb,new Technology(300,new int[]{9,1},"Physics","Learn about the laws of nature. Unlocks the Archer" ) },
-                { numb,new Technology(900,new int[]{12,6},"Longinus","A powerful Unit that can soak up a lot of damage." ) },
+                { numb,new Technology(300,new int[]{9,1},"Physics","Learn about the laws of nature. +25% speed" ) },//c
+                { numb,new Technology(900,new int[]{12,6},"Longinus","A powerful Unit that can soak up a lot of damage." ) },//c
                   { numb,new Technology(70,new int[]{5,2},"Leather Work","Leather provide Good protection. + 1 Defense for each unit" ) },//17 //c
                 { numb,new Technology(70,new int[]{7},"Academy","Ability to create Unit that evolve after each battle and cuztomize their stats!" ) },//18 //c
     }
