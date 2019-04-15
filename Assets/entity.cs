@@ -16,7 +16,7 @@ public class entity : MonoBehaviour
 
     public enum DamageType
     {
-        A = 0, B = 1, C = 2, Null = 3
+        A = 0, B = 1, C = 2, Null = 3 
     }
 
     [SerializeField]
@@ -47,9 +47,21 @@ public class entity : MonoBehaviour
     }
     public float GoldCost = 5;
     protected node currentNode;
+  public float getboost { get { return boosted; } }
+    protected float boosted = 0;
+    public virtual void GetBoost(float x)
+    {
+        boosted = x;
+        GameManager.instance.OnBoost(transform.position);
+   
+    }
     public float GetMaxmimumHP
     {
-        get { return maximumHp; }
+        get {
+            var bonus = 1f;
+            if (GetOwner.HasResearch(10))
+                bonus += .25f;
+            return maximumHp * bonus; }
     }
     protected float maximumHp = 1;
     [SerializeField]
@@ -149,12 +161,16 @@ public class entity : MonoBehaviour
  
     public virtual void TakeDamage(float t,DamageType p = DamageType.Null)
     {
-   
-        Hp -= t * GetTypeEfficiency(Type,p);
-        if(t < 0)
+
+        if (t > 0 )
+            Hp -= t * GetTypeEfficiency(Type, p);
+        else
         {
+            Hp -= t;
             GameManager.instance.OnHeal(transform.position);
         }
+           
+       
         if (Hp < 0) Death();
     }
     protected entity last_agressor;
@@ -171,9 +187,13 @@ public class entity : MonoBehaviour
     }
     public virtual void TakeDamage(float t,entity e, DamageType p = DamageType.Null)
     {
-        last_agressor = e;
+        if(t > 0 && e.GetOwner != GetOwner)
+        {
+            last_agressor = e;
 
-        owner.modRelation(e.owner, -1);
+            owner.modRelation(e.owner, -1);
+        }
+    
 
         TakeDamage(t,p);
     }

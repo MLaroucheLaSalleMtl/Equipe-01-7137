@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
     public GameObject NodeRendererPrefab;
-    public GameObject healingPrefab;
+    public GameObject healingPrefab,DivnityPrefab;
 
     Camera _main;
 
@@ -87,6 +87,7 @@ public class GameManager : MonoBehaviour
 
         foreach (var item in owners)
         {
+            if (item.Name == "Neutral") continue;
             item.OnGain += OnOwnerGain;
             item.OnRelationModification += OnPlayerRelationshipChanged;
         }
@@ -96,6 +97,7 @@ public class GameManager : MonoBehaviour
             if (owners[i].Name == "Neutral") continue;
             var t = gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
+            t.TBC += Random.Range(-3f, 6f);
         }
     }
 
@@ -132,7 +134,12 @@ public class GameManager : MonoBehaviour
         if (e)
             StartCoroutine(popup(e));
     }
-
+    public void OnBoost(Vector3 pos)
+    {
+        var e = Instantiate(DivnityPrefab, pos, Quaternion.identity);
+        if (e)
+            StartCoroutine(popup(e));
+    }
     Dictionary<string, bool> AtWarWith = new Dictionary<string, bool>();
     public void OnPlayerRelationshipChanged(Owner p1, Owner p2, float val)
     {
@@ -892,8 +899,8 @@ public class GameManager : MonoBehaviour
             item.Start();
             for (int i = 0; i < owners.Length; i++)
             {
-                if (i == 3) continue;
-                item.modRelation(owners[i], Random.Range(-10, 30));
+                if (i == 2) continue;
+                item.modRelation(owners[i], Random.Range(-30, 30));
             }
                
 

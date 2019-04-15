@@ -5315,7 +5315,8 @@ MonoBehaviour:
   agi: {fileID: 8677958751998022061}
   indicator: {fileID: 6123181321750814729}
   lifeindicator: {fileID: 7787875939164891250}
-  TimeToDeploy: 1
+  Barbarian: 0
+  TimeToDeploy: 3.66
   Name: Pikesman
   Speed: 1.24
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
@@ -5335,6 +5336,7 @@ MonoBehaviour:
   defense: 0.23
   AtkSpeed: 1.83
   DetectionRange: 3.94
+  AdditionalDist: 0.3
 --- !u!195 &8677958751998022061
 NavMeshAgent:
   m_ObjectHideFlags: 0

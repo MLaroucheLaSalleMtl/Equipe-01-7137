@@ -1698,7 +1698,8 @@ MonoBehaviour:
   agi: {fileID: 3598109090698866673}
   indicator: {fileID: 1613417756687635507}
   lifeindicator: {fileID: 890450833655109498}
-  TimeToDeploy: 1
+  Barbarian: 0
+  TimeToDeploy: 5
   Name: Swordsman
   Speed: 3.26
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
@@ -1718,6 +1719,7 @@ MonoBehaviour:
   defense: 0.1
   AtkSpeed: 1
   DetectionRange: 2.36
+  AdditionalDist: 0.3
 --- !u!195 &3598109090698866673
 NavMeshAgent:
   m_ObjectHideFlags: 0

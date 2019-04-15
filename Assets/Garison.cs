@@ -13,6 +13,7 @@ public class Garison : building
         public float goldCost;
         public int civilianCost;
         public GameObject unit;
+        public float timeToDeploy;
       
         [TextArea]
         public string DESC;
@@ -36,6 +37,7 @@ public class Garison : building
             get
             {
                 var t = stat.AGI + stat.DEX + stat.END + stat.PER + stat.STR;
+                t += Unit.timeToDeploy;
                 return 1 + ExtraExperience / 20 + t;
             }
         }
@@ -180,14 +182,26 @@ public class Garison : building
     
     public override void OpenContextMenu()
     {
+        CanCreateCustomizable = GetOwner.HasResearch(18);
         base.OpenContextMenu();
         tbox.gameObject.SetActive(true);
         tbox.Header.text = "Garisson at" + transform.position.ToString();
         tbox.Texts[1].text = description;
         CustomizeButton.gameObject.SetActive(CanCreateCustomizable);
         OpenCustomization(false);
-        TakeDamage(5);
+        SetButtons();
+      
 
+    }
+    public virtual void SetButtons()
+    {
+        foreach (var item in buttons)
+            item?.SetActive(true);
+
+
+        if (!GetOwner.HasResearch(5)) buttons[1].gameObject.SetActive(false);
+        if (!GetOwner.HasResearch(8)) buttons[3].gameObject.SetActive(false);
+        if (!GetOwner.HasResearch(17)) buttons[9].gameObject.SetActive(false);
     }
     public override void interact(entity e, float efficiency = 0)
     {
@@ -200,6 +214,7 @@ public class Garison : building
         if(UnitsToDeploy.Count > 0)
         {
             timer += Time.fixedDeltaTime;
+            if (GetOwner.HasResearch(3)) timer += Time.fixedDeltaTime * .15f;
             if (timer > UnitsToDeploy.Peek().GetTimeToDeploy)
             {
 

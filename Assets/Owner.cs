@@ -29,6 +29,7 @@ public class Owner
         {
             var t = 0f; foreach (var item in Labs)
                 t += item.ResearchPointsPerTick;
+            if (HasResearch(2)) t *= 1.25f;
             return t * ScienceMod * (1 + (scientist * t / 100) );
         }
     }
@@ -42,8 +43,15 @@ public class Owner
         }
     }
     public void OnResearchDone(Technology T)
-    {   
+    {
+        if (Researched.ContainsKey(T.ID))
+        {
+            Debug.Log(T.Name + " was already in the list apparently? " + Researched[T.ID].Name + " Occupy it place!\nSkipping");
+
+        }
+        else
         Researched.Add(T.ID, T);
+
         CurrentTechnology = null;
         OnAccomplishResearch?.Invoke(T);
 
@@ -84,9 +92,9 @@ public class Owner
             x += scientist * x / 100;
             Pay(scientist);
         }
-     
-        
-        CurrentTechnology.Research(x * ScienceMod);
+        if (GameManager.DEBUG_GODMODE) x *= 100;
+        if (HasResearch(2)) x *= 1.25f;
+            CurrentTechnology.Research(x * ScienceMod);
     }
  
 
@@ -122,7 +130,7 @@ public class Owner
              Relation[x.Name]+= z;
         else Relation.Add(x.Name, z);
 
-        if (Relation[x.Name] <= -10 && !OnBadTerm.Contains(x)) OnBadTerm.Add(x);
+        if (Relation[x.Name] <= -50 && !OnBadTerm.Contains(x)) OnBadTerm.Add(x);
         else if (Relation[x.Name] > 50 && !OnGoodTerm.Contains(x)) OnGoodTerm.Add(x);
         OnRelationModification?.Invoke(this, x, z);
     }
@@ -146,6 +154,20 @@ public class Owner
         GenFactions();
         foreach (var item in Technology.ResearchKnownToMankind)
             item.Value.OnFinish += OnResearchDone;
+
+
+        baseFertilityRate = .75f;
+        ScienceMod = .1f + (float)randy.NextDouble() * 1.5f;
+        fertilityMod = .1f + (float)randy.NextDouble() * 1.5f;
+        EconomyMod = .1f + (float)randy.NextDouble() * 1.5f;
+        RelationMod = .1f + (float)randy.NextDouble() * 1.5f;
+        if (GameManager.DEBUG_GODMODE)
+        {
+            foreach (var item in Technology.ResearchKnownToMankind)
+            {
+                Researched.Add(item.Key, item.Value);
+            }
+        }
     }
 
     public void GenBorder()
@@ -481,7 +503,7 @@ public class Owner
         fertilityMod = randy.Next(50, 150) / 100;
         EconomyMod = randy.Next(50, 150) / 100; 
         RelationMod = randy.Next(50, 250) / 100;
-
+ 
         if (ScienceMod < 0) { ScienceMod = .5f; System.Console.WriteLine("What the fuck!"); }
         onLostEntites += OnEntitiesLost;
         onNewEntites += OnEntitesReceived;

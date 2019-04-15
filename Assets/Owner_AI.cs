@@ -20,8 +20,6 @@ public class Owner_AI : MonoBehaviour
         StartCoroutine(Act());
         owner.ai = this;
 
-        owner.modRelation(GameManager.owners[0], -100);
-        owner.modRelation(GameManager.owners[0], -100);
     }
 
     int garisson = 0;
@@ -38,15 +36,31 @@ public class Owner_AI : MonoBehaviour
 
 
  
-    
+
     IEnumerator Act()
     { var core = owner.Cores[0];
 
         SwitchBuilding(1);
+     
         while (true)
         {
+            if (core == null) break;
+            Owner en = null;
+            if (owner.OnBadTerm.Count > 0)
+            {
+                string ahah = owner.OnBadTerm[0].Name;
+                foreach (var item in owner.OnBadTerm)
+                {
+                   if( owner.Relation[item.Name] > owner.Relation[ahah])
+                    {
+                        ahah = item.Name;
+                    }  
+                }
+                en = GameManager.GetOwner(ahah);
 
-            if (core == null || owner.Cores[0] == null) break; 
+
+            }
+         
 
             
             if (!lastbuilding || !lastbuilding.IsBeingBuild)
@@ -326,7 +340,7 @@ public class Owner_AI : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (TBC > 1) TBC -= Time.deltaTime * 0.01f;
+        
 
         _lifetime += Time.deltaTime;
     }

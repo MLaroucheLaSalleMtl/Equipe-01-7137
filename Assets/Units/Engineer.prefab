@@ -3669,11 +3669,12 @@ MonoBehaviour:
   Inventory: []
   info: {fileID: 8978350081012460925}
   infotext: {fileID: 0}
-  ID: 101
+  ID: 4
   DEBUG_OWNER: -1
   agi: {fileID: 5516078772422536298}
   indicator: {fileID: 7262807572265487372}
   lifeindicator: {fileID: 7907236293309100603}
+  Barbarian: 0
   TimeToDeploy: 7
   Name: Engineer
   Speed: 1.23
@@ -3681,11 +3682,13 @@ MonoBehaviour:
   Hurt: {fileID: 8300000, guid: 145fe60071025e246974696fbfb1bfb2, type: 3}
   onCreated: {fileID: 0}
   rendies: []
-  attack: 1
+  attack: -1
   defense: 0
   AtkSpeed: 0.5
   DetectionRange: 2.8
   AdditionalDist: 0.57
+  TargetUnitInstead: 0
+  Boost: 0
 --- !u!195 &5516078772422536298
 NavMeshAgent:
   m_ObjectHideFlags: 0

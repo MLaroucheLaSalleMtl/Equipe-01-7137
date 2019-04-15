@@ -23,6 +23,11 @@ public class Unit_UI : MonoBehaviour
         cachedUnit = x;
         gameObject.SetActive(true);
         this.enabled = true;
+        if(z > 100)
+        {
+            z -= 100;
+            z += 2;
+        }
         img.sprite = src[z];
         var count = x.Length;
         var s = 0f;

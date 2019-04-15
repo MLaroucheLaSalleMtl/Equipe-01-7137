@@ -11,6 +11,11 @@ public class habitation : building
     public override void PerTick()
     {
         base.PerTick();
-        GetOwner.GainGold((Taxe[Tier] * GetOwner.totalPopulation)/GetOwner.totalPopulation);
+        float bonus = 1;
+
+        if (GetOwner.HasResearch(0)) bonus += .1f;
+        if (GetOwner.HasResearch(1)) bonus += .2f;
+        if (GetOwner.HasResearch(12)) bonus += .5f;
+        GetOwner.GainGold((Taxe[Tier] * bonus * GetOwner.totalPopulation)/GetOwner.totalPopulation);
     }
 }

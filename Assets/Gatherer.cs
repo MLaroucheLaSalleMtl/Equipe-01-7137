@@ -18,6 +18,7 @@ public class Gatherer : building
     private void FixedUpdate()
     {
         timer += Time.fixedDeltaTime;
+        if (GetOwner.HasResearch(6)) timer += Time.fixedDeltaTime * .25f;
         //Different ressourc, different timing OR we can use one fix timer
         if(timer > (  Primary.hardness/GatheringSpeed) && HasResource  )
         {
