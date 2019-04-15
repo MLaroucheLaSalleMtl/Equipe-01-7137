@@ -29,7 +29,8 @@ public class unit : entity
     {
         get { return Ordered; }
     }
-    protected bool Ordered = false;
+       [HideInInspector]
+  public bool Ordered = false;
     public override void Death(bool f = false)
     {
         if(Oof)
@@ -179,6 +180,7 @@ public class unit : entity
             if (item.GetComponent<entity>())
             {
                 var y = item.GetComponent<entity>();
+                if (item.GetComponent<unit>() && item.GetComponent<unit>().Ordered) continue;
                 if (y.GetOwner == x) ee.Add(y);
             }
         }
@@ -201,9 +203,11 @@ public virtual void AI()
         {
             if (last_agressor)
             { target = last_agressor; last_agressor = null; OrderedAttack(target); aitimer = 0; return; }
-            if (!target && TargetToHunt.Count > 0)
+        
+            if (!target && TargetToHunt.Count > 0 && !Ordered)
             {
-           
+                if (TargetToHunt.Peek() == null) { TargetToHunt.Dequeue(); return; } 
+
                 target = TargetToHunt.Dequeue();
                 Attack(target);
                 aitimer = 0;
@@ -403,7 +407,7 @@ public virtual void AI()
          agi.isStopped = true;
          currentAttackRoutine = null;
 
-         MoveTo(previousTarget);
+        // MoveTo(previousTarget);
         Ordered = false;
         currentAttackRoutine = null;
         yield  break;
@@ -413,7 +417,10 @@ public virtual void AI()
     {
         base.OnKill(z);
         if (z == target) target = null;
-    Chill();
+        if(TargetToHunt.Count > 0)
+        TargetToHunt.Dequeue();
+
+        Chill();
     }
 
     public override void TakeDamage(float t, entity e, DamageType p = DamageType.Null)
@@ -460,7 +467,7 @@ public virtual void AI()
             e.TakeDamage(getAttack,this);
 
         }
-        else  MoveTo(previousTarget);
+       // else  MoveTo(previousTarget);
            
     
         
@@ -482,7 +489,7 @@ public virtual void AI()
             e.TakeDamage(dmg, this);
 
         }
-        else MoveTo(previousTarget);
+      //  else MoveTo(previousTarget);
 
 
 
@@ -539,14 +546,14 @@ public virtual void AI()
 
     public void MoveTo(Vector3 v)
     {
-        agi.isStopped = true;
+        agi.isStopped = false;
         Ordered = true;
         previousTarget = v;
         if (!agi) return;
         agi.SetDestination(v);
         agi.isStopped = false;
             if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);
-        StartCoroutine(reachedPosition(v));
+       // StartCoroutine(reachedPosition(v));
       
 
     }

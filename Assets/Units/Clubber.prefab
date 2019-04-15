@@ -3439,9 +3439,10 @@ MonoBehaviour:
   DEBUG_OWNER: 0
   agi: {fileID: 5516078772422536298}
   indicator: {fileID: 7262807572265487372}
-  lifeindicator: {fileID: 7907236293309100603}
+  lifeindicator: {fileID: 396718619501830128}
   Barbarian: 0
   TimeToDeploy: 4
+  Ordered: 0
   Name: Clubber
   Speed: 3.44
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
@@ -3473,9 +3474,9 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.15
   m_Speed: 3.5
-  m_Acceleration: 20
+  m_Acceleration: 105.58
   avoidancePriority: 50
-  m_AngularSpeed: 70
+  m_AngularSpeed: 135.74
   m_StoppingDistance: 0.33
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -4356,7 +4357,7 @@ Transform:
   m_LocalPosition: {x: -0.000035583, y: 1.046, z: 0}
   m_LocalScale: {x: 0.18972, y: 0.5768057, z: 0.18972}
   m_Children:
-  - {fileID: 3453247479072291267}
+  - {fileID: 396718619501824043}
   m_Father: {fileID: 5516078772422536277}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5495,13 +5496,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54ddc03edb813174f8791d835c469223, type: 3}
---- !u!4 &3453247479072291267 stripped
+--- !u!4 &396718619501824043 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3057112034529083048, guid: 54ddc03edb813174f8791d835c469223,
     type: 3}
   m_PrefabInstance: {fileID: 396718619501823851}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &7907236293309100603 stripped
+--- !u!23 &396718619501830128 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7511239984434869584, guid: 54ddc03edb813174f8791d835c469223,
     type: 3}

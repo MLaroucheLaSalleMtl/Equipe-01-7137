@@ -232,6 +232,7 @@ public class GameManager : MonoBehaviour
     {
         CameraFunction(_main.transform, CameraPosition);
         MouseInteraction();
+        if (Input.GetKeyDown(KeyCode.Space) && !Input.GetKeyDown(KeyCode.LeftShift)) CancelSelection();
     }
     
 
@@ -337,20 +338,61 @@ public class GameManager : MonoBehaviour
         BUI.SetBList(false);
         if (!selection[0])
         {
-            if (tempsel && !(tempsel is building) && tempsel.GetOwner == owners[0])
+            if(!Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
             {
-                selection[0] = tempsel;
-                selection[0].OnSelected();
-                LastClick = selection[0];
-                //UiSelection[0].SetActive(true);
-                // UiSelection[1].SetActive(true);
-                MUI.Action_sticker.SetTrigger("open");
+                CancelSelection();
+                if (tempsel && !(tempsel is building) && tempsel.GetOwner == owners[0])
+                {
+                    selection[0] = tempsel;
+                    selection[0].OnSelected();
+                    LastClick = selection[0];
+                    //UiSelection[0].SetActive(true);
+                    // UiSelection[1].SetActive(true);
+                    MUI.Action_sticker.SetTrigger("open");
+                }
             }
-
+  
         }
         else if (currentmode <= 0)
         {
-            CancelSelection();
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                Formation(pos, _main.transform.forward, selection, .2f);
+            }
+            else if (Input.GetKey(KeyCode.LeftShift))
+            {
+                var s = Physics.OverlapSphere(pos, 1, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
+
+                foreach (var item in selection)
+                {
+                    (item as unit).TargetToHunt = new Queue<entity>();
+                    (item as unit).Ordered = false;
+                }
+                 
+
+                foreach (var item in s)
+                {
+                    var vs = item.GetComponent<entity>();
+                    if (!vs || vs.GetOwner == owners[0]) continue;
+                    foreach (var itddem in selection)
+                        if (item)
+                            (itddem as unit).TargetToHunt.Enqueue(vs);
+
+
+                }
+
+                foreach (var item in selection)
+                {
+
+                    if ((item as unit).TargetToHunt.Count > 0)
+                        if (item)
+                            (item as unit).OrderedAttack((item as unit).TargetToHunt.Dequeue());
+
+                }
+
+            }
+         
+         
         }
         else
         {
@@ -784,15 +826,16 @@ public class GameManager : MonoBehaviour
         x.Tier = 0;
         n.Pay(x.costs[0].materials);
 
-   
- /*
-        if (_lastbuilding && _lastbuilding is Wall && x is Wall)
-        {
-            (_lastbuilding as Wall).boundTo = x as Wall;
 
-        }*/
+        /*
+               if (_lastbuilding && _lastbuilding is Wall && x is Wall)
+               {
+                   (_lastbuilding as Wall).boundTo = x as Wall;
 
-        if (n == owners[0])
+               }*/
+
+        if (!Input.GetKey(KeyCode.LeftShift))
+            if (n == owners[0])
         {
             buildmode = -1;
             ClearHighLight();
@@ -809,6 +852,8 @@ public class GameManager : MonoBehaviour
                     item.SetActive(false);
                 BUI.Uis[0].gameObject.SetActive(true);
             }
+
+           
             CancelSelection();
         }
 
@@ -992,7 +1037,7 @@ public class GameManager : MonoBehaviour
         return pos;
     }
     [SerializeField]
-    LayerMask Precison;
+    public LayerMask Precison,Nodeslayer;
     void SpawnRessource(node n, int x, int y)
     {
 

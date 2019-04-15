@@ -25,7 +25,7 @@ public class QueueCreatorUI : MonoBehaviour
         if(lol.Count > 0)
         {
             if(lol.Peek().img)
-            lol.Peek().img.fillAmount =  lol.Peek().timer - timer;
+            lol.Peek().img.fillAmount = 1 - ( timer/lol.Peek().OGTime);
         }
         else
         {
@@ -43,6 +43,7 @@ public class QueueCreatorUI : MonoBehaviour
         wow.timer = d.GetTimeToDeploy;
         wow.img.fillAmount = 1;
         wow.obj.gameObject.SetActive(true);
+        wow.OGTime = d.GetTimeToDeploy;
         lol.Enqueue(wow);
     }
     public Queue<QueueUI> lol = new Queue<QueueUI>();
@@ -51,6 +52,7 @@ public class QueueCreatorUI : MonoBehaviour
         public textBox obj;
         public Image img;
         public float timer;
+        public float OGTime;
 
     }
 }

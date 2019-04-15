@@ -34,6 +34,12 @@ public class building : entity
     public Text ContextMenuText;
     public GameObject[] buttons;
     public GameObject Bar;
+
+    public override void TakeDamage(float t, DamageType p = DamageType.Null)
+    {
+        base.TakeDamage(t, p);
+        if (IsBeingBuild) currEffort -= t;
+    }
     [TextArea]
     public string description= " a normal building";
     //Priority of attack = Higher mean more interest for the enemy
@@ -156,27 +162,40 @@ public class building : entity
   
     public virtual bool ApprovedBuilding(Vector3 pos, Owner g)
     {
-        bool z = false;
-        var x = Physics.OverlapSphere(pos, RequiredCloseness, GameManager.instance.Interatable,QueryTriggerInteraction.Collide);
-        if (x.Length == 0) return false;
-      
-        for (int i = 0; i < x.Length; i++)
+
+        var x = Physics.OverlapSphere(pos, RequiredCloseness, GameManager.instance.Nodeslayer, QueryTriggerInteraction.Collide);
+
+        foreach (var item in x)
         {
-          
-            if (x[i].gameObject.GetComponent<building>())
+            print(item.gameObject);
+            if (item.GetComponent<node>())
             {
+                var t = item.GetComponent<node>();
          
-                var t = x[i].gameObject.GetComponent<building>();
-
-                //Walls doesn't count
-                if (!(this is Wall) && ((t is Wall) || t is fortification)) continue;
-
-                    if (t.GetOwner == g)
-                    return true;
+                if (t.GetOwner  == g) return true;
             }
         }
+        return false;
+        /*   var x = Physics.OverlapSphere(pos, RequiredCloseness, GameManager.instance.Interatable,QueryTriggerInteraction.Collide);
+             if (x.Length == 0) return false;
 
-        return z;
+             for (int i = 0; i < x.Length; i++)
+             {
+
+                 if (x[i].gameObject.GetComponent<building>())
+                 {
+
+                     var t = x[i].gameObject.GetComponent<building>();
+
+                     //Walls doesn't count
+                     if (!(this is Wall) && ((t is Wall) || t is fortification)) continue;
+
+                         if (t.GetOwner == g)
+                         return true;
+                 }
+             }
+
+             return false;*/
     }
     public void build(Vector3 position, Owner n)
     {

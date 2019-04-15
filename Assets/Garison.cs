@@ -169,6 +169,8 @@ public class Garison : building
             de.AdditionalCost.Add(item);
         b.Pay(de.AdditionalCost.ToArray());
         b.AddFighter(de.Unit.civilianCost);
+
+        if(!e.Ordered)
         e.MoveTo(WhereToGo.transform.position);
         if(e is SpecialUnit)
         {
@@ -222,7 +224,7 @@ public class Garison : building
                 if (GetOwner.IsPlayer)
                 {
                     var t = unit.GetAlliesAtPosition(WhereToGo.transform.position, 5, GetOwner);
-                    if (t.Length > 0) GameManager.Formation(WhereToGo.transform.position, Vector3.zero, t, .1f);
+                    if (t.Length > 0)  GameManager.Formation(WhereToGo.transform.position, Vector3.zero, t, .1f);
 
                 }
 
