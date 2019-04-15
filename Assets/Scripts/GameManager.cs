@@ -909,7 +909,7 @@ public class GameManager : MonoBehaviour
 
         }
 
-
+        musicLauncher.Miscellanious(owners[0]);
 
 
     }
