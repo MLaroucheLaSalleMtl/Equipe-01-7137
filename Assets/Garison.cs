@@ -158,7 +158,12 @@ public class Garison : building
         ProduceUnit(Units[v], GetOwner);
     }
     public DeployementOrder deplToUse;
-    
+    public override void Death(bool destroy = true)
+    {
+        if(GetOwner.IsPlayer)
+        GameManager.instance.OnClick -= OnClick;
+        base.Death(destroy);
+    }
     public void ProduceUnit(unitCreation c,Owner b, bool avoid = false)
     {
     

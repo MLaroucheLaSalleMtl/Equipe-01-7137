@@ -23,16 +23,20 @@ public class MainUI : MonoBehaviour
 
     public void OpenRelationshipWindow( int x)
     {
+       
         OpenRelationshipWindow(GameManager.owners[x]);
     }
 
 
     public void OpenRelationshipWindow(Owner x)
     {
+        return;
         Selected = x;
+        
         RelationshipWindow.gameObject.SetActive(true);
-        RelationshipWindow.Header.text = "Relationship with " + Selected.Name + " at " + GameManager.owners[0].Relation[GameManager.owners[0].Name];
-        RelationshipWindow.Texts[1].text = "Your current relation with " + Selected.Name + " is " + GameManager.owners[0].Relation[GameManager.owners[0].Name]
+      
+        RelationshipWindow.Header.text = "Relationship with " + Selected.Name + " at " + x.Relation[GameManager.owners[0].Name];
+        RelationshipWindow.Texts[1].text = "Your current relation with " + Selected.Name + " is " + x.Relation[GameManager.owners[0].Name]
             + ". You can trade ressource or lands to augments your relationship. There is the possibility to start a war or stop it depending on your score. ";
     }
     public void MakeWar()

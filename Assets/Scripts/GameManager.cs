@@ -815,6 +815,7 @@ public class GameManager : MonoBehaviour
         {
             print(owners[0] + " :Not enough ressource or Gold");
             _lastbuilding = null;
+            lastonebuilding = -1;
             return;
         }
         
@@ -1040,16 +1041,17 @@ public class GameManager : MonoBehaviour
                 else n.SetOwner(owners[0]);
 
 
-                if (n.transform.position.y < 10) n.GetComponent<MeshRenderer>().material.color = Color.green;
-                else if (n.transform.position.y < 20) n.GetComponent<MeshRenderer>().material.color = Color.yellow;
-                else if (n.transform.position.y < 30)
+                /*  if (n.transform.position.y < 10) n.GetComponent<MeshRenderer>().material.color = Color.green;
+                  else if (n.transform.position.y < 20)n.GetComponent<MeshRenderer>().material.color = Color.yellow;*/
+                /* else*/
+                if (n.transform.position.y < 30)
                 {
-                    n.GetComponent<MeshRenderer>().material.color = Color.yellow + Color.red;
+                  //  n.GetComponent<MeshRenderer>().material.color = Color.yellow + Color.red;
                     n.type = global::node.NodeType.Rocky;
                 }
                 else
                 {
-                    n.GetComponent<MeshRenderer>().material.color = Color.red;
+                   // n.GetComponent<MeshRenderer>().material.color = Color.red;
                     n.type = global::node.NodeType.montain;
 
                 }
@@ -1064,7 +1066,7 @@ public class GameManager : MonoBehaviour
                     if (n.transform.position.y < -.05f)
                     {
                         n.type = global::node.NodeType.water;
-                        n.GetComponent<MeshRenderer>().material.color = Color.blue;
+                      //  n.GetComponent<MeshRenderer>().material.color = Color.blue;
 
                     }
 

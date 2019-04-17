@@ -139,6 +139,7 @@ public class Owner_AI : MonoBehaviour
                     if (item is Garison)
                     {
                         var v = item as Garison;
+                      
                         v.ProduceUnit(Random.Range(0,6));
                     }
                 }
@@ -275,7 +276,7 @@ public class Owner_AI : MonoBehaviour
         e = s;
         if (e == null) { return null; }
 
-
+ 
         var f = (s.transform.position - e.transform.position).normalized;
         var fx = e.transform.position + e.transform.TransformDirection(dir) * (1 + (s.GetOwner.Building.Count / 8)) * (3);
 
@@ -290,6 +291,9 @@ public class Owner_AI : MonoBehaviour
         if (rc) { fx.y = f22.point.y + .1f; }
 
 
+     
+
+
         print(s.GetOwner.Name + " built building " + t.name);
         return t;
 
@@ -301,18 +305,6 @@ public class Owner_AI : MonoBehaviour
         building e = null;
          
         e = owner.Cores[0];
-        /*
-        if(owner.Building.Count > 0)
-            e = owner.Building[owner.Building.Count-1];
-        foreach (var item in owner.Building)
-        {
-          
-            if(Vector3.Distance(item.transform.position,owner.Cores[0].transform.position) 
-                > Vector3.Distance(e.transform.position, owner.Cores[0].transform.position))
-            {
-                e = item;
-            }
-        }*/
         if (e == null) {  return; }  
     
         
@@ -338,8 +330,13 @@ public class Owner_AI : MonoBehaviour
         lastbuilding = GameManager.instance.PlaceBuilding(c,fx , Quaternion.identity, owner);
         lastbuilding.transform.position = fx;
         lastbuilding.transform.LookAt(owner.Cores[0].transform, Vector3.up);
-       
-  
+        if (lastbuilding.GetComponent<Garison>())
+        {
+            var u = lastbuilding.GetComponent<Garison>();
+            u.WhereToGo.transform.position = e.transform.position + e.transform.TransformDirection(dir) * 3 * (1 + (owner.Building.Count / 8)) * (3);
+        }
+
+
         if (rc) {   fx.y = f22.point.y + .1f; }
     
       

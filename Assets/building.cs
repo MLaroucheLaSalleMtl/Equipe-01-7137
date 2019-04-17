@@ -37,8 +37,16 @@ public class building : entity
 
     public override void TakeDamage(float t, DamageType p = DamageType.Null)
     {
-        base.TakeDamage(t, p);
         if (IsBeingBuild) currEffort -= t;
+        print(this.Hp + " " + name);
+        base.TakeDamage(t, p);
+      
+    }
+    public override void Death(bool destroy = true)
+    {
+        print("Death + " + destroy);
+        base.Death(destroy);
+
     }
     [TextArea]
     public string description= " a normal building";

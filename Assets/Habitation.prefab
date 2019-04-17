@@ -6276,7 +6276,7 @@ MonoBehaviour:
       amount: 5
       hardness: 0
     Gold: 0
-    ConstructionEffort: 20
+    ConstructionEffort: 46
   - materials:
     - Name: Wood
       Value: 0

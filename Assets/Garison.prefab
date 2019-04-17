@@ -4611,7 +4611,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthToSet: 20
   Type: 3
-  GoldCost: 5
+  GoldCost: 60
   uianim: {fileID: 0}
   Inventory: []
   info: {fileID: 0}
@@ -4626,10 +4626,10 @@ MonoBehaviour:
       icon: {fileID: 0}
       model: {fileID: 0}
       bit: {fileID: 0}
-      amount: 5
+      amount: 15
       hardness: 2
-    Gold: 10
-    ConstructionEffort: 35
+    Gold: 80
+    ConstructionEffort: 95
   SpaceNeed: {x: 1, y: 1, z: 1}
   RequiredCloseness: 5
   type: 0

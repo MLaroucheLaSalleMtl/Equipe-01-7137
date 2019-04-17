@@ -57,6 +57,7 @@ public class BuildingUI : MonoBehaviour
     {
         _blayer = BuildingLayer;
     }
+    
     void _createRoad(Vector3 pos, Vector3 dest,GameObject g)
     {
         var x = (dest - pos).normalized;

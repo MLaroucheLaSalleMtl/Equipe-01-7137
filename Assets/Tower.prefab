@@ -1413,8 +1413,8 @@ MonoBehaviour:
       bit: {fileID: 0}
       amount: 10
       hardness: 0
-    Gold: 10
-    ConstructionEffort: 80
+    Gold: 120
+    ConstructionEffort: 150
   SpaceNeed: {x: 0.31, y: 3.92, z: 0.58}
   RequiredCloseness: 5
   type: 0
