@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
     public static float SecondPerGenerations = 60;
-    public static bool DEBUG_GODMODE = true;
+    public static bool DEBUG_GODMODE = false;
     public GameObject Help;
     [Header("Assets")]
     public GameObject node;
