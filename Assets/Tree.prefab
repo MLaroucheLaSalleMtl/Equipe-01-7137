@@ -556,11 +556,11 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 0
-  m_Extents: {x: 0.5, y: 1, z: 0.5}
+  m_Extents: {x: 0.24, y: 1, z: 0.24}
   m_MoveThreshold: 0.1
   m_Carve: 0
   m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: -0.19, z: 0}
   m_TimeToStationary: 0.5
 --- !u!114 &3308113933128062192
 MonoBehaviour:
@@ -1215,7 +1215,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 20500000, guid: c91c1eb85782d5748ace27eb4d7415bb, type: 3}
       propertyPath: m_LODs.Array.data[3].screenRelativeHeight
-      value: 0.029082036
+      value: 0.015487757
       objectReference: {fileID: 0}
     - target: {fileID: 20500000, guid: c91c1eb85782d5748ace27eb4d7415bb, type: 3}
       propertyPath: m_Enabled
@@ -1231,7 +1231,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 20500000, guid: c91c1eb85782d5748ace27eb4d7415bb, type: 3}
       propertyPath: m_LODs.Array.data[2].screenRelativeHeight
-      value: 0.18937023
+      value: 0.11097746
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5400000, guid: c91c1eb85782d5748ace27eb4d7415bb, type: 3}

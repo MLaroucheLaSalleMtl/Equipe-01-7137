@@ -1106,7 +1106,7 @@ public class GameManager : MonoBehaviour
         //Sparse Ressources, so it is not easy
         if (n.AverageHeight > 49 && n.AverageHeight < 55 && n.type == global::node.NodeType.plain)
         {
-            if (seed < .6f) return;
+           // if (seed < .6f) return;
             //tree
 
             var q = new Goods();
