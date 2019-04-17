@@ -12,14 +12,15 @@ public class Owner_AI : MonoBehaviour
     public float TBC = 5;
 
     public Owner owner;
- 
+
+    int rand = 0;
     building lastbuilding;
     private void Start()
     {
         if (owner.Cores.Count == 0) return;
         StartCoroutine(Act());
         owner.ai = this;
-
+        rand = Random.Range(0, 5);
     }
 
     int garisson = 0;
@@ -35,7 +36,7 @@ public class Owner_AI : MonoBehaviour
 
 
 
- 
+    bool church = false;
 
     IEnumerator Act()
     { var core = owner.Cores[0];
@@ -138,10 +139,17 @@ public class Owner_AI : MonoBehaviour
                     if (item is Garison)
                     {
                         var v = item as Garison;
-                        v.ProduceUnit(0);
+                        v.ProduceUnit(Random.Range(0,6));
                     }
                 }
 
+           if(owner.Gold > 500 && !church)
+            {
+                SwitchBuilding(10);
+                church = true;
+            }
+            
+           
             //Give 60 sec before doing anything
             if (AvaillableUnit > 5 && _lifetime > 60)
                 foreach (var item in owner.OnBadTerm)
@@ -256,6 +264,34 @@ public class Owner_AI : MonoBehaviour
             BuildingPlanning(c, Quaternion.AngleAxis(45, Vector3.up) * dec);
         else BuildingPlanning(c, dec);
 
+
+    }
+    public static building Build(int c, Vector3 dir, CityCore s)
+    {
+        var y = GameManager.instance.Buildings[c].GetComponent<building>();
+        dir.y = 0;
+        building e = null;
+
+        e = s;
+        if (e == null) { return null; }
+
+
+        var f = (s.transform.position - e.transform.position).normalized;
+        var fx = e.transform.position + e.transform.TransformDirection(dir) * (1 + (s.GetOwner.Building.Count / 8)) * (3);
+
+        var f22 = new RaycastHit();
+        var rc = Physics.Raycast(fx + Vector3.up * 2, Vector3.down, out f22, 8, GameManager.instance.Interatable);
+
+      var t = GameManager.instance.PlaceBuilding(c, fx, Quaternion.identity, s.GetOwner);
+       t.transform.position = fx;
+        t.transform.LookAt(s.GetOwner.Cores[0].transform, Vector3.up);
+
+
+        if (rc) { fx.y = f22.point.y + .1f; }
+
+
+        print(s.GetOwner.Name + " built building " + t.name);
+        return t;
 
     }
     public void BuildingPlanning(int c,Vector3 dir)

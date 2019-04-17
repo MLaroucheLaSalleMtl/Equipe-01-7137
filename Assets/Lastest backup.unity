@@ -31588,7 +31588,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1904362236
 RectTransform:
   m_ObjectHideFlags: 0
@@ -31604,10 +31604,10 @@ RectTransform:
   m_Father: {fileID: 949304778}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 280.25, y: -11.45}
+  m_SizeDelta: {x: 22.9, y: 22.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1904362237
 MonoBehaviour:
@@ -43295,7 +43295,9 @@ MonoBehaviour:
   Boundary: 40.25
   cameraSmoothness: 6
   EdgeScrollingSpeed: -2
+  audioSource: {fileID: 0}
   grumbleAMP: {fileID: 0}
+  musicLauncher: {fileID: 0}
   animBlack: {fileID: 6666037067672892698}
   GameOverItem: {fileID: 1181036540}
   Interatable:

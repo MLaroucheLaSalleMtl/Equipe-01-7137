@@ -26,6 +26,8 @@ public class Gatherer : building
             timer = 0;
         }
     }
+
+ 
     protected virtual void GatherRessource()
     {
         //Ressource are currently finite, we should find a way to replenish 'em

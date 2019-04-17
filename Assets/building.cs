@@ -159,7 +159,10 @@ public class building : entity
     private GameObject gauge;
     public GameObject[] graphics;
 
-  
+  public void InstantBuild()
+    {
+        Construction(3000000);
+    }
     public virtual bool ApprovedBuilding(Vector3 pos, Owner g)
     {
 

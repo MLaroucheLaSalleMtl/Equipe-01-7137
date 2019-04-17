@@ -138,16 +138,19 @@ public class Garison : building
     }
     public void ProduceUnit(int z )
     {
+        if (z >= Units.Length) z= Random.Range(0, Units.Length);
         ProduceUnit(Units[z], GetOwner, !OverrideStats);
     }
 
     public void ProduceSpecialUnit(int v)
     {
+        if (v >= Units.Length) v = Random.Range(0, Units.Length);
         ProduceUnit(Units[v], GetOwner);
     }
     public DeployementOrder deplToUse;
     public void ProduceUnit(unitCreation c,Owner b, bool avoid = false)
     {
+     
         var we = new DeployementOrder(c, deplToUse.stat, deplToUse.ExtraExperience);
         if (avoid) we = new DeployementOrder(c, new SpecialUnit.stats(), 0);
 

@@ -174,6 +174,11 @@ public class BorderCalculation
                     closest = curr;
                     tempNode = borders[x];
                 }
+                else if(curr == closest)
+                {
+                    closest = curr;
+                    tempNode = borders[x];
+                }
 
 
             }
@@ -220,6 +225,7 @@ public class BorderCalculation
                     smallest = dist;
                     index = i;
                 }
+                
             }
 
         }

@@ -74,9 +74,13 @@ public class GameManager : MonoBehaviour
     public float Boundary = 40;
     public float cameraSmoothness = 6;
     public float EdgeScrollingSpeed = 5;
-    Vector2 cursorinput;
+    Vector2 cursorinput= new Vector2(-60.3f,-22.85f);
 
+    public AudioSource audioSource;
     public grumbleAMP grumbleAMP;
+    public MusicLauncher musicLauncher;
+    
+
     private void Awake()
     {
         instance = this;
@@ -97,7 +101,7 @@ public class GameManager : MonoBehaviour
             if (owners[i].Name == "Neutral") continue;
             var t = gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
-            t.TBC += Random.Range(-3f, 6f);
+            t.TBC +=5 +  Random.Range(-3f, 6f);
         }
     }
 
@@ -113,7 +117,11 @@ public class GameManager : MonoBehaviour
 
         _pup.SetText("You are now peacen't with " + z.Name + "!");
         AtWarWith.Add(z.Name, true);
+       
+        musicLauncher?.war(z);
+        
     }
+
     public void OnOwnerGain(Goods g, Vector3 pos)
     {
         if (g.bit)
@@ -233,12 +241,13 @@ public class GameManager : MonoBehaviour
         CameraFunction(_main.transform, CameraPosition);
         MouseInteraction();
         if (Input.GetKeyDown(KeyCode.Space) && !Input.GetKeyDown(KeyCode.LeftShift)) CancelSelection();
+        if(!Loser && Input.GetKeyDown(KeyCode.X)) { SwitchDestroyMode(!DestroyMode); }
     }
     
 
     RaycastHit lastresult;
     public LayerMask Interatable, BuildingMask, Unit;
-    Vector3 MousePosition;
+    Vector3 MousePosition = new Vector3(372.2652f, 12.819f, 181.0591f);
     [SerializeField]
     MainUI MUI;
     [SerializeField]
@@ -332,12 +341,24 @@ public class GameManager : MonoBehaviour
 
             if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, MousePosition, building_highlight.transform.rotation, owners[0]);
         }
-      
+
+        if (tempsel)
+        {
+            if(tempsel.GetOwner == owners[0])
+            {
+                DestroyEntity(tempsel);
+                if (!Input.GetKey(KeyCode.LeftShift))
+                    SwitchDestroyMode(false);
+            }
+        }
+        if (DestroyMode) return;
 
         if (buildmode > 0) return;
         BUI.SetBList(false);
         if (!selection[0])
         {
+
+           
             if(!Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
             {
                 CancelSelection();
@@ -761,7 +782,7 @@ public class GameManager : MonoBehaviour
 
     }
     Vector2 cam;
-    private float camzoom;
+    private float camzoom = 8;
     public float GetZoomLevel
     {
         get { return camzoom; }
@@ -772,9 +793,16 @@ public class GameManager : MonoBehaviour
     public PopMessage _pup, _buildpup;
 
     building _lastbuilding;
+    int lastonebuilding = 0;
     public void Build(int x)
     {
         if (Loser) return;
+        if(lastonebuilding == x)
+        {
+            CancelBuilding();
+            lastonebuilding = -1;
+        }
+        lastonebuilding = x;
         //BUI.SetBList(false);
         MUI.EndDescription();
         buildmode = -1;
@@ -816,7 +844,8 @@ public class GameManager : MonoBehaviour
 
     public building PlaceBuilding(int j, Vector3 pos, Quaternion rot, Owner n)
     {
-     
+
+        lastonebuilding = -1;
         var x = Instantiate(Buildings[j], pos, Quaternion.identity).GetComponent<building>();
         x.transform.rotation = rot; //building_highlight.transform.rotation;
         lastrotation = rot;//building_highlight.transform.rotation;
@@ -953,9 +982,28 @@ public class GameManager : MonoBehaviour
 
         }
 
+        musicLauncher?.Miscellanious(owners[0]);
 
 
+    }
 
+
+    bool DestroyMode = false;
+    public GameObject DestroyUI;
+    public void SwitchDestroyMode(bool t)
+    {
+        if (t) CancelBuilding();
+        DestroyMode = t;
+        DestroyUI?.SetActive(t);
+    }
+    public void DestroyEntity(entity t)
+    {
+        if (t.GetOwner == GameManager.owners[0])
+        {
+            t.TransferOwner(null);
+            owners[0].GainGold(t.GoldCost / 5);
+            Destroy(t.gameObject);
+        }
     }
 
     #region Nodes

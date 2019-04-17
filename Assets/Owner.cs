@@ -7,6 +7,7 @@ public class Owner
     public string Name = "";
     public Faction faction;
     public Vector3 vector3;
+    public string Culture;
     public NodesLineRenderer nodeLineRenderer;
     public Color MainColor;
     public delegate void OnGainHandler(Goods g, Vector3 p);
@@ -168,6 +169,19 @@ public class Owner
                 Researched.Add(item.Key, item.Value);
             }
         }
+       var t= Owner_AI.Build(7, Random.insideUnitSphere, Cores[0]);
+        GainGold(30);
+        t.InstantBuild();
+        t.TransferOwner(this);
+        Gain(new Goods("Wood",120),100);
+       // GameManager.instance.StartCoroutine(delayGain("Wood", 100));
+    
+    }
+    IEnumerator delayGain(string lol, int ty)
+    {
+        yield return new WaitForSeconds(12f);
+        Gain(new Goods(lol, ty),ty);
+        yield break;
     }
 
     public void GenBorder()
@@ -246,6 +260,7 @@ public class Owner
 
         }
     }
+     
     public void Gain(Goods r,int h)
     {
         int ok = -1;
@@ -264,10 +279,10 @@ public class Owner
         }
          
 
-
+        
         if (ok< 0)
         {
-            //Debug.Log("Not enough storage");
+           Debug.Log("Not enough storage");
             return;
         }
         var s = r.Exploit(h);

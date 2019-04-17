@@ -116,6 +116,7 @@ public class BuildingUI : MonoBehaviour
 
 
     }
+    
     private void Update()
     {
         InputInteraction();   

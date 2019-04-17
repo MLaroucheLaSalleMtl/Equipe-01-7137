@@ -175,6 +175,7 @@ public class MainUI : MonoBehaviour
     public void SetGodmode(Toggle x)
     {
         GameManager.DEBUG_GODMODE = x.isOn;
+        if (x.isOn) GameManager.ShowMessage("God Mode On!");
 
     }
     void UpdateStatsInfo()
