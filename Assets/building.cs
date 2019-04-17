@@ -143,7 +143,7 @@ public class building : entity
         build(transform.position, GetOwner );
         CloseContextMenu();
     }
-    public void GetRidOf()
+    public virtual void GetRidOf()
     {
         if (Tier == 0)
             GetOwner.Gold += costs[0].Gold;

@@ -33,7 +33,7 @@ public class entity : MonoBehaviour
     public virtual void TransferOwner(Owner n)
     {
         if (owner != null) owner.onLostEntites(this);
-     
+        if (n==null) return;
         if(GetComponent<Renderer>())GetComponent<Renderer>().material.color = n.MainColor;
         foreach (var item in  GetComponentsInChildren<Renderer>())
         {

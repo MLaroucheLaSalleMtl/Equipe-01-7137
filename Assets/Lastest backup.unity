@@ -43372,6 +43372,7 @@ MonoBehaviour:
   _pup: {fileID: 255429421}
   _buildpup: {fileID: 878231324}
   building_highlight: {fileID: 0}
+  DestroyUI: {fileID: 1055053125}
   Precison:
     serializedVersion: 2
     m_Bits: 1

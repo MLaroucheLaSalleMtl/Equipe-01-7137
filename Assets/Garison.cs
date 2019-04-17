@@ -94,6 +94,16 @@ public class Garison : building
         OnCompletedUnit += QUI.ForceDeQueue;
 
     }
+    protected override void Start()
+    {
+        base.Start();
+        if (GetOwner.IsPlayer) GameManager.instance.OnClick += OnClick;
+    }
+    public override void TransferOwner(Owner n)
+    {
+        base.TransferOwner(n);
+        
+    }
     public bool HasEnoughRessource(unitCreation x, Goods[] c)
     {
         if (GetOwner.Gold < x.goldCost) return false;
@@ -148,29 +158,58 @@ public class Garison : building
         ProduceUnit(Units[v], GetOwner);
     }
     public DeployementOrder deplToUse;
+    
     public void ProduceUnit(unitCreation c,Owner b, bool avoid = false)
     {
-     
+    
         var we = new DeployementOrder(c, deplToUse.stat, deplToUse.ExtraExperience);
         if (avoid) we = new DeployementOrder(c, new SpecialUnit.stats(), 0);
-
+      
         if (!GameManager.DEBUG_GODMODE)
         {
             if (!HasEnoughRessource(we, b.Inventory))
-            {if(b.IsPlayer) GameManager.ShowMessage("Not enough materials!"); return; }
+            {if(b.IsPlayer) GameManager.ShowMessage("Not enough materials for unit!");
+                return; }
 
         }
+        b.Pay(c.unit.gameObject.GetComponent<unit>().GoldCost + we.extraGold);
+        foreach (var item in we.Unit.Costs)
+            we.AdditionalCost.Add(item);
+        b.Pay(we.AdditionalCost.ToArray());
+
         QUI.CreateNewIcon(we );
         UnitsToDeploy.Enqueue(we);
+    }
+    bool setPlace;
+    [SerializeField] GameObject setplaceUI;
+    public void SetPosition()
+    {
+        setPlace = true;
+        setplaceUI?.SetActive(false);
+    }
+    
+    void OnClick(Vector3 a)
+    {
+        if (setPlace)
+        {
+            WhereToGo.transform.position = a;
+            setplaceUI?.SetActive(true);
+            setPlace = false;
+        }
+    }
+    public override void GetRidOf()
+    {
+        if(GetOwner == Owner.Player)
+        {
+            GameManager.instance.OnClick -= OnClick;
+        }
+        base.GetRidOf();
     }
     void ActuallyDeploy(DeployementOrder de, Owner b)
     {
         var e = Instantiate(de.Unit.unit, transform.position + transform.forward, Quaternion.identity).GetComponent<unit>();
         e.TransferOwner(b);
-        b.Pay(e.GoldCost + de.extraGold);
-        foreach (var item in de.Unit.Costs)
-            de.AdditionalCost.Add(item);
-        b.Pay(de.AdditionalCost.ToArray());
+       
         b.AddFighter(de.Unit.civilianCost);
 
         if(!e.Ordered)

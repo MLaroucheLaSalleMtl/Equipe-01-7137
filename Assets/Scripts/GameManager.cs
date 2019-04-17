@@ -22,7 +22,8 @@ public class GameManager : MonoBehaviour
 
     };
 
-
+    public delegate void OnClickHandler(Vector3 t);
+    public OnClickHandler OnClick;
 
 
     //Should have use a dictionary, gonna change it later, for now let's use that
@@ -312,6 +313,7 @@ public class GameManager : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 OnMouseClick(lastresult.point);
+                OnClick?.Invoke(lastresult.point);
 
             }
             else if (Input.GetMouseButtonUp(0))
@@ -344,7 +346,7 @@ public class GameManager : MonoBehaviour
 
         if (tempsel)
         {
-            if(tempsel.GetOwner == owners[0])
+            if(tempsel.GetOwner == owners[0] && DestroyMode)
             {
                 DestroyEntity(tempsel);
                 if (!Input.GetKey(KeyCode.LeftShift))
@@ -388,6 +390,7 @@ public class GameManager : MonoBehaviour
                 {
                     (item as unit).TargetToHunt = new Queue<entity>();
                     (item as unit).Ordered = false;
+                    (item as unit).Chill();
                 }
                  
 
@@ -793,7 +796,7 @@ public class GameManager : MonoBehaviour
     public PopMessage _pup, _buildpup;
 
     building _lastbuilding;
-    int lastonebuilding = 0;
+    int lastonebuilding = -1;
     public void Build(int x)
     {
         if (Loser) return;
@@ -801,6 +804,7 @@ public class GameManager : MonoBehaviour
         {
             CancelBuilding();
             lastonebuilding = -1;
+            return;
         }
         lastonebuilding = x;
         //BUI.SetBList(false);
@@ -994,14 +998,20 @@ public class GameManager : MonoBehaviour
     {
         if (t) CancelBuilding();
         DestroyMode = t;
-        DestroyUI?.SetActive(t);
+        DestroyUI?.gameObject.SetActive(t);
     }
     public void DestroyEntity(entity t)
     {
         if (t.GetOwner == GameManager.owners[0])
         {
+            if (t is CityCore) return;
             t.TransferOwner(null);
             owners[0].GainGold(t.GoldCost / 5);
+            if(t is building)
+            {
+                (t as building).GetRidOf();
+                return;
+            }
             Destroy(t.gameObject);
         }
     }

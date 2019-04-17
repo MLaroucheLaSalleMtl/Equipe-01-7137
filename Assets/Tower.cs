@@ -93,7 +93,7 @@ public class Tower : fortification
          
 
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if(aitimer > RateOfFire)
         {
