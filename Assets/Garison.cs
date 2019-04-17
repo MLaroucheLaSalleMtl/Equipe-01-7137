@@ -268,12 +268,11 @@ public class Garison : building
             {
 
                 ActuallyDeploy(UnitsToDeploy.Dequeue(), this.GetOwner);
-                if (GetOwner.IsPlayer)
-                {
+              
                     var t = unit.GetAlliesAtPosition(WhereToGo.transform.position, 5, GetOwner);
                     if (t.Length > 0)  GameManager.Formation(WhereToGo.transform.position, Vector3.zero, t, .1f);
 
-                }
+            
 
                 timer = 0;
 
