@@ -27,7 +27,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 02fe7b9b805cdda4f8e189c8a591ef30, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 93214b663bef52f4e802f59428cac0d2, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -30029,7 +30029,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Order: 10
   Explanation: "The button on the bottom right is for reorganization of your army.\n
-    \  \n\n                       Press N for to move on."
+    \  \n\n                                   Press N  to move on."
   Keys:
   - n
 --- !u!1 &1789433126
@@ -30398,6 +30398,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1794200616}
   m_CullTransparentMesh: 0
+--- !u!1 &1812340804
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1812340805}
+  - component: {fileID: 1812340807}
+  - component: {fileID: 1812340806}
+  m_Layer: 0
+  m_Name: '[12]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1812340805
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812340804}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6072239913185150706}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1812340806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812340804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 738f7fcb4e9164e4c943572f8a2a38bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GuidingArrows: {fileID: 0}
+--- !u!114 &1812340807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812340804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd967c235b4c7a44a6cc0f4d9707c2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Order: 10
+  Explanation: "You Have finished all the tutoroals enjoy the game.\n   \n\n                                   Press
+    N to move on"
+  Keys:
+  - n
 --- !u!1001 &1813107557
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37272,56 +37334,83 @@ PrefabInstance:
         type: 3}
       propertyPath: Explanation
       value: "Hello There Player you represents the blue faction which is wessex\n\n\n
-        \             Press N for the next tutorial  "
+        \                                   Press N to move on  "
       objectReference: {fileID: 0}
     - target: {fileID: 5508637331640279451, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
       value: "Each bulding has its unique function,you can see them by overshadowing
-        the icons\n\n                    Press N for to move on.\n\n"
+        the icons\n\n                    Press N  to move on.\n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637331938967778, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
       value: "Try building towers to defend yourself against the Enemies\n\n                    Press
-        N for to move on."
+        N  to move on."
       objectReference: {fileID: 0}
     - target: {fileID: 5508637332072547801, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
       value: "First try building a house to gather money from the population\n\n                    Press
-        N for to move on.\n\n"
+        N  to move on.\n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637332401979529, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: "Click on button create building to expand your empire\n\n                  Press
-        N for next Tutorial. \n\n"
+      value: "Click on button create building to expand your empire\n\n                                   Press
+        N to move on \n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637332511331504, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
       value: "Nice Job !,you can see the minimap on the bottom right that shows you
-        the other countries\n\n                  Press N for next Tutorial. \n\n"
+        the other countries\n\n                              Press N  next Tutorial.
+        \n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637332772853392, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: "Now a Gathering house for more Wood\n\n                    Press N for
-        to move on.\n"
+      value: "Now a Gathering house for more Wood\n\n                    Press N  to
+        move on.\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637333085654817, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
       value: "Click on the button stat bellow  can see each country has an affinity
-        with you as long as you don't attack that affinity won't change \n\n                 Press
-        N for next Tutorial. \n\n"
+        with you as long as you don't attack that affinity won't change \n                               Press
+        N  next Tutorial. \n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637333152336425, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
       value: "Try moving the Camera With AWSD, use your mouse to change the angle
-        of the camera\n           \n             Press N for the next tutorial  \n"
+        of the camera\n           \n       \n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5508637331840648285, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
+        type: 3}
+      propertyPath: Explanation
+      value: "Create  soldiers by  pressing  on the building\n\n                   Press
+        N  to move on."
+      objectReference: {fileID: 0}
+    - target: {fileID: 5508637331877287424, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
+        type: 3}
+      propertyPath: Explanation
+      value: " the Garrsion  provides soldiers each soldiers has a special ability
+        you can see them by overshadowing the icons.\n\n                    Press
+        N  to move on.\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6072239912785876403, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
+        type: 3}
+      propertyPath: Explanation
+      value: "select the soldiers age of empire style and you can move them by pressing
+        the ifirst icon on the right and pressing where you want to take them \n\n\n
+        \                      Press N  to move on."
+      objectReference: {fileID: 0}
+    - target: {fileID: 6072239913217900525, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
+        type: 3}
+      propertyPath: Explanation
+      value: "To attack press the middle button on the right on point it the soldiers
+        you want to attack \n\n                       Press N  to move on."
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3afda14e3ff2a8c468217fbbe2ee8a52, type: 3}
@@ -49038,7 +49127,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -8.400085, y: 469}
+  m_AnchoredPosition: {x: -8.400055, y: 469}
   m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &9127696555079050828

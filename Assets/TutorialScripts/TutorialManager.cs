@@ -75,7 +75,10 @@ public class TutorialManager : MonoBehaviour
 
     public void CompletedAllTutorials()
     {
-        Instructions.text = "You Have Finished All the tutorials enjoy the Game ";
+        window.SetActive(false);
+        Instructions.text = "Good luck ";
+        
+        
     }
 
 
