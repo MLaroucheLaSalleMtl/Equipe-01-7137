@@ -39,6 +39,10 @@ public class building : entity
     {
         if (IsBeingBuild) currEffort -= t;
         print(this.Hp + " " + name);
+        if (GetOwner.IsPlayer)
+        {
+            GameManager.instance.musicLauncher.Losing(GetOwner);
+        }
         base.TakeDamage(t, p);
       
     }
