@@ -211,7 +211,7 @@ public class BorderCalculation
 
     public void UpdateDraw(List<node> cornerDraw, Owner owner, node node)
     {
-        GameManager.instance.musicLauncher.Losing(owner);
+        
         float smallest = float.MaxValue;
         int index = 200;
         for (int q = 0; q < 2; q++)

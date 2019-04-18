@@ -79,7 +79,7 @@ public class MusicLauncher:MonoBehaviour
         {
             timeElapsed = Time.realtimeSinceStartup - timeCheck;
             UnityEngine.Debug.Log(timeElapsed + "   " + songPlayTime);
-            if ((int)timeElapsed == (int)songPlayTime - 10)
+            if ((int)timeElapsed == (int)songPlayTime - 5)
             {
                 
                 this.warContinuation(owners);
@@ -96,15 +96,26 @@ public class MusicLauncher:MonoBehaviour
                 
                 if (AudioSource2.volume < .6f)
                 {
-                    Debug.Log("??????????????????????????????????????????????????");
+                   
                     if (play)
                     {
                         AudioSource2.volume = .2f;
                         AudioSource2.PlayOneShot(AudioClip);
 
                     }
-                    AudioSource2.volume += 0.003f;
-                    audioSource.volume -= 0.005f;
+                    var a = (float)(Math.Pow(AudioSource2.volume, 2)) / 100;
+                    if (a >= .6f && audioSource.volume > 0)
+                    {
+                        a = AudioSource2.volume;
+                    }
+                    var b = (float)(Math.Pow(-audioSource.volume, 2)) / 100;
+                    if (audioSource.volume < .2f)
+                    {
+                        b /= 1.0001f;
+                    }
+                    
+                    AudioSource2.volume += a;
+                    audioSource.volume -= b;
                     //System.Threading.Thread.Sleep(1000);
                 }
                 else
@@ -122,12 +133,22 @@ public class MusicLauncher:MonoBehaviour
                     
                     if (play)
                     {
-                        Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                       
                         audioSource.volume = .2f;
                         audioSource.PlayOneShot(AudioClip);
                     }
-                    audioSource.volume += 0.003f;
-                    AudioSource2.volume -= 0.005f;
+                    var a = (float)(Math.Pow(audioSource.volume, 2)) / 100;
+                    if (a >= .6f && AudioSource2.volume >0)
+                    {
+                        a = audioSource.volume;
+                    }
+                    var b = (float)(Math.Pow(-AudioSource2.volume, 2)) / 100;
+                    if (AudioSource2.volume < .2f)
+                    {
+                        b /= 1.0001f;
+                    }
+                    audioSource.volume += a;
+                    AudioSource2.volume -= b;
                     //System.Threading.Thread.Sleep(1000);
                 }
                 else
