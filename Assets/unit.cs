@@ -25,6 +25,7 @@ public class unit : entity
         AdditionalDist += .2f;
         minimumdistance = AdditionalDist  + .35f + agi.radius + agi.stoppingDistance;
     }
+  
     public bool HasIssuesCommand
     {
         get { return Ordered; }

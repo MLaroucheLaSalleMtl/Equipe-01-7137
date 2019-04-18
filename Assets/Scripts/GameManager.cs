@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour
             t.TBC +=5 +  Random.Range(-3f, 6f);
         }
     }
-
+    
     public static void ShowMessage(string f)
     {
         GameManager.instance._pup.SetText(f);
@@ -852,7 +852,7 @@ public class GameManager : MonoBehaviour
         buildmode = x;
         BUI.BuildingSticker.SetBool("SWCB", true);
         building_highlight.transform.localRotation = lastrotation;
-        AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
+       AudioSource.PlayClipAtPoint(GameManager.instance.menuClick, Camera.main.transform.position);
      
     }
 
@@ -883,8 +883,8 @@ public class GameManager : MonoBehaviour
 
                }*/
 
-        if (!Input.GetKey(KeyCode.LeftShift))
-            if (n == owners[0])
+        if (!Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.LeftShift) && !x.HasEnoughRessource(n.Inventory,n.Gold))
+        if (n == owners[0])
         {
             buildmode = -1;
             ClearHighLight();
@@ -930,7 +930,7 @@ public class GameManager : MonoBehaviour
             }
         }-*/
 
-        AudioSource.PlayClipAtPoint(build, x.transform.position);
+     if(n.IsPlayer)   AudioSource.PlayClipAtPoint(build, x.transform.position);
         return x;
 
     }

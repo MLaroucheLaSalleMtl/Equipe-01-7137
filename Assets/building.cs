@@ -81,6 +81,7 @@ public class building : entity
 
     public virtual bool HasEnoughRessource(Dictionary<string ,Goods> x, float g,bool t = false)
     {
+        print("A");
         if (GameManager.DEBUG_GODMODE) return true;
         if(g < costs[Tier].Gold + GoldCost  )
         {
@@ -98,7 +99,7 @@ public class building : entity
                 ok = x[item.Name].getAmount >= item.getAmount;
                 a = item.getAmount - x[item.Name].getAmount;
                 //if(!ok)
-               // print(GetOwner + ":" + x[item.Name].getAmount + " vs " + item.getAmount);
+              print(GetOwner + ":" + x[item.Name].getAmount + " vs " + item.getAmount);
  
             }
 
