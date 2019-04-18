@@ -19,18 +19,24 @@ public class MainUI : MonoBehaviour
     public textBox RelationshipWindow;
     public Owner Selected;
 
+    public Text aicom, speedmul, healthmul, timescale;
+
     public void OpenRelationshipWindow( int x)
     {
+       
         OpenRelationshipWindow(GameManager.owners[x]);
     }
 
 
     public void OpenRelationshipWindow(Owner x)
     {
+        return;
         Selected = x;
+        
         RelationshipWindow.gameObject.SetActive(true);
-        RelationshipWindow.Header.text = "Relationship with " + Selected.Name + " at " + GameManager.owners[0].Relation[GameManager.owners[0].Name];
-        RelationshipWindow.Texts[1].text = "Your current relation with " + Selected.Name + " is " + GameManager.owners[0].Relation[GameManager.owners[0].Name]
+      
+        RelationshipWindow.Header.text = "Relationship with " + Selected.Name + " at " + x.Relation[GameManager.owners[0].Name];
+        RelationshipWindow.Texts[1].text = "Your current relation with " + Selected.Name + " is " + x.Relation[GameManager.owners[0].Name]
             + ". You can trade ressource or lands to augments your relationship. There is the possibility to start a war or stop it depending on your score. ";
     }
     public void MakeWar()
@@ -66,7 +72,7 @@ public class MainUI : MonoBehaviour
         ResearchDesc.text = Technology.ResearchKnownToMankind[I].Description;
         if(Technology.ResearchKnownToMankind[I].Dependencies.Length > 0)
         {
-            ResearchDesc.text += "Prerequisites: ";
+            ResearchDesc.text += "\nPrerequisites: ";
             foreach (var item in Technology.ResearchKnownToMankind[I].Dependencies)
             {
                 ResearchDesc.text += Technology.ResearchKnownToMankind[item].Name + "\n";
@@ -78,28 +84,35 @@ public class MainUI : MonoBehaviour
     }
     public void SetTech(TechnologyUI T)
     {
+      
         Owner.Player.SetTechnology(T.Tech);
+       
         UpdateTechUI();
-        ResearchBar.gameObject.SetActive(true);
-
+        ResearchBar?.gameObject.SetActive(true);
+         
     }
     public void OnResearchDone(Technology T)
     {
         UpdateTechUI();
-        ResearchBar.gameObject.SetActive(false);
-        ResearchBar.slider.value = 0;
+        ResearchBar?.gameObject.SetActive(false);
+        if(ResearchBar)ResearchBar.slider.value = 0;
     }
 
 
     void UpdateTechUI()
     {
+      
         currentTUI.gameObject.SetActive(false);
         if (Owner.Player.CurrentTechnology != null) {
             currentTUI.SetTech(Owner.Player.CurrentTechnology);
-            ResearchBar.Header.text = Owner.Player.CurrentTechnology.Name;
-            ResearchBar.Texts[1].text = Owner.Player.CurrentTechnology.Name;
-            ResearchBar.slider.minValue = 0;
-            ResearchBar.slider.maxValue = Owner.Player.CurrentTechnology.PtsNeed;
+            if (ResearchBar)
+            {
+                ResearchBar.Header.text = Owner.Player.CurrentTechnology.Name;
+                ResearchBar.Texts[1].text = Owner.Player.CurrentTechnology.Name;
+                ResearchBar.slider.minValue = 0;
+                ResearchBar.slider.maxValue = Owner.Player.CurrentTechnology.PtsNeed;
+            }
+      
         }
         var y = Owner.Player.GetAvaillableTech;
         foreach (var item in TUIS)       
@@ -107,8 +120,10 @@ public class MainUI : MonoBehaviour
         for (int i = 0; i < TUIS.Length && i < y.Length; i++)
             TUIS[i].SetTech(y[i]);
 
-        
+  
+
         ResearchDesc.text = "Select a Tech to research";
+        
     }
     private void Start()
     {
@@ -164,6 +179,8 @@ public class MainUI : MonoBehaviour
     public void SetGodmode(Toggle x)
     {
         GameManager.DEBUG_GODMODE = x.isOn;
+        if (x.isOn) GameManager.ShowMessage("God Mode On!");
+
     }
     void UpdateStatsInfo()
     {
@@ -177,8 +194,8 @@ public class MainUI : MonoBehaviour
         txt += "Housing Space : " + own.getHousingSpace + "\n";
         txt += "Production Efficiency : " + own.ProductionEfficiency + "\n";
         txt += "Total Population : " + own.totalPopulation + "\n";
-        txt += "Science Rate : " + own.ScienceMod;
-
+        txt += "Science Rate : " + own.ScienceMod + "\n"; ;
+        txt += "Economics Rate : " + own.EconomyMod + "\n"; ;
 
         StatsInfo.Texts[1].text = txt; 
     }
@@ -192,10 +209,17 @@ public class MainUI : MonoBehaviour
 
 
     }
-
+ 
+    private void LateUpdate()
+    {
+ 
+ 
+    }
     private void Update()
     {
-        if (Owner.Player.CurrentTechnology != null) ResearchBar.slider.value = Mathf.Lerp(ResearchBar.slider.value,  Owner.Player.CurrentTechnology.GetCurrentPtsInvest, 5* Time.smoothDeltaTime);
+        if (Owner.Player.CurrentTechnology != null  )
+     
+            ResearchBar.slider.value = Mathf.Lerp(ResearchBar.slider.value, Owner.Player.CurrentTechnology.GetCurrentPtsInvest, 5 * Time.smoothDeltaTime); 
         if (!GameisPaused) {
 
             UpdateDesc();
@@ -263,20 +287,25 @@ public class MainUI : MonoBehaviour
     public void SetHpMult(Slider x )
     {
         HpMult = x.value;
+        healthmul.text = x.value.ToString();
     }
 
     public void SetSpdMult(Slider x)
     {
         SpeedMult = x.value;
+        speedmul.text = x.value.ToString();
+
     }
     public void SetTimeMult(Slider x)
     {
         TimeScaleMult = x.value;
+        timescale.text = x.value.ToString();
     }
 
     public void setAi(Slider x)
     {
         TPSmult = x.value;
+        aicom.text = x.value.ToString();
     }
     public void Exit( )
     {
@@ -331,7 +360,7 @@ public class MainUI : MonoBehaviour
         //For now
         Builder.text = "Builder:" + n.AllocateBuilder(0).ToString();
         Merchant.text = "Merchant:" + 0.ToString();
-        Research.text = "Researcher:" + 0.ToString();
+        Research.text = "Researcher:" + n.AllocateScientist(0).ToString();
 
        Jobs.SetActive( Builder.gameObject.activeSelf || Merchant.gameObject.activeSelf || Research.gameObject.activeSelf);
 

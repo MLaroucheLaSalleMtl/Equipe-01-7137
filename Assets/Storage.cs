@@ -46,6 +46,7 @@ public class Storage : building
     {
         currentstorage += x;
         StoraVisual.transform.position = transform.position + FullnessOffset * (currentstorage / MaxSpace);
+        if(!IsBeingBuild)
         anim?.SetTrigger("Gain");
     }
     [SerializeField]

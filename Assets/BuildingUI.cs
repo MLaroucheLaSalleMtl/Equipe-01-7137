@@ -19,7 +19,14 @@ public class BuildingUI : MonoBehaviour
     public void SetBList(bool x)
     {
         BList.SetActive(x);
+        foreach (var item in BlistButton)
+            item?.SetActive(true);
+
+        if (!Owner.Player.HasResearch(11)) BlistButton[8].SetActive(false);
+        if (!Owner.Player.HasResearch(13)) BlistButton[9].SetActive(false);
+
     }
+    public GameObject[] BlistButton;
     [HideInInspector]
     public static LayerMask _blayer;
 
@@ -50,6 +57,7 @@ public class BuildingUI : MonoBehaviour
     {
         _blayer = BuildingLayer;
     }
+    
     void _createRoad(Vector3 pos, Vector3 dest,GameObject g)
     {
         var x = (dest - pos).normalized;
@@ -109,6 +117,7 @@ public class BuildingUI : MonoBehaviour
 
 
     }
+    
     private void Update()
     {
         InputInteraction();   

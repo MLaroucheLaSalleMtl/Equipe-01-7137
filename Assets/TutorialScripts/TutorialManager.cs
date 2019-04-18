@@ -10,10 +10,11 @@ public class TutorialManager : MonoBehaviour
     public List<Tutorial> BunchOfTutorials = new List<Tutorial>();
 
     public Text Instructions;
-
+    public GameObject window;
 
     private static TutorialManager instance1;
     public static TutorialManager instance2
+
     {
         get
         {
@@ -30,15 +31,14 @@ public class TutorialManager : MonoBehaviour
 
         }
     }
-
-
+    
     private Tutorial CurrentTutorial;
-
-
+    
     // Start is called before the first frame update
     void Start()
     {
         SetNextTutorial(0);
+        window.SetActive(true);
         
     }
 

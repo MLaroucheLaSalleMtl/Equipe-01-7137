@@ -16,6 +16,7 @@ public class RelationshipUI : textBox
       
         if (!x.Relation.ContainsKey(y)) return;
         lastowner = x;
+        GetComponent<Image>().color = GameManager.GetOwner(y).MainColor ;
         lastkey = y;
         gameObject.SetActive(true);
         var z = x.Relation[y];

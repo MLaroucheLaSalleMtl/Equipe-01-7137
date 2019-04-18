@@ -3430,7 +3430,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthToSet: 2.5
   Type: 1
-  GoldCost: 4
+  GoldCost: 13
   uianim: {fileID: 799867967052470086}
   Inventory: []
   info: {fileID: 8978350081012460925}
@@ -3440,9 +3440,11 @@ MonoBehaviour:
   agi: {fileID: 5516078772422536298}
   indicator: {fileID: 7262807572265487372}
   lifeindicator: {fileID: 7907236293309100603}
-  TimeToDeploy: 1
+  Barbarian: 0
+  TimeToDeploy: 4
+  Ordered: 0
   Name: Clubber
-  Speed: 4.8
+  Speed: 3.44
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
   Hurt: {fileID: 8300000, guid: 145fe60071025e246974696fbfb1bfb2, type: 3}
   onCreated: {fileID: 0}
@@ -3460,6 +3462,7 @@ MonoBehaviour:
   defense: 0
   AtkSpeed: 0.48
   DetectionRange: 1.55
+  AdditionalDist: 0.2
 --- !u!195 &5516078772422536298
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3471,9 +3474,9 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.15
   m_Speed: 3.5
-  m_Acceleration: 20
+  m_Acceleration: 105.58
   avoidancePriority: 50
-  m_AngularSpeed: 70
+  m_AngularSpeed: 135.74
   m_StoppingDistance: 0.33
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1

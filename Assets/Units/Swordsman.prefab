@@ -882,7 +882,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1897183, y: 0.5768038, z: 0.1897183}
   m_Children:
-  - {fileID: 5623808024807775362}
+  - {fileID: 7234694875676274026}
   m_Father: {fileID: 3598109090698866638}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1697,10 +1697,12 @@ MonoBehaviour:
   DEBUG_OWNER: -1
   agi: {fileID: 3598109090698866673}
   indicator: {fileID: 1613417756687635507}
-  lifeindicator: {fileID: 890450833655109498}
-  TimeToDeploy: 1
+  lifeindicator: {fileID: 7234694875676277425}
+  Barbarian: 0
+  TimeToDeploy: 5
+  Ordered: 0
   Name: Swordsman
-  Speed: 3.26
+  Speed: 2.7
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
   Hurt: {fileID: 8300000, guid: 145fe60071025e246974696fbfb1bfb2, type: 3}
   onCreated: {fileID: 8300000, guid: 539d98873736ef3488c42910db86bc3c, type: 3}
@@ -1718,6 +1720,7 @@ MonoBehaviour:
   defense: 0.1
   AtkSpeed: 1
   DetectionRange: 2.36
+  AdditionalDist: 0.3
 --- !u!195 &3598109090698866673
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1729,7 +1732,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.15
   m_Speed: 1.78
-  m_Acceleration: 20
+  m_Acceleration: 88.6
   avoidancePriority: 50
   m_AngularSpeed: 90
   m_StoppingDistance: 0.33
@@ -5337,13 +5340,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54ddc03edb813174f8791d835c469223, type: 3}
---- !u!4 &5623808024807775362 stripped
+--- !u!4 &7234694875676274026 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3057112034529083048, guid: 54ddc03edb813174f8791d835c469223,
     type: 3}
   m_PrefabInstance: {fileID: 7234694875676271146}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &890450833655109498 stripped
+--- !u!23 &7234694875676277425 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7511239984434869584, guid: 54ddc03edb813174f8791d835c469223,
     type: 3}

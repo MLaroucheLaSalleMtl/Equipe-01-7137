@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Engineer : unit
 {
+    public bool TargetUnitInstead = false;
+    public bool Boost = false;
     public override void AI()
     {
 
@@ -36,28 +38,46 @@ public class Engineer : unit
                     if (!sauce) continue;
                     if (GetOwner == null && sauce.GetOwner == null) continue;
                     if (sauce.GetOwner != GetOwner) continue;
-                    if (!(sauce is building)) continue;
-                    if ((sauce.gameObject == this.gameObject)) continue;
-                  
-                    if ( sauce.Hp < sauce.GetMaxmimumHP && Vector3.Distance(transform.position, sauce.transform.position) < dist)
+                    if (!TargetUnitInstead)
                     {
-                            
-                        dist = Vector3.Distance(transform.position, sauce.transform.position);
-                        agi.SetDestination(sauce.transform.position);
-                        agi.isStopped = false;
-                        _attack(sauce);
-
+                        if (!(sauce is building)) continue;
                     }
                     else
+                               if (!(sauce is unit)) continue;
+                    if ((sauce.gameObject == this.gameObject)) continue;
+                    if(!Boost)
                     {
-                        continue;
+                        if (sauce.Hp < sauce.GetMaxmimumHP && Vector3.Distance(transform.position, sauce.transform.position) < dist)
+                        {
+
+                            dist = Vector3.Distance(transform.position, sauce.transform.position);
+                            agi.SetDestination(sauce.transform.position);
+                            agi.isStopped = false;
+
+                            _attack(sauce);
+
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        aitimer = 0;
+                        return;
+                    }
+
+                    else
+                    {
+                        if(sauce.getboost < 0)
+                        sauce.GetBoost(-getAttack);
+                      
                     }
 
 
 
                     aitimer = 0;
                     //Returning right now will improve performance
-                    return;
+                
+                 
 
                 }
 

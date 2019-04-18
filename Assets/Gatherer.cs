@@ -10,14 +10,25 @@ public class Gatherer : building
     public int Yield = 1;
     [Range(.01f,1000)]
     public float GatheringSpeed = .25f;
-    
+
     // Start is called before the first frame update
 
 
+    public override void TakeDamage(float t, DamageType p = DamageType.Null)
+    {
+        base.TakeDamage(t, p);
+        
+    }
+    public override void Death(bool destroy = true)
+    {
+        base.Death(destroy);
+        print("lol");
+    }
     private float timer = 0;
     private void FixedUpdate()
     {
         timer += Time.fixedDeltaTime;
+        if (GetOwner.HasResearch(6)) timer += Time.fixedDeltaTime * .25f;
         //Different ressourc, different timing OR we can use one fix timer
         if(timer > (  Primary.hardness/GatheringSpeed) && HasResource  )
         {
@@ -25,6 +36,8 @@ public class Gatherer : building
             timer = 0;
         }
     }
+
+ 
     protected virtual void GatherRessource()
     {
         //Ressource are currently finite, we should find a way to replenish 'em

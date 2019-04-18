@@ -122,7 +122,9 @@ public class Wall : fortification
             var pos = transform.position - Vector3.up * .5f + z * i;
             
             var h = Instantiate(WallBitMateral[Tier].gameObject, pos, Quaternion.identity).GetComponent<fortification>();
+            h.TransferOwner(GetOwner);
             ex.Add(h);
+            
             h.transform.rotation = transform.rotation;
             h.transform.parent = transform;
             h.transform.localPosition = Vector3.up * .5f + z * i;

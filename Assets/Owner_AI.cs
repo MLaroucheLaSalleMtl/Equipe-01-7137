@@ -12,14 +12,15 @@ public class Owner_AI : MonoBehaviour
     public float TBC = 5;
 
     public Owner owner;
- 
+
+    int rand = 0;
     building lastbuilding;
     private void Start()
     {
         if (owner.Cores.Count == 0) return;
         StartCoroutine(Act());
         owner.ai = this;
-
+        rand = Random.Range(0, 5);
     }
 
     int garisson = 0;
@@ -35,16 +36,32 @@ public class Owner_AI : MonoBehaviour
 
 
 
- 
-    
+    bool church = false;
+
     IEnumerator Act()
     { var core = owner.Cores[0];
 
         SwitchBuilding(1);
+     
         while (true)
         {
+            if (core == null) break;
+            Owner en = null;
+            if (owner.OnBadTerm.Count > 0)
+            {
+                string ahah = owner.OnBadTerm[0].Name;
+                foreach (var item in owner.OnBadTerm)
+                {
+                   if( owner.Relation[item.Name] > owner.Relation[ahah])
+                    {
+                        ahah = item.Name;
+                    }  
+                }
+                en = GameManager.GetOwner(ahah);
 
-            if (core == null || owner.Cores[0] == null) break; 
+
+            }
+         
 
             
             if (!lastbuilding || !lastbuilding.IsBeingBuild)
@@ -122,10 +139,18 @@ public class Owner_AI : MonoBehaviour
                     if (item is Garison)
                     {
                         var v = item as Garison;
-                        v.ProduceUnit(0);
+                      
+                        v.ProduceUnit(Random.Range(0,6));
                     }
                 }
 
+           if(owner.Gold > 500 && !church)
+            {
+                SwitchBuilding(10);
+                church = true;
+            }
+            
+           
             //Give 60 sec before doing anything
             if (AvaillableUnit > 5 && _lifetime > 60)
                 foreach (var item in owner.OnBadTerm)
@@ -242,6 +267,37 @@ public class Owner_AI : MonoBehaviour
 
 
     }
+    public static building Build(int c, Vector3 dir, CityCore s)
+    {
+        var y = GameManager.instance.Buildings[c].GetComponent<building>();
+        dir.y = 0;
+        building e = null;
+
+        e = s;
+        if (e == null) { return null; }
+
+ 
+        var f = (s.transform.position - e.transform.position).normalized;
+        var fx = e.transform.position + e.transform.TransformDirection(dir) * (1 + (s.GetOwner.Building.Count / 8)) * (3);
+
+        var f22 = new RaycastHit();
+        var rc = Physics.Raycast(fx + Vector3.up * 2, Vector3.down, out f22, 8, GameManager.instance.Interatable);
+
+      var t = GameManager.instance.PlaceBuilding(c, fx, Quaternion.identity, s.GetOwner);
+       t.transform.position = fx;
+        t.transform.LookAt(s.GetOwner.Cores[0].transform, Vector3.up);
+
+
+        if (rc) { fx.y = f22.point.y + .1f; }
+
+
+     
+
+
+        print(s.GetOwner.Name + " built building " + t.name);
+        return t;
+
+    }
     public void BuildingPlanning(int c,Vector3 dir)
     {
         building++;
@@ -249,18 +305,6 @@ public class Owner_AI : MonoBehaviour
         building e = null;
          
         e = owner.Cores[0];
-        /*
-        if(owner.Building.Count > 0)
-            e = owner.Building[owner.Building.Count-1];
-        foreach (var item in owner.Building)
-        {
-          
-            if(Vector3.Distance(item.transform.position,owner.Cores[0].transform.position) 
-                > Vector3.Distance(e.transform.position, owner.Cores[0].transform.position))
-            {
-                e = item;
-            }
-        }*/
         if (e == null) {  return; }  
     
         
@@ -286,8 +330,13 @@ public class Owner_AI : MonoBehaviour
         lastbuilding = GameManager.instance.PlaceBuilding(c,fx , Quaternion.identity, owner);
         lastbuilding.transform.position = fx;
         lastbuilding.transform.LookAt(owner.Cores[0].transform, Vector3.up);
-       
-  
+        if (lastbuilding.GetComponent<Garison>())
+        {
+            var u = lastbuilding.GetComponent<Garison>();
+            u.WhereToGo.transform.position = e.transform.position + e.transform.TransformDirection(dir) * 3 * (1 + (owner.Building.Count / 8)) * (3);
+        }
+
+
         if (rc) {   fx.y = f22.point.y + .1f; }
     
       
@@ -324,7 +373,7 @@ public class Owner_AI : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (TBC > 1) TBC -= Time.deltaTime * 0.01f;
+        
 
         _lifetime += Time.deltaTime;
     }

@@ -13,6 +13,7 @@ public class Garison : building
         public float goldCost;
         public int civilianCost;
         public GameObject unit;
+        public float timeToDeploy;
       
         [TextArea]
         public string DESC;
@@ -36,6 +37,7 @@ public class Garison : building
             get
             {
                 var t = stat.AGI + stat.DEX + stat.END + stat.PER + stat.STR;
+                t += Unit.timeToDeploy;
                 return 1 + ExtraExperience / 20 + t;
             }
         }
@@ -92,6 +94,16 @@ public class Garison : building
         OnCompletedUnit += QUI.ForceDeQueue;
 
     }
+    protected override void Start()
+    {
+        base.Start();
+        if (GetOwner.IsPlayer) GameManager.instance.OnClick += OnClick;
+    }
+    public override void TransferOwner(Owner n)
+    {
+        base.TransferOwner(n);
+        
+    }
     public bool HasEnoughRessource(unitCreation x, Goods[] c)
     {
         if (GetOwner.Gold < x.goldCost) return false;
@@ -136,37 +148,76 @@ public class Garison : building
     }
     public void ProduceUnit(int z )
     {
+        if (z >= Units.Length) z= Random.Range(0, Units.Length);
         ProduceUnit(Units[z], GetOwner, !OverrideStats);
     }
 
     public void ProduceSpecialUnit(int v)
     {
+        if (v >= Units.Length) v = Random.Range(0, Units.Length);
         ProduceUnit(Units[v], GetOwner);
     }
     public DeployementOrder deplToUse;
+    public override void Death(bool destroy = true)
+    {
+        if(GetOwner.IsPlayer)
+        GameManager.instance.OnClick -= OnClick;
+        base.Death(destroy);
+    }
     public void ProduceUnit(unitCreation c,Owner b, bool avoid = false)
     {
+    
         var we = new DeployementOrder(c, deplToUse.stat, deplToUse.ExtraExperience);
         if (avoid) we = new DeployementOrder(c, new SpecialUnit.stats(), 0);
-
+      
         if (!GameManager.DEBUG_GODMODE)
         {
             if (!HasEnoughRessource(we, b.Inventory))
-            {if(b.IsPlayer) GameManager.ShowMessage("Not enough materials!"); return; }
+            {if(b.IsPlayer) GameManager.ShowMessage("Not enough materials for unit!");
+                return; }
 
         }
+        b.Pay(c.unit.gameObject.GetComponent<unit>().GoldCost + we.extraGold);
+        foreach (var item in we.Unit.Costs)
+            we.AdditionalCost.Add(item);
+        b.Pay(we.AdditionalCost.ToArray());
+
         QUI.CreateNewIcon(we );
         UnitsToDeploy.Enqueue(we);
+    }
+    bool setPlace;
+    [SerializeField] GameObject setplaceUI;
+    public void SetPosition()
+    {
+        setPlace = true;
+        setplaceUI?.SetActive(false);
+    }
+    
+    void OnClick(Vector3 a)
+    {
+        if (setPlace)
+        {
+            WhereToGo.transform.position = a;
+            setplaceUI?.SetActive(true);
+            setPlace = false;
+        }
+    }
+    public override void GetRidOf()
+    {
+        if(GetOwner == Owner.Player)
+        {
+            GameManager.instance.OnClick -= OnClick;
+        }
+        base.GetRidOf();
     }
     void ActuallyDeploy(DeployementOrder de, Owner b)
     {
         var e = Instantiate(de.Unit.unit, transform.position + transform.forward, Quaternion.identity).GetComponent<unit>();
         e.TransferOwner(b);
-        b.Pay(e.GoldCost + de.extraGold);
-        foreach (var item in de.Unit.Costs)
-            de.AdditionalCost.Add(item);
-        b.Pay(de.AdditionalCost.ToArray());
+       
         b.AddFighter(de.Unit.civilianCost);
+
+        if(!e.Ordered)
         e.MoveTo(WhereToGo.transform.position);
         if(e is SpecialUnit)
         {
@@ -180,14 +231,26 @@ public class Garison : building
     
     public override void OpenContextMenu()
     {
+        CanCreateCustomizable = GetOwner.HasResearch(18);
         base.OpenContextMenu();
         tbox.gameObject.SetActive(true);
         tbox.Header.text = "Garisson at" + transform.position.ToString();
         tbox.Texts[1].text = description;
         CustomizeButton.gameObject.SetActive(CanCreateCustomizable);
         OpenCustomization(false);
-        TakeDamage(5);
+        SetButtons();
+      
 
+    }
+    public virtual void SetButtons()
+    {
+        foreach (var item in buttons)
+            item?.SetActive(true);
+
+
+        if (!GetOwner.HasResearch(5)) buttons[1].gameObject.SetActive(false);
+        if (!GetOwner.HasResearch(8)) buttons[3].gameObject.SetActive(false);
+        if (!GetOwner.HasResearch(17)) buttons[9].gameObject.SetActive(false);
     }
     public override void interact(entity e, float efficiency = 0)
     {
@@ -200,16 +263,16 @@ public class Garison : building
         if(UnitsToDeploy.Count > 0)
         {
             timer += Time.fixedDeltaTime;
+            if (GetOwner.HasResearch(3)) timer += Time.fixedDeltaTime * .15f;
             if (timer > UnitsToDeploy.Peek().GetTimeToDeploy)
             {
 
                 ActuallyDeploy(UnitsToDeploy.Dequeue(), this.GetOwner);
-                if (GetOwner.IsPlayer)
-                {
+              
                     var t = unit.GetAlliesAtPosition(WhereToGo.transform.position, 5, GetOwner);
-                    if (t.Length > 0) GameManager.Formation(WhereToGo.transform.position, Vector3.zero, t, .1f);
+                    if (t.Length > 0)  GameManager.Formation(WhereToGo.transform.position, Vector3.zero, t, .1f);
 
-                }
+            
 
                 timer = 0;
 

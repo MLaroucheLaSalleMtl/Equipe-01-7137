@@ -14,6 +14,7 @@ public class unit : entity
     GameObject indicator;
     [SerializeField]
     Renderer lifeindicator;
+    public bool Barbarian = false;
 
     public float TimeToDeploy = 1;
     private void Start()
@@ -21,14 +22,15 @@ public class unit : entity
         if(onCreated)
                 AudioSource.PlayClipAtPoint(onCreated, transform.position);
         updateLifeIndiactor();
-
-        minimumdistance = AdditionalDist + .35f + agi.radius + agi.stoppingDistance;
+        AdditionalDist += .2f;
+        minimumdistance = AdditionalDist  + .35f + agi.radius + agi.stoppingDistance;
     }
     public bool HasIssuesCommand
     {
         get { return Ordered; }
     }
-    protected bool Ordered = false;
+       [HideInInspector]
+  public bool Ordered = false;
     public override void Death(bool f = false)
     {
         if(Oof)
@@ -71,20 +73,37 @@ public class unit : entity
     protected MeshRenderer[] rendies;
     public virtual float GetMovingSpeed
     {
-        get { return Speed * MainUI.SpeedMult; }
+        get {
+            var bonus = 1f;
+            if (GetOwner.HasResearch(15))
+                bonus += .25f;
+
+            return Speed * MainUI.SpeedMult * bonus;  }
     } 
     public virtual float getAttack
     {
-        get { return attack; }
+        get {
+
+            float bonus = 1;
+            if (GetOwner.HasResearch(7))
+                bonus += .25f;
+            if (boosted > 0) bonus += .25f;
+            return attack * bonus; }
     }
     [SerializeField]
-      float attack = 5;
+     protected float attack = 5;
     [SerializeField]
     float defense = 5;
 
     public virtual float getDefense
     {
-        get{ return defense; }
+        get{
+
+            var bonus = 1f;
+            if (boosted > 0) bonus += .1f;
+            if (GetOwner.HasResearch(17))
+                bonus += .1f;
+            return defense + boosted; }
     }
     public virtual float GetDetectionRange
     {
@@ -92,7 +111,14 @@ public class unit : entity
     }
     public virtual float GetAttackSpeed
     {
-        get { return AtkSpeed; }
+        get {
+            if (Barbarian && Hp > 0)
+            {
+                var t = Mathf.Clamp((GetMaxmimumHP / Hp) * AtkSpeed, .05f, AtkSpeed);
+                return t;
+            }
+
+            return AtkSpeed; }
     }
     public float AtkSpeed = 1;
     public float DetectionRange = 1;
@@ -154,6 +180,7 @@ public class unit : entity
             if (item.GetComponent<entity>())
             {
                 var y = item.GetComponent<entity>();
+                if (item.GetComponent<unit>() && item.GetComponent<unit>().Ordered) continue;
                 if (y.GetOwner == x) ee.Add(y);
             }
         }
@@ -176,9 +203,11 @@ public virtual void AI()
         {
             if (last_agressor)
             { target = last_agressor; last_agressor = null; OrderedAttack(target); aitimer = 0; return; }
-            if (!target && TargetToHunt.Count > 0)
+        
+            if (!target && TargetToHunt.Count > 0 && !Ordered)
             {
-           
+                if (TargetToHunt.Peek() == null) { TargetToHunt.Dequeue(); return; } 
+
                 target = TargetToHunt.Dequeue();
                 Attack(target);
                 aitimer = 0;
@@ -378,7 +407,7 @@ public virtual void AI()
          agi.isStopped = true;
          currentAttackRoutine = null;
 
-         MoveTo(previousTarget);
+        // MoveTo(previousTarget);
         Ordered = false;
         currentAttackRoutine = null;
         yield  break;
@@ -388,12 +417,19 @@ public virtual void AI()
     {
         base.OnKill(z);
         if (z == target) target = null;
-    Chill();
+        if(TargetToHunt.Count > 0)
+        TargetToHunt.Dequeue();
+
+        Chill();
     }
 
     public override void TakeDamage(float t, entity e, DamageType p = DamageType.Null)
     {
+      
+        if(t >0)
         base.TakeDamage( t - getDefense, e, p);
+        else
+            base.TakeDamage(t , e, p);
         updateLifeIndiactor();
        /* if (!Ordered && e)
             Attack(e);*/
@@ -401,13 +437,21 @@ public virtual void AI()
     }
     public override void TakeDamage(float t, DamageType p = DamageType.Null)
     {
-        base.TakeDamage(t - getDefense, p);
+        if (t > 0)
+            base.TakeDamage(t - getDefense, p);
+        else
+            base.TakeDamage(t , p);
         updateLifeIndiactor();
-        anim.SetTrigger("damaged");
-        if (Hurt)
-            AudioSource.PlayClipAtPoint(Hurt, transform.position);
+        if(t > 0)
+        {
+            anim.SetTrigger("damaged");
+            if (Hurt)
+                AudioSource.PlayClipAtPoint(Hurt, transform.position);
+        }
+ 
     
     }
+ 
     protected virtual void _attack(entity e)
     {
 
@@ -423,11 +467,33 @@ public virtual void AI()
             e.TakeDamage(getAttack,this);
 
         }
-        else  MoveTo(previousTarget);
+       // else  MoveTo(previousTarget);
            
     
         
        
+        attackTimer = 0;
+    }
+    protected virtual void _attack(entity e, float dmg)
+    {
+
+
+        if (attackTimer < GetAttackSpeed) return;
+        if (Vector3.Distance(transform.position, e.transform.position) > minimumdistance) return;
+
+        if (e)
+        {
+            if (anim) anim.SetTrigger(Type.ToString());
+            print(this.ToString() + " attacks " + e.name + " for " + getAttack + " damages");
+            transform.LookAt(e.gameObject.transform.position, Vector3.up);
+            e.TakeDamage(dmg, this);
+
+        }
+      //  else MoveTo(previousTarget);
+
+
+
+
         attackTimer = 0;
     }
     private void Awake()
@@ -454,7 +520,8 @@ public virtual void AI()
         if(Hp >= 0)
             agi.speed = GetMovingSpeed;
 
-      
+
+        boosted -= Time.fixedDeltaTime;
         attackTimer += Time.fixedDeltaTime;
     }
 
@@ -479,14 +546,14 @@ public virtual void AI()
 
     public void MoveTo(Vector3 v)
     {
-        agi.isStopped = true;
+        agi.isStopped = false;
         Ordered = true;
         previousTarget = v;
         if (!agi) return;
         agi.SetDestination(v);
         agi.isStopped = false;
             if (currentAttackRoutine != null) StopCoroutine(currentAttackRoutine);
-        StartCoroutine(reachedPosition(v));
+       // StartCoroutine(reachedPosition(v));
       
 
     }

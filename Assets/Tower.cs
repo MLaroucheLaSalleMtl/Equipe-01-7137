@@ -13,6 +13,7 @@ public class Tower : fortification
  
     public int MinimumGuard = 2;
     public float RateOfFire = 0;
+    public DraggableTbox lol;
     public override void interact(entity e, float efficiency = 0)
     {
         base.interact(e, efficiency);
@@ -92,12 +93,36 @@ public class Tower : fortification
          
 
     }
+    private void OnTriggerStay(Collider other)
+    {
+        if(aitimer > RateOfFire)
+        {
+            if (other.GetComponent<entity>())
+            {
+                var e = other.GetComponent<entity>();
+                if(e.GetOwner != GetOwner)
+                {
+                    if (GetOwner.OnBadTerm.Contains(e.GetOwner))
+                    {
+                        Attack(e);
+                        aitimer = 0;
+                    }
+                }
+            }
+        }
+    }
+    public override void OpenContextMenu()
+    {
+        base.OpenContextMenu();
+        lol.Header.text = "Tower at [" + transform.position + "]";
+        lol.Header.gameObject.SetActive(true);
+    }
     public void Protect()
     {
         aitimer += Time.fixedDeltaTime;
         if (aitimer >RateOfFire)
         {
-            var s = Physics.OverlapSphereNonAlloc(transform.position, Range, _col, GameManager.instance.Interatable, QueryTriggerInteraction.Collide);
+          /*  var s = Physics.OverlapSphereNonAlloc(transform.position, Range, _col, GameManager.instance.Interatable, QueryTriggerInteraction.Collide);
         
             for (int i = s - 1; i >= 0; i--)
             {
@@ -134,7 +159,7 @@ public class Tower : fortification
                 }
 
             }
-
+            */
             aitimer = 0;
         }
     }

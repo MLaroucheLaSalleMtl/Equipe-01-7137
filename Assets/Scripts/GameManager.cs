@@ -22,7 +22,8 @@ public class GameManager : MonoBehaviour
 
     };
 
-
+    public delegate void OnClickHandler(Vector3 t);
+    public OnClickHandler OnClick;
 
 
     //Should have use a dictionary, gonna change it later, for now let's use that
@@ -35,7 +36,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
     public static float SecondPerGenerations = 60;
-    public static bool DEBUG_GODMODE = true;
+    public static bool DEBUG_GODMODE = false;
     public GameObject Help;
     [Header("Assets")]
     public GameObject node;
@@ -47,7 +48,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] Missiles;
     public static GameObject ArmyPrefab;
     public GameObject NodeRendererPrefab;
-    public GameObject healingPrefab;
+    public GameObject healingPrefab,DivnityPrefab;
 
     Camera _main;
 
@@ -74,7 +75,7 @@ public class GameManager : MonoBehaviour
     public float Boundary = 40;
     public float cameraSmoothness = 6;
     public float EdgeScrollingSpeed = 5;
-    Vector2 cursorinput;
+    Vector2 cursorinput= new Vector2(-60.3f,-22.85f);
 
     public AudioSource audioSource;
     public grumbleAMP grumbleAMP;
@@ -91,6 +92,7 @@ public class GameManager : MonoBehaviour
 
         foreach (var item in owners)
         {
+            if (item.Name == "Neutral") continue;
             item.OnGain += OnOwnerGain;
             item.OnRelationModification += OnPlayerRelationshipChanged;
         }
@@ -100,6 +102,7 @@ public class GameManager : MonoBehaviour
             if (owners[i].Name == "Neutral") continue;
             var t = gameObject.AddComponent<Owner_AI>();
             t.owner = owners[i];
+            t.TBC +=5 +  Random.Range(-3f, 6f);
         }
     }
 
@@ -140,7 +143,12 @@ public class GameManager : MonoBehaviour
         if (e)
             StartCoroutine(popup(e));
     }
-
+    public void OnBoost(Vector3 pos)
+    {
+        var e = Instantiate(DivnityPrefab, pos, Quaternion.identity);
+        if (e)
+            StartCoroutine(popup(e));
+    }
     Dictionary<string, bool> AtWarWith = new Dictionary<string, bool>();
     public void OnPlayerRelationshipChanged(Owner p1, Owner p2, float val)
     {
@@ -235,12 +243,14 @@ public class GameManager : MonoBehaviour
     {
         CameraFunction(_main.transform, CameraPosition);
         MouseInteraction();
+        if (Input.GetKeyDown(KeyCode.Space) && !Input.GetKeyDown(KeyCode.LeftShift)) CancelSelection();
+        if(!Loser && Input.GetKeyDown(KeyCode.X)) { SwitchDestroyMode(!DestroyMode); }
     }
     
 
     RaycastHit lastresult;
     public LayerMask Interatable, BuildingMask, Unit;
-    Vector3 MousePosition;
+    Vector3 MousePosition = new Vector3(372.2652f, 12.819f, 181.0591f);
     [SerializeField]
     MainUI MUI;
     [SerializeField]
@@ -305,6 +315,7 @@ public class GameManager : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 OnMouseClick(lastresult.point);
+                OnClick?.Invoke(lastresult.point);
 
             }
             else if (Input.GetMouseButtonUp(0))
@@ -334,26 +345,88 @@ public class GameManager : MonoBehaviour
 
             if (BUI.CanBePlaceThere(pos, owners[0])) PlaceBuilding(buildmode, MousePosition, building_highlight.transform.rotation, owners[0]);
         }
-      
+
+        if (tempsel)
+        {
+            if(tempsel.GetOwner == owners[0] && DestroyMode)
+            {
+                DestroyEntity(tempsel);
+                if (!Input.GetKey(KeyCode.LeftShift))
+                    SwitchDestroyMode(false);
+            }
+            else if(selection.Length > 0 && Input.GetKey(KeyCode.LeftShift))
+            {
+                foreach (var item in selection)
+                {
+                    (item as unit).Attack(tempsel);
+                }
+            }
+        }
+        if (DestroyMode) return;
 
         if (buildmode > 0) return;
         BUI.SetBList(false);
         if (!selection[0])
         {
-            if (tempsel && !(tempsel is building) && tempsel.GetOwner == owners[0])
-            {
-                selection[0] = tempsel;
-                selection[0].OnSelected();
-                LastClick = selection[0];
-                //UiSelection[0].SetActive(true);
-                // UiSelection[1].SetActive(true);
-                MUI.Action_sticker.SetTrigger("open");
-            }
 
+           
+            if(!Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
+            {
+                CancelSelection();
+                if (tempsel && !(tempsel is building) && tempsel.GetOwner == owners[0])
+                {
+                    selection[0] = tempsel;
+                    selection[0].OnSelected();
+                    LastClick = selection[0];
+                    MUI.attack.SetActive(true);
+                    //UiSelection[0].SetActive(true);
+                    // UiSelection[1].SetActive(true);
+                    MUI.Action_sticker.SetTrigger("open");
+                }
+            }
+  
         }
         else if (currentmode <= 0)
         {
-            CancelSelection();
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                Formation(pos, _main.transform.forward, selection, .2f);
+            }
+            else if (Input.GetKey(KeyCode.LeftShift))
+            {
+                var s = Physics.OverlapSphere(pos, 2, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
+
+                foreach (var item in selection)
+                {
+                    (item as unit).TargetToHunt = new Queue<entity>();
+                    (item as unit).Ordered = false;
+                    (item as unit).Chill();
+                }
+                 
+
+                foreach (var item in s)
+                {
+                    var vs = item.GetComponent<entity>();
+                    if (!vs || vs.GetOwner == owners[0]) continue;
+                    foreach (var itddem in selection)
+                        if (item)
+                            (itddem as unit).TargetToHunt.Enqueue(vs);
+
+
+                }
+
+                foreach (var item in selection)
+                {
+
+                    if ((item as unit).TargetToHunt.Count > 0)
+                        if (item)
+                            (item as unit).OrderedAttack((item as unit).TargetToHunt.Dequeue());
+
+                }
+
+            }
+         
+         
         }
         else
         {
@@ -629,10 +702,17 @@ public class GameManager : MonoBehaviour
     {
         /*  if (selection[0])
               (selection[0] as unit).Chill();*/
+
+        int f =0;
+        var center = Vector3.zero;
         foreach (var item in selection)
         {
             (item as unit).Chill();
+            f++;
+            center += item.transform.position;
         }
+        if (selection.Length > 0)
+            Formation(center / f, Vector3.zero, selection, .1f);
     }
 
     public void CancelSelection(int a = 0)
@@ -722,7 +802,7 @@ public class GameManager : MonoBehaviour
 
     }
     Vector2 cam;
-    private float camzoom;
+    private float camzoom = 8;
     public float GetZoomLevel
     {
         get { return camzoom; }
@@ -733,9 +813,17 @@ public class GameManager : MonoBehaviour
     public PopMessage _pup, _buildpup;
 
     building _lastbuilding;
+    int lastonebuilding = -1;
     public void Build(int x)
     {
         if (Loser) return;
+        if(lastonebuilding == x)
+        {
+            CancelBuilding();
+            lastonebuilding = -1;
+            return;
+        }
+        lastonebuilding = x;
         //BUI.SetBList(false);
         MUI.EndDescription();
         buildmode = -1;
@@ -744,6 +832,7 @@ public class GameManager : MonoBehaviour
         {
             print(owners[0] + " :Not enough ressource or Gold");
             _lastbuilding = null;
+            lastonebuilding = -1;
             return;
         }
         
@@ -777,7 +866,8 @@ public class GameManager : MonoBehaviour
 
     public building PlaceBuilding(int j, Vector3 pos, Quaternion rot, Owner n)
     {
-     
+
+        lastonebuilding = -1;
         var x = Instantiate(Buildings[j], pos, Quaternion.identity).GetComponent<building>();
         x.transform.rotation = rot; //building_highlight.transform.rotation;
         lastrotation = rot;//building_highlight.transform.rotation;
@@ -787,15 +877,16 @@ public class GameManager : MonoBehaviour
         x.Tier = 0;
         n.Pay(x.costs[0].materials);
 
-   
- /*
-        if (_lastbuilding && _lastbuilding is Wall && x is Wall)
-        {
-            (_lastbuilding as Wall).boundTo = x as Wall;
 
-        }*/
+        /*
+               if (_lastbuilding && _lastbuilding is Wall && x is Wall)
+               {
+                   (_lastbuilding as Wall).boundTo = x as Wall;
 
-        if (n == owners[0])
+               }*/
+
+        if (!Input.GetKey(KeyCode.LeftShift))
+            if (n == owners[0])
         {
             buildmode = -1;
             ClearHighLight();
@@ -812,6 +903,8 @@ public class GameManager : MonoBehaviour
                     item.SetActive(false);
                 BUI.Uis[0].gameObject.SetActive(true);
             }
+
+           
             CancelSelection();
         }
 
@@ -902,8 +995,8 @@ public class GameManager : MonoBehaviour
             item.Start();
             for (int i = 0; i < owners.Length; i++)
             {
-                if (i == 3) continue;
-                item.modRelation(owners[i], Random.Range(-10, 10));
+                if (i == 2) continue;
+                item.modRelation(owners[i], Random.Range(-30, 30));
             }
                
 
@@ -911,9 +1004,34 @@ public class GameManager : MonoBehaviour
 
         }
 
-        musicLauncher.Miscellanious(owners[0]);
+        musicLauncher?.Miscellanious(owners[0]);
 
 
+    }
+
+
+    bool DestroyMode = false;
+    public GameObject DestroyUI;
+    public void SwitchDestroyMode(bool t)
+    {
+        if (t) CancelBuilding();
+        DestroyMode = t;
+        DestroyUI?.gameObject.SetActive(t);
+    }
+    public void DestroyEntity(entity t)
+    {
+        if (t.GetOwner == GameManager.owners[0])
+        {
+            if (t is CityCore) return;
+            t.TransferOwner(null);
+            owners[0].GainGold(t.GoldCost / 5);
+            if(t is building)
+            {
+                (t as building).GetRidOf();
+                return;
+            }
+            Destroy(t.gameObject);
+        }
     }
 
     #region Nodes
@@ -940,16 +1058,17 @@ public class GameManager : MonoBehaviour
                 else n.SetOwner(owners[0]);
 
 
-                if (n.transform.position.y < 10) n.GetComponent<MeshRenderer>().material.color = Color.green;
-                else if (n.transform.position.y < 20) n.GetComponent<MeshRenderer>().material.color = Color.yellow;
-                else if (n.transform.position.y < 30)
+                /*  if (n.transform.position.y < 10) n.GetComponent<MeshRenderer>().material.color = Color.green;
+                  else if (n.transform.position.y < 20)n.GetComponent<MeshRenderer>().material.color = Color.yellow;*/
+                /* else*/
+                if (n.transform.position.y < 30)
                 {
-                    n.GetComponent<MeshRenderer>().material.color = Color.yellow + Color.red;
+                  //  n.GetComponent<MeshRenderer>().material.color = Color.yellow + Color.red;
                     n.type = global::node.NodeType.Rocky;
                 }
                 else
                 {
-                    n.GetComponent<MeshRenderer>().material.color = Color.red;
+                   // n.GetComponent<MeshRenderer>().material.color = Color.red;
                     n.type = global::node.NodeType.montain;
 
                 }
@@ -964,7 +1083,7 @@ public class GameManager : MonoBehaviour
                     if (n.transform.position.y < -.05f)
                     {
                         n.type = global::node.NodeType.water;
-                        n.GetComponent<MeshRenderer>().material.color = Color.blue;
+                      //  n.GetComponent<MeshRenderer>().material.color = Color.blue;
 
                     }
 
@@ -995,7 +1114,7 @@ public class GameManager : MonoBehaviour
         return pos;
     }
     [SerializeField]
-    LayerMask Precison;
+    public LayerMask Precison,Nodeslayer;
     void SpawnRessource(node n, int x, int y)
     {
 
@@ -1004,7 +1123,7 @@ public class GameManager : MonoBehaviour
         //Sparse Ressources, so it is not easy
         if (n.AverageHeight > 49 && n.AverageHeight < 55 && n.type == global::node.NodeType.plain)
         {
-            if (seed < .6f) return;
+           // if (seed < .6f) return;
             //tree
 
             var q = new Goods();

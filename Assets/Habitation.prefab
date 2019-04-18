@@ -6276,7 +6276,7 @@ MonoBehaviour:
       amount: 5
       hardness: 0
     Gold: 0
-    ConstructionEffort: 20
+    ConstructionEffort: 46
   - materials:
     - Name: Wood
       Value: 0
@@ -6309,9 +6309,9 @@ MonoBehaviour:
   - 10
   - 35
   Taxe:
+  - 1
   - 5
-  - 10
-  - 35
+  - 17
 --- !u!208 &4526186926052867210
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -6322,7 +6322,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.42, y: 0.5, z: 0.215}
+  m_Extents: {x: 0.51, y: 0.5, z: 0.265}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 0
