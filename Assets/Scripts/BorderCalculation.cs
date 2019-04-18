@@ -275,7 +275,7 @@ public class BorderCalculation
         owner.faction.NodesList = cornerDraw;
 
         owner.faction.GenFrontieres();
-        UnityEngine.Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        
     }
     public void RemoveDraw(List<node> cornerDraw, Owner owner, node node)
     {
@@ -284,7 +284,7 @@ public class BorderCalculation
         owner.faction.NodesList.Remove(node);
          
         owner.faction.GenFrontieres();
-        UnityEngine.Debug.Log("ÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉ");
+       
 
     }
 

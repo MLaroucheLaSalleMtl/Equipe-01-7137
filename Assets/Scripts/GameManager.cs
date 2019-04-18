@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     public Terrain[] terrain;
     public GameObject radius;
     public node[] Nodes;
+   // public static Random random = new Random();
+    public static string[] cultures = new string[] { "civilised", "barbarian", };
     public static Owner[] owners = new Owner[5]
     { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) },
         new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) },
@@ -21,7 +23,7 @@ public class GameManager : MonoBehaviour
 
 
     };
-
+    
     public delegate void OnClickHandler(Vector3 t);
     public OnClickHandler OnClick;
 
@@ -1002,7 +1004,7 @@ public class GameManager : MonoBehaviour
             }
 
         }
-
+        owners[0].Culture = "barbarian";// cultures[Random.Range(0, 1)];
         musicLauncher.Miscellanious(owners[0]);
 
     }

@@ -17228,9 +17228,10 @@ AudioSource:
   m_GameObject: {fileID: 991415736}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 65e657f6f6f7f764b9f54cef7da0e390,
+    type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -44417,14 +44418,15 @@ MonoBehaviour:
     type: 3}
   DivnityPrefab: {fileID: 584095237862964814, guid: 4a2b6b13864062049b21579cdd9b3be7,
     type: 3}
-  error: {fileID: 0}
+  error: {fileID: 8300000, guid: 02c6a728ca81c644f91c101661130405, type: 3}
   build: {fileID: 8300000, guid: 902f575691c33314785d58b3ad9a81af, type: 3}
   completeBuild: {fileID: 8300000, guid: 9f717708a64984c42ac3d2966bdef1c3, type: 3}
   menuClick: {fileID: 8300000, guid: f8d8bb245bb07fa459c51bc62798db7d, type: 3}
   GainItem: {fileID: 0}
   endaudio: {fileID: 8300000, guid: 13b4f64ea3ae50b4b8556385b8d1fbe5, type: 3}
   GameOverMusic: {fileID: 8300000, guid: 13b4f64ea3ae50b4b8556385b8d1fbe5, type: 3}
-  War: {fileID: 0}
+  War: {fileID: 8300000, guid: 88968b5191e763b4181294215818f071, type: 3}
+  attack: {fileID: 8300000, guid: 363c8371e8294504ab73bebbefbac5f0, type: 3}
   Cursor3D:
   - {fileID: 597833861}
   - {fileID: 679085831}
@@ -44436,7 +44438,7 @@ MonoBehaviour:
   EdgeScrollingSpeed: -2
   audioSource: {fileID: 0}
   grumbleAMP: {fileID: 0}
-  musicLauncher: {fileID: 0}
+  musicLauncher: {fileID: 6666037068653545888}
   animBlack: {fileID: 6666037067672892698}
   GameOverItem: {fileID: 1181036540}
   Interatable:
@@ -44527,7 +44529,8 @@ AudioSource:
   m_GameObject: {fileID: 6666037068653545883}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 65e657f6f6f7f764b9f54cef7da0e390,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.729
