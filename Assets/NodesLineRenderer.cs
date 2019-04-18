@@ -24,7 +24,7 @@ public class NodesLineRenderer : MonoBehaviour
 
         Vector3[] vector3s = new Vector3[faction.NodesList.Count];
         lineRenderer.SetVertexCount(faction.NodesList.Count);
-        
+        lineRenderer.SetWidth(.5f, .5f);
         int counter = 0;
         foreach (var item in faction.NodesList)
         {

@@ -12,6 +12,8 @@ public class node : MonoBehaviour
 
     MeshRenderer rendi;
     MeshFilter filty;
+    public node Predecessor { get; set; }
+    public node Successor { get; set; }
      List<Vector3> getBounds
     {
         get
@@ -96,6 +98,10 @@ public class node : MonoBehaviour
             node thisNode = this;
             if (unit.GetOwner != this.GetOwner)
             {
+                if (this.GetOwner == GameManager.owners[0])
+                {
+                    GameManager.instance.musicLauncher.Losing(GameManager.owners[0]);
+                }
                 int indexConquered=0;
                 int indexLost = 0;
                 foreach (var item in unit.GetOwner.faction.NodeSquares)

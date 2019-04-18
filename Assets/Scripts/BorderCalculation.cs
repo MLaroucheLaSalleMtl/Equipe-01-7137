@@ -155,6 +155,7 @@ public class BorderCalculation
         int maxCount = borders.Count;
         while (borders.Count > 1)
         {
+            bool test = false;
             float closest = 90f;
             float curr = 100f;
 
@@ -176,15 +177,49 @@ public class BorderCalculation
                 }
                 else if(curr == closest)
                 {
-                    closest = curr;
-                    tempNode = borders[x];
+                    //closest = curr;
+                    
+                    if (ToAdd.Predecessor != null & ToAdd.Successor!=null)
+                    {
+                        Debug.Log($"node predecessor!!!!!!!!!!!!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!1 ");
+                        var curr2 = Vector3.Distance(ToAdd.Predecessor.GetPosition, borders[x].GetPosition);
+
+                        var curr3 = Vector3.Distance(ToAdd.Successor.GetPosition, borders[x].GetPosition);
+                        if (ToAdd.Predecessor.GetOwner == owner && curr2 < curr3)
+                        {
+                            
+                            tempNode = ToAdd.Predecessor;
+                           
+                        }
+                        else if(ToAdd.Predecessor.GetOwner == owner && curr2 > curr3)
+                        {
+                            tempNode = ToAdd.Successor;
+                        }
+
+                    }
+                   
+                    
+             
+                    
                 }
 
 
             }
+            //tempNode.Predecessor = ToAdd;
+
+
+            tempNode.Successor = ToAdd;
+            
+            ToAdd.Predecessor = tempNode;
             ToAdd = tempNode;
+            
+           // Debug.Log($"node predecessor : {tem}")
+           
             Fnodes.Add(ToAdd);
+                     
             borders.Remove(ToAdd);
+            
+           
             count++;
             if (count == (maxCount + 40))
             {
@@ -192,7 +227,12 @@ public class BorderCalculation
             }
         }
         Fnodes.Add(initialNode);
-
+        for (int i = 0; i < Fnodes.Count-1; i++)
+        {
+            Fnodes[i].Successor = Fnodes[i + 1];
+        }
+       
+        
 
         return Fnodes;
     }
@@ -211,7 +251,7 @@ public class BorderCalculation
 
     public void UpdateDraw(List<node> cornerDraw, Owner owner, node node)
     {
-
+        
         float smallest = float.MaxValue;
         int index = 200;
         for (int q = 0; q < 2; q++)
@@ -235,7 +275,7 @@ public class BorderCalculation
         owner.faction.NodesList = cornerDraw;
 
         owner.faction.GenFrontieres();
-        UnityEngine.Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        
     }
     public void RemoveDraw(List<node> cornerDraw, Owner owner, node node)
     {
@@ -244,7 +284,7 @@ public class BorderCalculation
         owner.faction.NodesList.Remove(node);
          
         owner.faction.GenFrontieres();
-        UnityEngine.Debug.Log("ÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉÉ");
+       
 
     }
 

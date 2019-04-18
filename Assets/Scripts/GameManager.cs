@@ -12,16 +12,18 @@ public class GameManager : MonoBehaviour
     public Terrain[] terrain;
     public GameObject radius;
     public node[] Nodes;
+   // public static Random random = new Random();
+    public static string[] cultures = new string[] { "civilised", "barbarian", };
     public static Owner[] owners = new Owner[5]
     { new Owner() { Name = "Wessex", MainColor = Color.blue, vector3 = new Vector3(368, 0, 177) },
         new Owner() { Name = "Picts", MainColor = Color.green, vector3 = new Vector3(309, 0, 273) },
          new Owner() { Name = "Neutral", MainColor = Color.gray, vector3 = new Vector3(0, 0, 0) },
-         new Owner() { Name = "Wels", MainColor = Color.yellow, vector3 = new Vector3( 259, 0, 200) },
-          new Owner() { Name = "Dimitri", MainColor = Color.magenta, vector3 = new Vector3(200, 0, 193) },
+         new Owner() { Name = "Wales", MainColor = Color.yellow, vector3 = new Vector3( 259, 0, 200) },
+          new Owner() { Name = "Northumbria", MainColor = Color.magenta, vector3 = new Vector3(200, 0, 193) },
 
 
     };
-
+    
     public delegate void OnClickHandler(Vector3 t);
     public OnClickHandler OnClick;
 
@@ -66,7 +68,7 @@ public class GameManager : MonoBehaviour
     }
     [Header("Flair")]
     public AudioClip error;
-    public AudioClip build, completeBuild, menuClick, GainItem, endaudio, GameOverMusic, War;
+    public AudioClip build, completeBuild, menuClick, GainItem, endaudio, GameOverMusic, War, attack;
     public GameObject[] Cursor3D;
 
     [Header("Camera")]
@@ -79,7 +81,7 @@ public class GameManager : MonoBehaviour
 
     public AudioSource audioSource;
     public grumbleAMP grumbleAMP;
-    public MusicLauncher musicLauncher;
+    public MusicLauncher musicLauncher = new MusicLauncher();
     
 
     private void Awake()
@@ -118,8 +120,8 @@ public class GameManager : MonoBehaviour
 
         _pup.SetText("You are now peacen't with " + z.Name + "!");
         AtWarWith.Add(z.Name, true);
-       
-        musicLauncher?.war(z);
+        AudioSource.PlayClipAtPoint(GameManager.instance.War, Camera.main.gameObject.transform.position);
+        musicLauncher.war(owners[0]);
         
     }
 
@@ -175,12 +177,14 @@ public class GameManager : MonoBehaviour
     bool Loser = false;
     public static void SetGameOver()
     {
+       
         instance.Loser = true;
         instance.StartCoroutine(instance.GameOver());
         
     }
     IEnumerator GameOver()
     {
+        musicLauncher.Lost();
         foreach (var item in GetComponents<Owner_AI>())
             item.enabled = false;
         
@@ -191,8 +195,8 @@ public class GameManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(GameManager.instance.endaudio, Camera.main.gameObject.transform.position);
        
         yield return new WaitForSecondsRealtime(2f);
-        audioSource.clip = GameOverMusic;
-        audioSource.Play();
+        //audioSource.clip = GameOverMusic;
+        //audioSource.Play();
         animBlack.SetTrigger("fade");
         yield return new WaitForSecondsRealtime(3f);
         GameOverItem.SetActive(true);
@@ -211,7 +215,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator popup(GameObject c)
     {
-        AudioSource.PlayClipAtPoint(GameManager.instance.GainItem, c.transform.position);
+        //AudioSource.PlayClipAtPoint(GameManager.instance.GainItem, c.transform.position);
         var t = 1.5f;
         while (t > 0)
         {
@@ -346,7 +350,8 @@ public class GameManager : MonoBehaviour
 
         if (tempsel)
         {
-            if(tempsel.GetOwner == owners[0] && DestroyMode)
+           
+            if (tempsel.GetOwner == owners[0] && DestroyMode)
             {
                 DestroyEntity(tempsel);
                 if (!Input.GetKey(KeyCode.LeftShift))
@@ -354,6 +359,7 @@ public class GameManager : MonoBehaviour
             }
             else if(selection.Length > 0 && Input.GetKey(KeyCode.LeftShift))
             {
+                AudioSource.PlayClipAtPoint(GameManager.instance.attack, Camera.main.gameObject.transform.position);
                 foreach (var item in selection)
                 {
                     (item as unit).Attack(tempsel);
@@ -996,14 +1002,10 @@ public class GameManager : MonoBehaviour
                 if (i == 2) continue;
                 item.modRelation(owners[i], Random.Range(-30, 30));
             }
-               
-
-
 
         }
-
-        musicLauncher?.Miscellanious(owners[0]);
-
+        owners[0].Culture = "barbarian";// cultures[Random.Range(0, 1)];
+        musicLauncher.Miscellanious(owners[0]);
 
     }
 
