@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
 
     public AudioSource audioSource;
     public grumbleAMP grumbleAMP;
-    public MusicLauncher musicLauncher;
+    public MusicLauncher musicLauncher = new MusicLauncher();
     
 
     private void Awake()
@@ -116,7 +116,7 @@ public class GameManager : MonoBehaviour
         _pup.SetText("You are now peacen't with " + z.Name + "!");
         AtWarWith.Add(z.Name, true);
        
-        musicLauncher.war(z);
+        musicLauncher.war(owners[0]);
         
     }
 
@@ -167,12 +167,14 @@ public class GameManager : MonoBehaviour
     bool Loser = false;
     public static void SetGameOver()
     {
+       
         instance.Loser = true;
         instance.StartCoroutine(instance.GameOver());
         
     }
     IEnumerator GameOver()
     {
+        musicLauncher.Lost();
         foreach (var item in GetComponents<Owner_AI>())
             item.enabled = false;
         
@@ -183,8 +185,8 @@ public class GameManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(GameManager.instance.endaudio, Camera.main.gameObject.transform.position);
        
         yield return new WaitForSecondsRealtime(2f);
-        audioSource.clip = GameOverMusic;
-        audioSource.Play();
+        //audioSource.clip = GameOverMusic;
+        //audioSource.Play();
         animBlack.SetTrigger("fade");
         yield return new WaitForSecondsRealtime(3f);
         GameOverItem.SetActive(true);

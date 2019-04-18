@@ -149,7 +149,7 @@ public class entity : MonoBehaviour
  
     public virtual void TakeDamage(float t,DamageType p = DamageType.Null)
     {
-   
+        GameManager.instance.musicLauncher.Losing(owner);
         Hp -= t * GetTypeEfficiency(Type,p);
         if(t < 0)
         {
