@@ -352,6 +352,13 @@ public class GameManager : MonoBehaviour
                 if (!Input.GetKey(KeyCode.LeftShift))
                     SwitchDestroyMode(false);
             }
+            else if(selection.Length > 0 && Input.GetKey(KeyCode.LeftShift))
+            {
+                foreach (var item in selection)
+                {
+                    (item as unit).Attack(tempsel);
+                }
+            }
         }
         if (DestroyMode) return;
 
@@ -369,6 +376,7 @@ public class GameManager : MonoBehaviour
                     selection[0] = tempsel;
                     selection[0].OnSelected();
                     LastClick = selection[0];
+                    MUI.attack.SetActive(true);
                     //UiSelection[0].SetActive(true);
                     // UiSelection[1].SetActive(true);
                     MUI.Action_sticker.SetTrigger("open");
@@ -384,7 +392,7 @@ public class GameManager : MonoBehaviour
             }
             else if (Input.GetKey(KeyCode.LeftShift))
             {
-                var s = Physics.OverlapSphere(pos, 1, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
+                var s = Physics.OverlapSphere(pos, 2, GameManager.instance.Unit, QueryTriggerInteraction.Collide);
 
                 foreach (var item in selection)
                 {
@@ -692,10 +700,17 @@ public class GameManager : MonoBehaviour
     {
         /*  if (selection[0])
               (selection[0] as unit).Chill();*/
+
+        int f =0;
+        var center = Vector3.zero;
         foreach (var item in selection)
         {
             (item as unit).Chill();
+            f++;
+            center += item.transform.position;
         }
+        if (selection.Length > 0)
+            Formation(center / f, Vector3.zero, selection, .1f);
     }
 
     public void CancelSelection(int a = 0)

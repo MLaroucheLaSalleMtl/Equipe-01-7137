@@ -10,10 +10,20 @@ public class Gatherer : building
     public int Yield = 1;
     [Range(.01f,1000)]
     public float GatheringSpeed = .25f;
-    
+
     // Start is called before the first frame update
 
 
+    public override void TakeDamage(float t, DamageType p = DamageType.Null)
+    {
+        base.TakeDamage(t, p);
+        
+    }
+    public override void Death(bool destroy = true)
+    {
+        base.Death(destroy);
+        print("lol");
+    }
     private float timer = 0;
     private void FixedUpdate()
     {

@@ -3430,7 +3430,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthToSet: 2.5
   Type: 1
-  GoldCost: 4
+  GoldCost: 13
   uianim: {fileID: 799867967052470086}
   Inventory: []
   info: {fileID: 8978350081012460925}
@@ -3439,7 +3439,7 @@ MonoBehaviour:
   DEBUG_OWNER: 0
   agi: {fileID: 5516078772422536298}
   indicator: {fileID: 7262807572265487372}
-  lifeindicator: {fileID: 396718619501830128}
+  lifeindicator: {fileID: 7907236293309100603}
   Barbarian: 0
   TimeToDeploy: 4
   Ordered: 0
@@ -4357,7 +4357,7 @@ Transform:
   m_LocalPosition: {x: -0.000035583, y: 1.046, z: 0}
   m_LocalScale: {x: 0.18972, y: 0.5768057, z: 0.18972}
   m_Children:
-  - {fileID: 396718619501824043}
+  - {fileID: 3453247479072291267}
   m_Father: {fileID: 5516078772422536277}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5496,13 +5496,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54ddc03edb813174f8791d835c469223, type: 3}
---- !u!4 &396718619501824043 stripped
+--- !u!4 &3453247479072291267 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3057112034529083048, guid: 54ddc03edb813174f8791d835c469223,
     type: 3}
   m_PrefabInstance: {fileID: 396718619501823851}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &396718619501830128 stripped
+--- !u!23 &7907236293309100603 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7511239984434869584, guid: 54ddc03edb813174f8791d835c469223,
     type: 3}

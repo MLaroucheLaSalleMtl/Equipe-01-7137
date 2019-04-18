@@ -22,8 +22,8 @@ public class unit : entity
         if(onCreated)
                 AudioSource.PlayClipAtPoint(onCreated, transform.position);
         updateLifeIndiactor();
-
-        minimumdistance = AdditionalDist + .35f + agi.radius + agi.stoppingDistance;
+        AdditionalDist += .2f;
+        minimumdistance = AdditionalDist  + .35f + agi.radius + agi.stoppingDistance;
     }
     public bool HasIssuesCommand
     {

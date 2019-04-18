@@ -2029,7 +2029,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthToSet: 2
   Type: 0
-  GoldCost: 0
+  GoldCost: 27
   uianim: {fileID: 0}
   Inventory: []
   info: {fileID: 68227847213044389}
@@ -2039,7 +2039,9 @@ MonoBehaviour:
   agi: {fileID: 3523760369277719474}
   indicator: {fileID: 1296628932979275369}
   lifeindicator: {fileID: 0}
+  Barbarian: 0
   TimeToDeploy: 1
+  Ordered: 0
   Name: Barbarian
   Speed: 2.12
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
@@ -2059,6 +2061,7 @@ MonoBehaviour:
   defense: 0
   AtkSpeed: 1
   DetectionRange: 1.66
+  AdditionalDist: 0
 --- !u!54 &1790512784526596582
 Rigidbody:
   m_ObjectHideFlags: 0

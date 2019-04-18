@@ -1923,7 +1923,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthToSet: 300
   Type: 2
-  GoldCost: 15
+  GoldCost: 4000
   uianim: {fileID: 8537614198484800733}
   Inventory: []
   info: {fileID: 142849206984126182}
@@ -1935,6 +1935,7 @@ MonoBehaviour:
   lifeindicator: {fileID: 890450833655109498}
   Barbarian: 0
   TimeToDeploy: 20
+  Ordered: 0
   Name: Swordsman
   Speed: 1
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}

@@ -3663,7 +3663,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthToSet: 3
   Type: 1
-  GoldCost: 4
+  GoldCost: 12
   uianim: {fileID: 799867967052470086}
   Inventory: []
   info: {fileID: 8978350081012460925}
@@ -3675,6 +3675,7 @@ MonoBehaviour:
   lifeindicator: {fileID: 7907236293309100603}
   Barbarian: 1
   TimeToDeploy: 13
+  Ordered: 0
   Name: Barbarian
   Speed: 4.41
   Oof: {fileID: 8300000, guid: 42ee07c608cf11f4db6ea4b1ea4d1f3a, type: 3}
