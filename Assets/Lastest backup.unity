@@ -2497,7 +2497,12 @@ PrefabInstance:
     - target: {fileID: 251589060051710158, guid: 862bcb7e8efa58442b5a5bbba0afa720,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 1.5028
+      objectReference: {fileID: 0}
+    - target: {fileID: 251589060051710158, guid: 862bcb7e8efa58442b5a5bbba0afa720,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5884407
       objectReference: {fileID: 0}
     - target: {fileID: 7006594826177405218, guid: 862bcb7e8efa58442b5a5bbba0afa720,
         type: 3}
@@ -2518,6 +2523,17 @@ PrefabInstance:
         type: 3}
       propertyPath: catStart
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2415897864940591516, guid: 862bcb7e8efa58442b5a5bbba0afa720,
+        type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: 022eae89c4d0c1b418f0d45a424955f8,
+        type: 3}
+    - target: {fileID: 2415897864940591516, guid: 862bcb7e8efa58442b5a5bbba0afa720,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 862bcb7e8efa58442b5a5bbba0afa720, type: 3}
@@ -30135,8 +30151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Order: 10
-  Explanation: "The button on the bottom right is for reorganization of your army.\n
-    \  \n                                         Press N  to move on."
+  Explanation: The button on the bottom right is for reorganization of your army.            Press
+    N  to move on.
   Keys:
   - n
 --- !u!1 &1789433126
@@ -30563,7 +30579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Order: 10
-  Explanation: "You Have finished all the tutoroals enjoy the game.\n   \n                                         Press
+  Explanation: "You Have finished all the tutoroals enjoy the game.\n                                                         Press
     N to move on"
   Keys:
   - n
@@ -37685,51 +37701,54 @@ PrefabInstance:
     - target: {fileID: 5508637331460268955, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: "Hello There Player you represents the blue faction which is wessex\n\n\n
-        \                                   Press N to move on  "
+      value: "Hello There Player you represents the blue faction which is wessex\n
+        \     Press N to move on  "
       objectReference: {fileID: 0}
     - target: {fileID: 5508637331640279451, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: "Each bulding has its unique function,you can see them by overshadowing
-        the icons\n\n                                    Press N  to move on.\n\n"
+      value: 'Each bulding has its unique function,you can see them by overshadowing
+        the icons                           Press N  to move on.
+
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 5508637331938967778, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: "Try building towers to defend yourself against the Enemies\n\n                                        Press
+      value: "Try building towers to defend yourself against the Enemies\n                                                                  Press
         N  to move on."
       objectReference: {fileID: 0}
     - target: {fileID: 5508637332072547801, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: "First try building a house to gather money from the population\n\n                                     Press
+      value: "First try building a house to gather money from the population\n                                                                Press
         N  to move on.\n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637332401979529, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: "Click on button create building to expand your empire\n\n                                     Press
+      value: "Click on button create building to expand your empire\n                                                                    Press
         N to move on \n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637332511331504, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
       value: "Nice Job !,you can see the minimap on the bottom right that shows you
-        the other countries\n\n                                        Press N  to
-        move on \n\n"
+        the other countries\n                                        Press N  to move
+        on \n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637332772853392, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: "Now a Gathering house for more Wood\n\n                                   Press
+      value: "Now a Gathering house for more Wood\n                                                                  Press
         N  to move on.\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637333085654817, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
       value: "Click on the button stat bellow  can see each country has an affinity
-        with you as long as you don't attack that affinity won't change \n                                      Press
+        with you as long as you don't attack that affinity won't change                                                      Press
         N  to move on \n\n"
       objectReference: {fileID: 0}
     - target: {fileID: 5508637333152336425, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
@@ -37741,29 +37760,32 @@ PrefabInstance:
     - target: {fileID: 5508637331840648285, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: "Create  soldiers by  pressing  on the building\n\n                                    Press
+      value: "Create  soldiers by  pressing  on the building\n                                                                  Press
         N  to move on."
       objectReference: {fileID: 0}
     - target: {fileID: 5508637331877287424, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: " the Garrsion  provides soldiers each soldiers has a special ability
-        you can see them by overshadowing the icons.\n\n                                  Press
-        N  to move on.\n"
+      value: ' the Garrsion  provides soldiers each soldiers has a special ability
+        you can see them by overshadowing the icons.
+
+        Press N  to move on.
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 6072239912785876403, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
-      value: "select the soldiers age of empire style and you can move them by pressing
-        the ifirst icon on the right and pressing where you want to take them \n\n
-        \                                              Press N  to move on."
+      value: select the soldiers age of empire style and you can move them by pressing
+        the ifirst icon on the right and pressing where you want to take them                                     Press
+        N  to move on.
       objectReference: {fileID: 0}
     - target: {fileID: 6072239913217900525, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
       propertyPath: Explanation
       value: "To attack press the middle button on the right on point it the soldiers
-        you want to attack \n\n                                       Press N  to
-        move on."
+        you want to attack \n                                                                  Press
+        N  to move on."
       objectReference: {fileID: 0}
     - target: {fileID: 5508637332401979636, guid: 3afda14e3ff2a8c468217fbbe2ee8a52,
         type: 3}
