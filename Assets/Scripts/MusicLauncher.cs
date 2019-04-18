@@ -78,7 +78,7 @@ public class MusicLauncher:MonoBehaviour
         if (Time.realtimeSinceStartup > 10)
         {
             timeElapsed = Time.realtimeSinceStartup - timeCheck;
-            UnityEngine.Debug.Log(timeElapsed + "   " + songPlayTime);
+            //UnityEngine.Debug.Log(timeElapsed + "   " + songPlayTime);
             if ((int)timeElapsed == (int)songPlayTime - 5)
             {
                 
@@ -96,7 +96,7 @@ public class MusicLauncher:MonoBehaviour
                 
                 if (AudioSource2.volume < .6f)
                 {
-                   
+                   // Debug.Log("@@@@@@@@@@@@@@@@@@@@@");
                     if (play)
                     {
                         AudioSource2.volume = .2f;
@@ -130,7 +130,7 @@ public class MusicLauncher:MonoBehaviour
                
                 if (audioSource.volume < .6f)
                 {
-                    
+                   
                     if (play)
                     {
                        
@@ -164,21 +164,24 @@ public class MusicLauncher:MonoBehaviour
     }
     private void InterSectionCheck (AudioClip audioClip, Owner owner)
     {
-        owners = GameManager.owners[0];
-        songPlayTime = audioClip.length;
-        timeCheck = Time.realtimeSinceStartup;
-        AudioClip = audioClip;
-        play = true;
-        if (audioSource.isPlaying)
-        {
-            changing = true;
-            changingSource1 = true;
-        }
-        else
-        {
-            changing = true;
-            changingSource1 = false;
-        }
+        
+            owners = GameManager.owners[0];
+            songPlayTime = audioClip.length;
+            timeCheck = Time.realtimeSinceStartup;
+            AudioClip = audioClip;
+            play = true;
+            if (audioSource.isPlaying)
+            {
+                changing = true;
+                changingSource1 = true;
+            }
+            else
+            {
+                changing = true;
+                changingSource1 = false;
+            }
+        
+        
     }
 
 

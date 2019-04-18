@@ -12,6 +12,8 @@ public class node : MonoBehaviour
 
     MeshRenderer rendi;
     MeshFilter filty;
+    public node Predecessor { get; set; }
+    public node Successor { get; set; }
      List<Vector3> getBounds
     {
         get

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Army : unit
+public class 
+    Army : unit
 {
     public List<unit> Soldier = new List<unit>();
     public override float Hp { get {
