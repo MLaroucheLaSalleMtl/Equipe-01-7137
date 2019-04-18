@@ -51,7 +51,7 @@ public class TutorialManager : MonoBehaviour
             CurrentTutorial.CheckIfItsHappening();
             
         }
-        
+ 
     }
 
     public void CompletedTutorial()
@@ -77,11 +77,19 @@ public class TutorialManager : MonoBehaviour
     {
         window.SetActive(false);
         Instructions.text = "Good luck ";
-        
+        StartCoroutine(lolafter4());    
         
     }
-
-
+    IEnumerator lolafter4()
+    {
+        yield return new WaitForSeconds(2f);
+        
+        window.gameObject.SetActive(false);
+    
+        yield break;
+ 
+    }
+ 
     public Tutorial GetTutorialByOrder(int order)
     {
         for (int i = 0; i < BunchOfTutorials.Count; i++)
