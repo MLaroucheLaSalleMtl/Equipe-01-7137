@@ -170,7 +170,7 @@ public class Owner
             }
         }
        var t= Owner_AI.Build(7, Random.insideUnitSphere, Cores[0]);
-        GainGold(30);
+        GainGold(170);
         t.InstantBuild();
         t.TransferOwner(this);
         Gain(new Goods("Wood",120),100);
