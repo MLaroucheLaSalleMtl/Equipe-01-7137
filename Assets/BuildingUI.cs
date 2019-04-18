@@ -22,8 +22,8 @@ public class BuildingUI : MonoBehaviour
         foreach (var item in BlistButton)
             item?.SetActive(true);
 
-      //  if (!Owner.Player.HasResearch(11)) BlistButton[8].SetActive(false);
-      //  if (!Owner.Player.HasResearch(13)) BlistButton[9].SetActive(false);
+        if (!Owner.Player.HasResearch(11)) BlistButton[8].SetActive(false);
+          if (!Owner.Player.HasResearch(13)) BlistButton[9].SetActive(false);
 
     }
     public GameObject[] BlistButton;

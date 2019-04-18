@@ -24,6 +24,7 @@ public class Owner
     public float Gold = 100;
     int builder = 0, fighter = 0,scientist;
  
+    
     public float GetScientificOutput
     {
         get

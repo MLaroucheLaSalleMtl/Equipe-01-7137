@@ -1004,7 +1004,9 @@ public class GameManager : MonoBehaviour
             }
 
         }
-        owners[0].Culture = "barbarian";// cultures[Random.Range(0, 1)];
+ 
+   
+        owners[0].Culture = cultures[Random.Range(0, cultures.Length)];
         musicLauncher.Miscellanious(owners[0]);
 
     }
