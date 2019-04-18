@@ -81,8 +81,18 @@ public class MusicLauncher:MonoBehaviour
             //UnityEngine.Debug.Log(timeElapsed + "   " + songPlayTime);
             if ((int)timeElapsed == (int)songPlayTime - 5)
             {
-                
-                this.warContinuation(owners);
+                if (AudioClip == warB || AudioClip == warW)
+                {
+                    this.warContinuation(owners);
+                }
+                else if(AudioClip == warB2 || AudioClip == warW2)
+                {
+                    this.war(owners);
+                }
+                else
+                {
+                    this.Miscellanious(owners);
+                }
             }
             
         }
